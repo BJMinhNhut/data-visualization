@@ -34,3 +34,6 @@
 # Binary & Objects file
 /bin 
 /obj
+
+# VSCode config
+/.vscode
