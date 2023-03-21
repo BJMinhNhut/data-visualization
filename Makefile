@@ -7,7 +7,8 @@ FLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 REBUILDABLES = $(OBJSDIR) $(BINDIR)
 
 TARGET = DataVisual
-OBJS = main.o
+SOURCES = Main Application State StateStack TitleState Utility
+OBJS = $(SOURCES:%=$(OBJSDIR)/%.o)
 
 # Hide or not the calls depending of VERBOSE
 VERBOSE = FALSE
@@ -32,7 +33,7 @@ dir:
 	$(HIDE)[ -d $(OBJSDIR) ] && echo $(OBJSDIR)/ found || echo Make directory $(OBJSDIR)/
 	$(HIDE)mkdir -p $(OBJSDIR)
 
-$(BINDIR)/$(TARGET): $(OBJSDIR)/$(OBJS)
+$(BINDIR)/$(TARGET): $(OBJS)
 	$(HIDE)echo Linking $@
 	$(HIDE)$(CXX) -o $@ $^ $(FLAGS)
 
@@ -40,7 +41,8 @@ $(OBJSDIR)/%.o: $(SOURCEDIR)/%.cpp
 	$(HIDE)echo Building $@ from $<
 	$(HIDE)$(CXX) -o $@ -c $< -I $(INCLUDEDIR)
 
-$(OBJSDIR)/main.o: $(INCLUDEDIR)/main.hpp
+# $(OBJSDIR)/Main.o: $(INCLUDEDIR)/Application.hpp
+# $(OBJSDIR)/Application.o: $(INCLUDEDIR)/Application.hpp
 
 clean:
 	$(HIDE)echo Removing $(REBUILDABLES)
