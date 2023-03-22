@@ -7,7 +7,7 @@ FLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 REBUILDABLES = $(OBJSDIR) $(BINDIR)
 
 TARGET = DataVisual
-SOURCES = Main Application State StateStack TitleState Utility
+SOURCES = Main Application State StateStack TitleState Utility MenuState
 OBJS = $(SOURCES:%=$(OBJSDIR)/%.o)
 
 # Hide or not the calls depending of VERBOSE

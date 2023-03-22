@@ -2,13 +2,14 @@
 #include <State.hpp>
 #include <StateIdentifiers.hpp>
 #include <TitleState.hpp>
+#include <MenuState.hpp>
 
 #include <string>
 
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/20.f);
 
 Application::Application():
-mWindow(sf::VideoMode(640, 480), "Data Visualization", sf::Style::Close),
+mWindow(sf::VideoMode(1280, 960), "Data Visualization", sf::Style::Close),
 mTextures(),
 mFonts(),
 mStateStack(State::Context(mWindow, mTextures, mFonts)),
@@ -17,14 +18,14 @@ mStatisticsUpdateTime(),
 mStatisticsNumFrames(0) {
 	mWindow.setKeyRepeatEnabled(false);
 
-	mFonts.load(Fonts::Main, "data/fonts/SF-Pro.ttf");
-	mTextures.load(Textures::TitleScreen, "data/images/background.jpg");
+	mFonts.load(Fonts::Main, "data/fonts/iosevka-etoile-medium.ttf");
+	mTextures.load(Textures::TitleScreen, "data/images/background-white.jpg");
 
 	mStatisticsText.setFont(mFonts.get(Fonts::Main));
 	mStatisticsText.setFillColor(sf::Color::Black);
 
 	mStatisticsText.setPosition(5.f, 5.f);
-	mStatisticsText.setCharacterSize(15u);
+	mStatisticsText.setCharacterSize(12u);
 
 	registerStates();
 	mStateStack.pushState(States::Title);
@@ -91,6 +92,6 @@ void Application::updateStatistics(sf::Time dt) {
 
 void Application::registerStates() {
 	mStateStack.registerState<TitleState>(States::Title);
-	// mStateStack.registerState<MenuState>(States::Menu);
+	mStateStack.registerState<MenuState>(States::Menu);
 }
 
