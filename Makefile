@@ -41,9 +41,6 @@ $(OBJSDIR)/%.o: $(SOURCEDIR)/%.cpp
 	$(HIDE)echo Building $@ from $<
 	$(HIDE)$(CXX) -o $@ -c $< -I $(INCLUDEDIR)
 
-# $(OBJSDIR)/Main.o: $(INCLUDEDIR)/Application.hpp
-# $(OBJSDIR)/Application.o: $(INCLUDEDIR)/Application.hpp
-
 clean:
 	$(HIDE)echo Removing $(REBUILDABLES)
 	$(HIDE)rm -rf $(REBUILDABLES)
