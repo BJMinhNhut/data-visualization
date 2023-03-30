@@ -10,6 +10,7 @@ namespace sf {
 namespace Textures {
 	enum ID {
 		TitleScreen, 
+		NodeData,
 	};
 }
 

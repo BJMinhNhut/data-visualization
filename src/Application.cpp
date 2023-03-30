@@ -3,13 +3,14 @@
 #include <StateIdentifiers.hpp>
 #include <TitleState.hpp>
 #include <MenuState.hpp>
+#include <VisualState.hpp>
 
 #include <string>
 
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/20.f);
 
 Application::Application():
-mWindow(sf::VideoMode(1280, 960), "Data Visualization", sf::Style::Close),
+mWindow(sf::VideoMode(1280, 720), "Data Visualization", sf::Style::Close),
 mTextures(),
 mFonts(),
 mStateStack(State::Context(mWindow, mTextures, mFonts)),
@@ -93,5 +94,6 @@ void Application::updateStatistics(sf::Time dt) {
 void Application::registerStates() {
 	mStateStack.registerState<TitleState>(States::Title);
 	mStateStack.registerState<MenuState>(States::Menu);
+	mStateStack.registerState<VisualState>(States::Visual);
 }
 

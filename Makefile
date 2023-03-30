@@ -3,12 +3,13 @@ SOURCEDIR = src
 INCLUDEDIR = inc
 BINDIR = bin
 OBJSDIR = obj
-FLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+FLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -O2  
 REBUILDABLES = $(OBJSDIR) $(BINDIR)
 
 TARGET = DataVisual
-SOURCES = Main Application State StateStack TitleState Utility MenuState
-OBJS = $(SOURCES:%=$(OBJSDIR)/%.o)
+SOURCES = $(wildcard $(SOURCEDIR)/*.cpp)
+OBJS = $(SOURCES:$(SOURCEDIR)/%.cpp=$(OBJSDIR)/%.o)
+DEPS = $(OBJS:(OBJSDIR)/%.o=(OBJSDIR)/%.d)
 
 # Hide or not the calls depending of VERBOSE
 VERBOSE = FALSE
@@ -39,9 +40,13 @@ $(BINDIR)/$(TARGET): $(OBJS)
 
 $(OBJSDIR)/%.o: $(SOURCEDIR)/%.cpp
 	$(HIDE)echo Building $@ from $<
-	$(HIDE)$(CXX) -o $@ -c $< -I $(INCLUDEDIR)
+	$(HIDE)$(CXX) -o $@ -MMD -c $< -I $(INCLUDEDIR)
+
+-include $(DEPS)
 
 clean:
 	$(HIDE)echo Removing $(REBUILDABLES)
 	$(HIDE)rm -rf $(REBUILDABLES)
 	$(HIDE)echo Clean done
+
+rebuild: clean all
