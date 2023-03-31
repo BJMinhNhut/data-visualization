@@ -3,6 +3,7 @@
 
 #include <Entity.hpp>
 #include <SinglyNode.hpp>
+#include <Pointer.hpp>
 
 #include <memory>
 

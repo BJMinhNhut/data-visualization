@@ -43,19 +43,24 @@ void Screen::buildScene() {
 }
 
 void Screen::createRandomSLL() {
-	std::unique_ptr<SinglyLinkedList> sllptr(new SinglyLinkedList(mFonts));
-	mSLL = sllptr.get();
-	mSLL->setPosition(mWindow.getSize().x/2.f - Constants::NODE_DISTANCE*mSLL->getSize()/2.f - Constants::NODE_SIZE, mWindow.getSize().y/4.f);
-	mSceneLayers[Objects]->attachChild(std::move(sllptr));
+	std::unique_ptr<SinglyLinkedList> sllPtr(new SinglyLinkedList(mFonts));
+	mSLL = sllPtr.get();
+	mSLL->setPosition(mWindow.getSize().x/2.f - (Constants::NODE_DISTANCE + Constants::NODE_SIZE)*mSLL->getSize()/2.f - Constants::NODE_SIZE, mWindow.getSize().y/4.f);
+	mSceneLayers[Objects]->attachChild(std::move(sllPtr));
 
+	std::unique_ptr<Pointer> headPtr(new Pointer(mSLL->getHead()->getNextNode()));
+	Pointer* curPtr = headPtr.get();
+	curPtr->setPosition(0.f, 0.f);
+	mSLL->attachChild(std::move(headPtr));
 
-	SinglyNode* prevNode = nullptr;
 	for(SinglyNode *curNode = mSLL->getHead(); curNode != nullptr; curNode = curNode->getNextNode()) {
 		std::unique_ptr<SinglyNode> nodePtr(curNode);
 		curNode->setPosition(Constants::NODE_DISTANCE, 0.f);
+		curPtr->attachChild(std::move(nodePtr));
 
-		if (prevNode) prevNode->attachChild(std::move(nodePtr));
-		else mSLL->attachChild(std::move(nodePtr));
-		prevNode = curNode;
+		std::unique_ptr<Pointer> nextPtr(new Pointer(curNode->getNextNode())); 
+		nextPtr->setPosition(Constants::NODE_SIZE, 0.f);
+		curPtr = nextPtr.get();
+		curNode->attachChild(std::move(nextPtr));
 	}
 }
