@@ -13,7 +13,7 @@ mValue(value),
 mNextNode(nullptr),
 mRect(sf::Vector2f(35.f, 35.f)) {
 	centerOrigin(mRect);
-	mRect.setOutlineThickness(4);
+	mRect.setOutlineThickness(3);
 	mRect.setFillColor(sf::Color::White);
 	mRect.setOutlineColor(sf::Color::Black);
 

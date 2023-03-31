@@ -14,7 +14,7 @@ class Pointer : public Entity {
 		virtual void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	private:
-		SinglyNode* mTarget;
+		SinglyNode* mTargetNode;
 
 		sf::RectangleShape mRect;
 };

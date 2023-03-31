@@ -11,7 +11,7 @@
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/20.f);
 
 Application::Application():
-mWindow(sf::VideoMode(1600, 900), "Data Visualization", sf::Style::Close),
+mWindow(sf::VideoMode(1600, 900), "Data Visualization", sf::Style::Close, sf::ContextSettings(0, 0, 8)),
 mTextures(),
 mFonts(),
 mStateStack(State::Context(mWindow, mTextures, mFonts)),
