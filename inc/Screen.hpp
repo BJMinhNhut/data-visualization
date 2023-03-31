@@ -37,8 +37,6 @@ class Screen : private sf::NonCopyable {
 		};
 
 	private:
-		static const std::size_t MAXSIZE = 10;
-
 		sf::RenderWindow& mWindow;
 		TextureHolder mTextures;
 		FontHolder mFonts;

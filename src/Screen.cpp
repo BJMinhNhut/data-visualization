@@ -2,6 +2,7 @@
 #include <Random.hpp>
 #include <Singly.hpp>
 #include <SinglyNode.hpp>
+#include <Constants.hpp>
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <iostream>
@@ -42,24 +43,19 @@ void Screen::buildScene() {
 }
 
 void Screen::createRandomSLL() {
-	std::size_t SLLsize = Random::get(1, MAXSIZE);
-	std::cerr << "Random size: " << SLLsize << '\n';
-
 	std::unique_ptr<SinglyLinkedList> sllptr(new SinglyLinkedList(mFonts));
 	mSLL = sllptr.get();
-	mSLL->setPosition(mWindow.getSize().x/2.f - 100.f*SLLsize/2.f - 35.f, mWindow.getSize().y/2.f);
+	mSLL->setPosition(mWindow.getSize().x/2.f - Constants::NODE_DISTANCE*mSLL->getSize()/2.f - Constants::NODE_SIZE, mWindow.getSize().y/4.f);
 	mSceneLayers[Objects]->attachChild(std::move(sllptr));
 
 
 	SinglyNode* prevNode = nullptr;
-	for(int counter = 1; counter <= SLLsize; ++counter) {
-		std::unique_ptr<SinglyNode> nodePtr(new SinglyNode(Random::get(0, 99), mFonts));
-		SinglyNode* mNode = nodePtr.get();
-		mNode->setPosition(100.f, 0.f);
-		mSLL->pushBack(mNode);
+	for(SinglyNode *curNode = mSLL->getHead(); curNode != nullptr; curNode = curNode->getNextNode()) {
+		std::unique_ptr<SinglyNode> nodePtr(curNode);
+		curNode->setPosition(Constants::NODE_DISTANCE, 0.f);
 
 		if (prevNode) prevNode->attachChild(std::move(nodePtr));
 		else mSLL->attachChild(std::move(nodePtr));
-		prevNode = mNode;
+		prevNode = curNode;
 	}
 }

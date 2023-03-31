@@ -10,7 +10,9 @@ class SinglyLinkedList : public Entity {
 	public:
 		explicit SinglyLinkedList(const FontHolder& fonts);
 		SinglyNode* getHead();
+		void randomGen();
 		void pushBack(SinglyNode* newNode);
+		int getSize();
 
 	private:
 		const FontHolder& mFonts;

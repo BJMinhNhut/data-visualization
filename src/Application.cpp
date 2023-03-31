@@ -6,11 +6,12 @@
 #include <VisualState.hpp>
 
 #include <string>
+#include <iostream>
 
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/20.f);
 
 Application::Application():
-mWindow(sf::VideoMode(1280, 720), "Data Visualization", sf::Style::Close),
+mWindow(sf::VideoMode(1600, 900), "Data Visualization", sf::Style::Close),
 mTextures(),
 mFonts(),
 mStateStack(State::Context(mWindow, mTextures, mFonts)),
@@ -60,7 +61,7 @@ void Application::processInput() {
 	while (mWindow.pollEvent(event)) {
 		mStateStack.handleEvent(event);
 
-		if (event.type == sf::Event::Closed) 
+		if (event.type == sf::Event::Closed)
 			mWindow.close();
 	}
 }
