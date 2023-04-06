@@ -3,6 +3,7 @@
 #include <ResourceHolder.hpp>
 
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <iostream>
 
 VisualState::VisualState(StateStack& stack, Context context):
 State(stack, context), 
@@ -24,6 +25,7 @@ bool VisualState::update(sf::Time dt) {
 bool VisualState::handleEvent(const sf::Event& event) {
 	if (event.type == sf::Event::KeyPressed) {
 		if (event.key.code == sf::Keyboard::Return) {
+			// std::cerr << "Enter hit!\n";
 			requestStackPop();
 			requestStackPush(States::Visual);
 

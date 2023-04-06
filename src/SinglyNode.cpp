@@ -27,7 +27,7 @@ mRect(sf::Vector2f(35.f, 35.f)) {
 void SinglyNode::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(mRect, states);
 	target.draw(mText, states);
-	std::cerr << "draw node\n";
+	// std::cerr << "draw node\n";
 }
 
 SinglyNode* SinglyNode::getNextNode() {

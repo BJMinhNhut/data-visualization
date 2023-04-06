@@ -42,6 +42,6 @@ void Pointer::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) con
 		target.draw(arrow, states);
 		target.draw(arrowTip, states);
 	}
-	std::cerr << "draw ptr\n";
+	// std::cerr << "draw ptr\n";
 }
 

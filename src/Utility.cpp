@@ -24,7 +24,7 @@ sf::RectangleShape getLineShape(sf::Vector2f line, float thickness = 1.f) {
 	sf::FloatRect bounds = rect.getLocalBounds();
 	rect.setOrigin(0, std::floor(bounds.top + bounds.height/2.f));
 	
-	float angle = atan(line.y/line.x)/Constants::PI * 180.f;
+	float angle = atan2(line.y, line.x)/Constants::PI * 180.f;
 	rect.rotate(angle);
 	return rect;
 }
@@ -40,7 +40,7 @@ sf::ConvexShape getArrow(sf::Vector2f line, float thickness = 1.f) {
 	arrow.setPoint(2, sf::Vector2f(lineLength - arrowLength, -thickness/2.f));
 	arrow.setPoint(3, sf::Vector2f(2.f, -thickness/2.f));
 	
-	float angle = atan(line.y/line.x)/Constants::PI * 180.f;
+	float angle = atan2(line.y, line.x)/Constants::PI * 180.f;
 	arrow.rotate(angle);
 	return arrow;
 }
@@ -55,7 +55,7 @@ sf::ConvexShape getArrowTip(sf::Vector2f line, float thickness = 1.f) {
 	arrowTip.setPoint(1, sf::Vector2f(lineLength, 0.f));
 	arrowTip.setPoint(2, sf::Vector2f(lineLength - arrowLength, -arrowEdge/2.f));
 	
-	float angle = atan(line.y/line.x)/Constants::PI * 180.f;
+	float angle = atan2(line.y, line.x)/Constants::PI * 180.f;
 	arrowTip.rotate(angle);
 	return arrowTip;
 }
