@@ -1,3 +1,4 @@
+#include <Constants.hpp>
 #include <NodeData.hpp>
 #include <ResourceHolder.hpp>
 #include <Utility.hpp>
@@ -9,7 +10,9 @@
 #include <string>
 
 NodeData::NodeData(int value, const FontHolder& fonts)
-    : mValue(value), mColor(sf::Color::Black), mRect(sf::Vector2f(35.f, 35.f)) {
+    : mValue(value),
+      mColor(sf::Color::Black),
+      mRect(sf::Vector2f(Constants::NODE_SIZE, Constants::NODE_SIZE)) {
     centerOrigin(mRect);
     mRect.setOutlineThickness(3);
     mRect.setFillColor(sf::Color::White);

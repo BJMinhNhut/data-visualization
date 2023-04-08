@@ -21,6 +21,7 @@ SinglyNode::SinglyNode(const FontHolder& fonts, int value)
     std::unique_ptr<Pointer<SinglyNode>> nextNodePtr(mPointer);
     attachChild(std::move(dataPtr));
     attachChild(std::move(nextNodePtr));
+    setScale(0.f, 0.f);
 }
 
 SinglyNode::SinglyNode(const FontHolder& fonts)
@@ -33,9 +34,13 @@ SinglyNode::SinglyNode(const FontHolder& fonts)
     std::unique_ptr<Pointer<SinglyNode>> nextNodePtr(mPointer);
     attachChild(std::move(dataPtr));
     attachChild(std::move(nextNodePtr));
+    setScale(0.f, 0.f);
 }
 
-void SinglyNode::updateCurrent(sf::Time dt) {}
+void SinglyNode::updateCurrent(sf::Time dt) {
+    if (getScale().x < 1.f)
+        setScale(getScale() + sf::Vector2f(0.1f, 0.1f));
+}
 
 void SinglyNode::drawCurrent(sf::RenderTarget& target,
                              sf::RenderStates states) const {}

@@ -40,13 +40,12 @@ void Screen::buildScene() {
 }
 
 void Screen::centerList(SinglyLinkedList* SLL) {
-    SLL->setPosition(
-        mWindow.getSize().x / 2.f -
-            ((Constants::NODE_DISTANCE + Constants::NODE_SIZE * 1.5f) *
-                 SLL->getSize() -
-             Constants::NODE_SIZE) /
-                2.f,
-        mWindow.getSize().y / 4.f);
+    SLL->setPosition(mWindow.getSize().x / 2.f -
+                         ((Constants::NODE_DISTANCE + Constants::NODE_SIZE) *
+                              SLL->getSize() +
+                          Constants::NODE_SIZE * 3.f) /
+                             2.f,
+                     mWindow.getSize().y / 4.f);
 }
 
 void Screen::createRandomSLL() {

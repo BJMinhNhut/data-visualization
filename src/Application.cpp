@@ -8,7 +8,7 @@
 #include <iostream>
 #include <string>
 
-const sf::Time Application::TimePerFrame = sf::seconds(1.f / 20.f);
+const sf::Time Application::TimePerFrame = sf::seconds(1.f / 60.f);
 
 Application::Application()
     : mWindow(sf::VideoMode(1600, 900), "Data Visualization", sf::Style::Close,
@@ -86,7 +86,8 @@ void Application::updateStatistics(sf::Time dt) {
     mStatisticsUpdateTime += dt;
     mStatisticsNumFrames += 1;
     if (mStatisticsUpdateTime >= sf::seconds(1.0f)) {
-        mStatisticsText.setString("FPS: " + std::to_string(mStatisticsNumFrames));
+        mStatisticsText.setString("FPS: " +
+                                  std::to_string(mStatisticsNumFrames));
 
         mStatisticsUpdateTime -= sf::seconds(1.0f);
         mStatisticsNumFrames = 0;
