@@ -1,13 +1,13 @@
 #ifndef POINTER_HPP
 #define POINTER_HPP
 
-#include <Entity.hpp>
+#include <SceneNode.hpp>
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 
 template <typename NodeType>
-class Pointer : public Entity {
+class Pointer : public SceneNode {
    public:
     explicit Pointer(NodeType* target);
     NodeType* getTarget();

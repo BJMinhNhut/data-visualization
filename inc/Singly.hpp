@@ -1,13 +1,13 @@
 #ifndef SINGLYLINKEDLIST_HPP
 #define SINGLYLINKEDLIST_HPP
 
-#include <Entity.hpp>
 #include <Pointer.hpp>
+#include <SceneNode.hpp>
 #include <SinglyNode.hpp>
 
 #include <memory>
 
-class SinglyLinkedList : public Entity {
+class SinglyLinkedList : public SceneNode {
    public:
     explicit SinglyLinkedList(const FontHolder& fonts);
     SinglyNode* getHead();

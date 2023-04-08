@@ -1,14 +1,14 @@
 #ifndef NODEDATA_HPP
 #define NODEDATA_HPP
 
-#include <Entity.hpp>
 #include <ResourceIdentifiers.hpp>
+#include <SceneNode.hpp>
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Text.hpp>
 
-class NodeData : public Entity {
+class NodeData : public SceneNode {
    public:
     explicit NodeData(int value, const FontHolder& fonts);
     int getValue();
