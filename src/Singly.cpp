@@ -1,54 +1,90 @@
-#include <SinglyNode.hpp>
-#include <Singly.hpp>
-#include <SceneNode.hpp>
-#include <ResourceHolder.hpp>
-#include <Utility.hpp>
-#include <Random.hpp>
 #include <Constants.hpp>
+#include <Random.hpp>
+#include <ResourceHolder.hpp>
+#include <SceneNode.hpp>
+#include <Singly.hpp>
+#include <SinglyNode.hpp>
+#include <Utility.hpp>
 
-#include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 
-#include <string>
 #include <iostream>
+#include <memory>
+#include <string>
 
-SinglyLinkedList::SinglyLinkedList(const FontHolder& fonts):
-mHead(nullptr),
-mFonts(fonts) {
-	randomGen();
+SinglyLinkedList::SinglyLinkedList(const FontHolder& fonts)
+    : mHead(new Pointer<SinglyNode>(nullptr)), mFonts(fonts) {
+    std::unique_ptr<Pointer<SinglyNode>> headPtr(mHead);
+    attachChild(std::move(headPtr));
+    randomGen();
 }
 
 SinglyNode* SinglyLinkedList::getHead() {
-	return mHead;
+    return mHead->getTarget();
 }
 
-int SinglyLinkedList::getSize() {
-	return mSize;
+std::size_t SinglyLinkedList::getSize() {
+    if (mHead == nullptr)
+        return 0;
+    SinglyNode* currentNode = mHead->getTarget();
+    std::size_t mSize = 0;
+    while (currentNode->getNextNode() != nullptr) {
+        currentNode = currentNode->getNextNode();
+        mSize++;
+    }
+    return mSize;
 }
 
 void SinglyLinkedList::randomGen() {
-	mSize = Random::get(1, Constants::LIST_MAXSIZE);
-	std::cerr << "Random size: " << mSize << '\n';
+    std::size_t mSize = Random::get(1, Constants::LIST_MAXSIZE);
+    std::cerr << "Random size: " << mSize << '\n';
 
-	SinglyNode *cur = nullptr;
-	for(int counter = 1; counter <= mSize; ++counter) {
-		int nodeValue = Random::get(Constants::NODE_MINVALUE, Constants::NODE_MAXVALUE);
-		SinglyNode* newNode = new SinglyNode(nodeValue, mFonts);
+    SinglyNode* currentNode = nullptr;
+    for (int counter = 1; counter <= mSize; ++counter) {
+        SinglyNode* newNode = new SinglyNode(mFonts);
+        std::unique_ptr<SinglyNode> nodePtr(newNode);
+        if (mHead->getTarget() == nullptr) {
+            newNode->setPosition(Constants::NODE_DISTANCE, 0.f);
+            currentNode = newNode;
+            mHead->setTarget(newNode);
+            mHead->attachChild(std::move(nodePtr));
+        } else {
+            newNode->setPosition(
+                Constants::NODE_DISTANCE + Constants::NODE_SIZE, 0.f);
+            currentNode->setNextNode(newNode);
+            currentNode->attachChild(std::move(nodePtr));
+            currentNode = currentNode->getNextNode();
+        }
 
-		if (mHead == nullptr) cur = mHead = newNode;
-		else {
-			cur->setNextNode(newNode);
-			cur = cur->getNextNode();
-		}
-	}
-	// assert(mHead != nullptr);
+        // assert(mHead != nullptr);
+    }
 }
 
 void SinglyLinkedList::pushBack(SinglyNode* newNode) {
-	std::cerr << "Push Back: " << newNode->getValue() << '\n';
-	if (mHead != nullptr) {
-		SinglyNode* cur = mHead;
-		while (cur->getNextNode() != nullptr) cur = cur->getNextNode();
-		cur->setNextNode(newNode);
-	} else mHead = newNode;
+    if (getSize() == Constants::LIST_MAXSIZE) {
+        std::cerr << "Maximum size reached.\n";
+        return;
+    }
+
+    SinglyNode* currentNode = mHead->getTarget();
+
+    if (currentNode != nullptr)
+        while (currentNode->getNextNode() != nullptr)
+            currentNode = currentNode->getNextNode();
+
+    std::cerr << "Push Back: " << newNode->getValue() << '\n';
+    std::unique_ptr<SinglyNode> nodePtr(newNode);
+    if (mHead->getTarget() == nullptr) {
+        newNode->setPosition(Constants::NODE_DISTANCE, 0.f);
+        currentNode = newNode;
+        mHead->setTarget(newNode);
+        mHead->attachChild(std::move(nodePtr));
+    } else {
+        newNode->setPosition(Constants::NODE_DISTANCE + Constants::NODE_SIZE,
+                             0.f);
+        currentNode->setNextNode(newNode);
+        currentNode->attachChild(std::move(nodePtr));
+        currentNode = currentNode->getNextNode();
+    }
 }

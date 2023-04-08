@@ -1,43 +1,53 @@
-#include <SinglyNode.hpp>
+#include <Constants.hpp>
+#include <Pointer.hpp>
+#include <Random.hpp>
 #include <ResourceHolder.hpp>
+#include <SceneNode.hpp>
+#include <SinglyNode.hpp>
 #include <Utility.hpp>
 
-#include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 
-#include <string>
 #include <iostream>
+#include <memory>
+#include <string>
 
-SinglyNode::SinglyNode(int value, const FontHolder& fonts):
-mValue(value), 
-mNextNode(nullptr),
-mRect(sf::Vector2f(35.f, 35.f)) {
-	centerOrigin(mRect);
-	mRect.setOutlineThickness(3);
-	mRect.setFillColor(sf::Color::White);
-	mRect.setOutlineColor(sf::Color::Black);
-
-	mText.setFont(fonts.get(Fonts::Main));
-	mText.setString(std::to_string(mValue));
-	mText.setCharacterSize(20u);
-	centerOrigin(mText);
-	mText.setFillColor(sf::Color::Black);
+SinglyNode::SinglyNode(const FontHolder& fonts, int value)
+    : mData(new NodeData(value, fonts)),
+      mPointer(new Pointer<SinglyNode>(nullptr)) {
+    mPointer->setPosition(Constants::NODE_SIZE - 7.f, 0.f);
+    std::unique_ptr<NodeData> dataPtr(mData);
+    std::unique_ptr<Pointer<SinglyNode>> nextNodePtr(mPointer);
+    attachChild(std::move(dataPtr));
+    attachChild(std::move(nextNodePtr));
 }
 
-void SinglyNode::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const {
-	target.draw(mRect, states);
-	target.draw(mText, states);
-	// std::cerr << "draw node\n";
+SinglyNode::SinglyNode(const FontHolder& fonts)
+    : mData(new NodeData(
+          Random::get(Constants::NODE_MINVALUE, Constants::NODE_MAXVALUE),
+          fonts)),
+      mPointer(new Pointer<SinglyNode>(nullptr)) {
+    mPointer->setPosition(Constants::NODE_SIZE - 7.f, 0.f);
+    std::unique_ptr<NodeData> dataPtr(mData);
+    std::unique_ptr<Pointer<SinglyNode>> nextNodePtr(mPointer);
+    attachChild(std::move(dataPtr));
+    attachChild(std::move(nextNodePtr));
 }
+
+void SinglyNode::updateCurrent(sf::Time dt) {}
+
+void SinglyNode::drawCurrent(sf::RenderTarget& target,
+                             sf::RenderStates states) const {}
 
 SinglyNode* SinglyNode::getNextNode() {
-	return mNextNode;
+    return mPointer->getTarget();
 }
 
 int SinglyNode::getValue() {
-	return mValue;
+    return mData->getValue();
 }
 
 void SinglyNode::setNextNode(SinglyNode* newNode) {
-	mNextNode = newNode;
+    mPointer->setTarget(newNode);
 }

@@ -1,51 +1,53 @@
 #ifndef SCREEN_HPP
 #define SCREEN_HPP
 
-#include <SceneNode.hpp>
 #include <ResourceHolder.hpp>
 #include <ResourceIdentifiers.hpp>
-#include <SinglyNode.hpp>
+#include <SceneNode.hpp>
 #include <Singly.hpp>
+#include <SinglyNode.hpp>
 
-#include <SFML/System/NonCopyable.hpp>
-#include <SFML/Graphics/View.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/View.hpp>
+#include <SFML/System/NonCopyable.hpp>
 
 #include <array>
 
 namespace sf {
-	class RenderWindow;
+class RenderWindow;
 };
 
 class Screen : private sf::NonCopyable {
-	public:
-		explicit Screen(sf::RenderWindow& window);
-		void update(sf::Time dt);
-		void draw();
+   public:
+    explicit Screen(sf::RenderWindow& window);
+    void update(sf::Time dt);
+    void draw();
+    void insertBack();
 
-	private:
-		void loadTextures();
-		void buildScene();
-		void createRandomSLL();
-	
-	private:
-		enum Layer {
-			// Background,
-			// Boxes,
-			Objects,
-			LayerCount
-		};
+   private:
+    void loadTextures();
+    void buildScene();
+    void createRandomSLL();
+    void centerList(SinglyLinkedList* SLL);
 
-	private:
-		sf::RenderWindow& mWindow;
-		TextureHolder mTextures;
-		FontHolder mFonts;
+   private:
+    enum Layer {
+        // Background,
+        // Boxes,
+        Objects,
+        LayerCount
+    };
 
-		SceneNode mSceneGraph;
-		std::array<SceneNode*, LayerCount> mSceneLayers;
+   private:
+    sf::RenderWindow& mWindow;
+    TextureHolder mTextures;
+    FontHolder mFonts;
 
-		sf::FloatRect mScreenBounds;
-		
-		SinglyLinkedList* mSLL;
+    SceneNode mSceneGraph;
+    std::array<SceneNode*, LayerCount> mSceneLayers;
+
+    sf::FloatRect mScreenBounds;
+
+    SinglyLinkedList* mSLL;
 };
-#endif // SCREEN_HPP
+#endif  // SCREEN_HPP

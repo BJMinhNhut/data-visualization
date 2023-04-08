@@ -14,6 +14,7 @@ namespace sf {
 }
 
 class StateStack;
+class Controller;
 
 class State {
 	public:

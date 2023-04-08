@@ -2,21 +2,28 @@
 #define POINTER_HPP
 
 #include <Entity.hpp>
-#include <SinglyNode.hpp>
 
+#include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 
+template <typename NodeType>
 class Pointer : public Entity {
-	public:
-		explicit Pointer(SinglyNode* target);
+   public:
+    explicit Pointer(NodeType* target);
+    NodeType* getTarget();
+    void setTarget(NodeType* target);
 
-	private:
-		virtual void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
+   private:
+    virtual void drawCurrent(sf::RenderTarget& target,
+                             sf::RenderStates states) const;
 
-	private:
-		SinglyNode* mTargetNode;
+   private:
+    NodeType* mTargetNode;
 
-		sf::RectangleShape mRect;
+    sf::Color mColor;
+    sf::RectangleShape mRect;
 };
 
-#endif // POINTER_HPP
+#include "Pointer.inl"
+
+#endif  // POINTER_HPP
