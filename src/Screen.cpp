@@ -5,7 +5,9 @@
 #include <SinglyNode.hpp>
 
 #include <SFML/Graphics/RenderWindow.hpp>
+
 #include <iostream>
+#include <vector>
 
 Screen::Screen(sf::RenderWindow& window)
     : mWindow(window), mTextures(), mSceneGraph(), mSceneLayers() {
@@ -13,12 +15,28 @@ Screen::Screen(sf::RenderWindow& window)
     buildScene();
 }
 
+void Screen::checkDeleteNode() {
+    std::vector<SceneNode*> deleteList;
+    for (SceneNode* nodePtr : onDeleteNode)
+        if (nodePtr->getScale().x < 0.1f) {
+            deleteList.push_back(nodePtr);
+        }
+
+    for (SceneNode* nodePtr : deleteList) {
+        onDeleteNode.erase(nodePtr);
+        mSceneLayers[Objects]->detachChild(nodePtr);
+    }
+
+    std::vector<SceneNode*>().swap(deleteList);
+}
+
 void Screen::update(sf::Time dt) {
     mSceneGraph.update(dt);
+    centerList(mSLL);
+    checkDeleteNode();
 }
 
 void Screen::draw() {
-    centerList(mSLL);
     mWindow.draw(mSceneGraph);
 }
 
@@ -65,6 +83,9 @@ void Screen::insertBack() {
 
 void Screen::deleteBack() {
     SceneNode::Ptr tempNode = mSLL->popBack();
-    if (tempNode != nullptr)
+
+    if (tempNode != nullptr) {
+        onDeleteNode.insert(tempNode.get());
         mSceneLayers[Objects]->attachChild(std::move(tempNode));
+    }
 }

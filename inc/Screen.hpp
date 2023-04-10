@@ -12,6 +12,7 @@
 #include <SFML/System/NonCopyable.hpp>
 
 #include <array>
+#include <set>
 
 namespace sf {
 class RenderWindow;
@@ -30,6 +31,7 @@ class Screen : private sf::NonCopyable {
     void buildScene();
     void createRandomSLL();
     void centerList(SinglyLinkedList* SLL);
+    void checkDeleteNode();
 
    private:
     enum Layer {
@@ -47,7 +49,7 @@ class Screen : private sf::NonCopyable {
     SceneNode mSceneGraph;
     std::array<SceneNode*, LayerCount> mSceneLayers;
 
-    sf::FloatRect mScreenBounds;
+    std::set<SceneNode*> onDeleteNode;
 
     SinglyLinkedList* mSLL;
 };
