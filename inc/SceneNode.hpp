@@ -19,7 +19,7 @@ class SceneNode : public sf::Transformable,
     SceneNode();
 
     void attachChild(Ptr child);
-    Ptr detachChild(const SceneNode& node);
+    Ptr detachChild(SceneNode* node);
 
     void update(sf::Time dt);
 
@@ -34,7 +34,7 @@ class SceneNode : public sf::Transformable,
     virtual void drawCurrent(sf::RenderTarget& target,
                              sf::RenderStates states) const;
     void drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
-    
+
    private:
     std::vector<Ptr> mChildren;
     SceneNode* mParent;

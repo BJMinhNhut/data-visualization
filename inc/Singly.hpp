@@ -14,7 +14,8 @@ class SinglyLinkedList : public SceneNode {
     void randomGen();
     std::size_t getSize();
 
-    void pushBack(SinglyNode* newNode);
+    void pushBack();
+    SceneNode::Ptr popBack();
     // bool removeNode(int index);
 
    private:

@@ -12,6 +12,7 @@ class Pointer : public SceneNode {
     explicit Pointer(NodeType* target);
     NodeType* getTarget();
     void setTarget(NodeType* target);
+    SceneNode::Ptr releaseNode();
 
    private:
     virtual void drawCurrent(sf::RenderTarget& target,

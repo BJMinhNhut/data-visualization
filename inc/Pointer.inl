@@ -8,7 +8,7 @@
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
-#include <iostream>
+#include <cassert>
 
 template <typename NodeType>
 Pointer<NodeType>::Pointer(NodeType* targetNode)
@@ -29,6 +29,17 @@ NodeType* Pointer<NodeType>::getTarget() {
 template <typename NodeType>
 void Pointer<NodeType>::setTarget(NodeType* target) {
     mTargetNode = target;
+    std::unique_ptr<NodeType> nodePtr(target);
+    attachChild(std::move(nodePtr));
+}
+
+template <typename NodeType>
+SceneNode::Ptr Pointer<NodeType>::releaseNode() {
+    mTargetNode->setDestroyed();
+    mTargetNode->setPosition(getWorldPosition());
+    SceneNode::Ptr result = detachChild(mTargetNode);
+    mTargetNode = nullptr;
+    return result;
 }
 
 template <typename NodeType>

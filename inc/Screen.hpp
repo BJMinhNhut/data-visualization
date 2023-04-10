@@ -23,6 +23,7 @@ class Screen : private sf::NonCopyable {
     void update(sf::Time dt);
     void draw();
     void insertBack();
+    void deleteBack();
 
    private:
     void loadTextures();

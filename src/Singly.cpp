@@ -25,10 +25,10 @@ SinglyNode* SinglyLinkedList::getHead() {
 }
 
 std::size_t SinglyLinkedList::getSize() {
-    if (mHead == nullptr)
+    if (getHead() == nullptr)
         return 0;
-    SinglyNode* currentNode = mHead->getTarget();
-    std::size_t mSize = 0;
+    SinglyNode* currentNode = getHead();
+    std::size_t mSize = 1;
     while (currentNode->getNextNode() != nullptr) {
         currentNode = currentNode->getNextNode();
         mSize++;
@@ -43,17 +43,14 @@ void SinglyLinkedList::randomGen() {
     SinglyNode* currentNode = nullptr;
     for (int counter = 1; counter <= mSize; ++counter) {
         SinglyNode* newNode = new SinglyNode(mFonts);
-        std::unique_ptr<SinglyNode> nodePtr(newNode);
-        if (mHead->getTarget() == nullptr) {
-            newNode->setPosition(Constants::NODE_DISTANCE, 0.f);
+        newNode->setPosition(Constants::NODE_DISTANCE, 0.f);
+        assert(newNode->checkDestroyed() == false);
+
+        if (getHead() == nullptr) {
             currentNode = newNode;
             mHead->setTarget(newNode);
-            mHead->attachChild(std::move(nodePtr));
         } else {
-            newNode->setPosition(
-                Constants::NODE_DISTANCE + Constants::NODE_SIZE, 0.f);
             currentNode->setNextNode(newNode);
-            currentNode->attachChild(std::move(nodePtr));
             currentNode = currentNode->getNextNode();
         }
 
@@ -61,30 +58,45 @@ void SinglyLinkedList::randomGen() {
     }
 }
 
-void SinglyLinkedList::pushBack(SinglyNode* newNode) {
+void SinglyLinkedList::pushBack() {
     if (getSize() == Constants::LIST_MAXSIZE) {
         std::cerr << "Maximum size reached.\n";
         return;
     }
 
-    SinglyNode* currentNode = mHead->getTarget();
+    SinglyNode* newNode = new SinglyNode(mFonts);
+    SinglyNode* currentNode = getHead();
 
     if (currentNode != nullptr)
         while (currentNode->getNextNode() != nullptr)
             currentNode = currentNode->getNextNode();
 
     std::cerr << "Push Back: " << newNode->getValue() << '\n';
-    std::unique_ptr<SinglyNode> nodePtr(newNode);
-    if (mHead->getTarget() == nullptr) {
-        newNode->setPosition(Constants::NODE_DISTANCE, 0.f);
+    newNode->setPosition(Constants::NODE_DISTANCE, 0.f);
+
+    if (getHead() == nullptr) {
         currentNode = newNode;
         mHead->setTarget(newNode);
-        mHead->attachChild(std::move(nodePtr));
     } else {
-        newNode->setPosition(Constants::NODE_DISTANCE + Constants::NODE_SIZE,
-                             0.f);
         currentNode->setNextNode(newNode);
-        currentNode->attachChild(std::move(nodePtr));
-        currentNode = currentNode->getNextNode();
     }
+}
+
+SceneNode::Ptr SinglyLinkedList::popBack() {
+    if (getHead() == nullptr) {
+        std::cerr << "List empty!";
+        return nullptr;
+    }
+
+    if (getHead()->getNextNode() == nullptr) {
+        std::cerr << "Last element found!\n";
+        return mHead->releaseNode();
+    }
+
+    SinglyNode* currentNode = getHead();
+
+    while (currentNode->getNextNode()->getNextNode() != nullptr)
+        currentNode = currentNode->getNextNode();
+
+    return currentNode->releaseNextNode();
 }

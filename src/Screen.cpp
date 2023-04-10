@@ -23,7 +23,6 @@ void Screen::draw() {
 }
 
 void Screen::loadTextures() {
-    mTextures.load(Textures::NodeData, "data/images/node-data.png");
     mFonts.load(Fonts::Main, "data/fonts/iosevka-etoile-medium.ttf");
 }
 
@@ -35,17 +34,21 @@ void Screen::buildScene() {
 
         mSceneGraph.attachChild(std::move(layer));
     }
-
     createRandomSLL();
 }
 
 void Screen::centerList(SinglyLinkedList* SLL) {
-    SLL->setPosition(mWindow.getSize().x / 2.f -
-                         ((Constants::NODE_DISTANCE + Constants::NODE_SIZE) *
-                              SLL->getSize() +
-                          Constants::NODE_SIZE * 3.f) /
-                             2.f,
-                     mWindow.getSize().y / 4.f);
+    // std::cerr << "Size: " << SLL->getSize() << '\n';
+    if (SLL->getSize() == 0)
+        SLL->setPosition(mWindow.getSize().x / 2.f, mWindow.getSize().y / 4.f);
+    else
+        SLL->setPosition(
+            mWindow.getSize().x / 2.f -
+                ((Constants::NODE_DISTANCE + Constants::NODE_SIZE) *
+                     SLL->getSize() -
+                 Constants::NODE_SIZE / 2.f) /
+                    2.f,
+            mWindow.getSize().y / 4.f);
 }
 
 void Screen::createRandomSLL() {
@@ -55,5 +58,11 @@ void Screen::createRandomSLL() {
 }
 
 void Screen::insertBack() {
-    mSLL->pushBack(new SinglyNode(mFonts));
+    mSLL->pushBack();
+}
+
+void Screen::deleteBack() {
+    SceneNode::Ptr tempNode = mSLL->popBack();
+    if (tempNode != nullptr)
+        mSceneLayers[Objects]->attachChild(std::move(tempNode));
 }
