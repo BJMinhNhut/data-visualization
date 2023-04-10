@@ -24,8 +24,8 @@ class SceneNode : public sf::Transformable,
     void update(sf::Time dt);
 
     void moveToWorldPosition(bool teleport);
-    void setTargetPosition(sf::Vector2f position);
-    void setTargetPosition(float pX, float pY);
+    void setTargetPosition(sf::Vector2f position, bool teleport);
+    void setTargetPosition(float pX, float pY, bool teleport);
     void setTargetScale(sf::Vector2f scale);
     void setTargetScale(float pX, float pY);
     sf::Vector2f getWorldPosition() const;

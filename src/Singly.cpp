@@ -37,14 +37,13 @@ std::size_t SinglyLinkedList::getSize() {
 }
 
 void SinglyLinkedList::randomGen() {
-    std::size_t mSize = Random::get(1, Constants::LIST_MAXSIZE);
+    std::size_t mSize = Random::get(1 + 3, Constants::LIST_MAXSIZE - 3);
     std::cerr << "Random size: " << mSize << '\n';
 
     SinglyNode* currentNode = nullptr;
     for (int counter = 1; counter <= mSize; ++counter) {
         SinglyNode* newNode = new SinglyNode(mFonts);
-        newNode->setTargetPosition(Constants::NODE_DISTANCE, 0.f);
-        // newNode->setPosition(Constants::NODE_DISTANCE, 0.f);
+        newNode->setTargetPosition(Constants::NODE_DISTANCE, 0.f, false);
 
         if (getHead() == nullptr) {
             currentNode = newNode;
@@ -72,8 +71,7 @@ void SinglyLinkedList::pushBack() {
             currentNode = currentNode->getNextNode();
 
     std::cerr << "Push Back: " << newNode->getValue() << '\n';
-    newNode->setTargetPosition(Constants::NODE_DISTANCE, 0.f);
-    // newNode->setPosition(Constants::NODE_DISTANCE, 0.f);
+    newNode->setTargetPosition(Constants::NODE_DISTANCE, 0.f, false);
     if (getHead() == nullptr) {
         currentNode = newNode;
         mHead->setTarget(newNode);
@@ -98,5 +96,6 @@ SceneNode::Ptr SinglyLinkedList::popBack() {
     while (currentNode->getNextNode()->getNextNode() != nullptr)
         currentNode = currentNode->getNextNode();
 
+    std::cerr << "Removed: " << currentNode->getNextNode()->getValue() << '\n';
     return currentNode->releaseNextNode();
 }

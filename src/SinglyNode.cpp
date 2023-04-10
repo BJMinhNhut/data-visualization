@@ -14,7 +14,7 @@
 #include <string>
 
 void SinglyNode::initData() {
-    mPointer->setTargetPosition(Constants::NODE_SIZE - 7.f, 0.f);
+    mPointer->setTargetPosition(Constants::NODE_SIZE - 7.f, 0.f, true);
     std::unique_ptr<NodeData> dataPtr(mData);
     std::unique_ptr<Pointer<SinglyNode>> nextNodePtr(mPointer);
     attachChild(std::move(dataPtr));

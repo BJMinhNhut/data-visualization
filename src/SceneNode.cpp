@@ -69,12 +69,16 @@ void SceneNode::drawChildren(sf::RenderTarget& target,
     }
 }
 
-void SceneNode::setTargetPosition(sf::Vector2f position) {
+void SceneNode::setTargetPosition(sf::Vector2f position, bool teleport) {
     targetPosition = position;
+    if (teleport)
+        setPosition(targetPosition);
 }
 
-void SceneNode::setTargetPosition(float pX, float pY) {
+void SceneNode::setTargetPosition(float pX, float pY, bool teleport) {
     targetPosition = sf::Vector2f(pX, pY);
+    if (teleport)
+        setPosition(targetPosition);
 }
 
 void SceneNode::setTargetScale(sf::Vector2f scale) {
@@ -87,9 +91,7 @@ void SceneNode::setTargetScale(float pX, float pY) {
 }
 
 void SceneNode::moveToWorldPosition(bool teleport) {
-    setTargetPosition(getWorldPosition());
-    if (teleport)
-        setPosition(targetPosition);
+    setTargetPosition(getWorldPosition(), teleport);
 }
 
 sf::Vector2f SceneNode::getWorldPosition() const {
