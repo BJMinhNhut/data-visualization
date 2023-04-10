@@ -43,8 +43,8 @@ void SinglyLinkedList::randomGen() {
     SinglyNode* currentNode = nullptr;
     for (int counter = 1; counter <= mSize; ++counter) {
         SinglyNode* newNode = new SinglyNode(mFonts);
-        newNode->setPosition(Constants::NODE_DISTANCE, 0.f);
-        assert(newNode->checkDestroyed() == false);
+        newNode->setTargetPosition(Constants::NODE_DISTANCE, 0.f);
+        // newNode->setPosition(Constants::NODE_DISTANCE, 0.f);
 
         if (getHead() == nullptr) {
             currentNode = newNode;
@@ -72,8 +72,8 @@ void SinglyLinkedList::pushBack() {
             currentNode = currentNode->getNextNode();
 
     std::cerr << "Push Back: " << newNode->getValue() << '\n';
-    newNode->setPosition(Constants::NODE_DISTANCE, 0.f);
-
+    newNode->setTargetPosition(Constants::NODE_DISTANCE, 0.f);
+    // newNode->setPosition(Constants::NODE_DISTANCE, 0.f);
     if (getHead() == nullptr) {
         currentNode = newNode;
         mHead->setTarget(newNode);

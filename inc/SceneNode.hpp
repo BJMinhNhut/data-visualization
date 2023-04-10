@@ -23,6 +23,11 @@ class SceneNode : public sf::Transformable,
 
     void update(sf::Time dt);
 
+    void moveToWorldPosition(bool teleport);
+    void setTargetPosition(sf::Vector2f position);
+    void setTargetPosition(float pX, float pY);
+    void setTargetScale(sf::Vector2f scale);
+    void setTargetScale(float pX, float pY);
     sf::Vector2f getWorldPosition() const;
     sf::Transform getWorldTransform() const;
 
@@ -36,6 +41,8 @@ class SceneNode : public sf::Transformable,
     void drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
 
    private:
+    sf::Vector2f targetPosition;
+    sf::Vector2f targetScale;
     std::vector<Ptr> mChildren;
     SceneNode* mParent;
 };

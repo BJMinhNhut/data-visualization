@@ -40,9 +40,10 @@ void Screen::buildScene() {
 void Screen::centerList(SinglyLinkedList* SLL) {
     // std::cerr << "Size: " << SLL->getSize() << '\n';
     if (SLL->getSize() == 0)
-        SLL->setPosition(mWindow.getSize().x / 2.f, mWindow.getSize().y / 4.f);
+        SLL->setTargetPosition(mWindow.getSize().x / 2.f,
+                               mWindow.getSize().y / 4.f);
     else
-        SLL->setPosition(
+        SLL->setTargetPosition(
             mWindow.getSize().x / 2.f -
                 ((Constants::NODE_DISTANCE + Constants::NODE_SIZE) *
                      SLL->getSize() -
@@ -54,6 +55,7 @@ void Screen::centerList(SinglyLinkedList* SLL) {
 void Screen::createRandomSLL() {
     std::unique_ptr<SinglyLinkedList> sllPtr(new SinglyLinkedList(mFonts));
     mSLL = sllPtr.get();
+    mSLL->setPosition(mWindow.getSize().x / 2.f, mWindow.getSize().y / 4.f);
     mSceneLayers[Objects]->attachChild(std::move(sllPtr));
 }
 

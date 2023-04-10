@@ -2,9 +2,14 @@
 
 #include <algorithm>
 #include <cassert>
+#include <iomanip>
 #include <iostream>
 
-SceneNode::SceneNode() : mChildren(), mParent(nullptr) {}
+SceneNode::SceneNode()
+    : mChildren(),
+      mParent(nullptr),
+      targetPosition(0.f, 0.f),
+      targetScale(1.f, 1.f) {}
 
 void SceneNode::attachChild(Ptr child) {
     child->mParent = this;
@@ -29,6 +34,16 @@ void SceneNode::update(sf::Time dt) {
 
 void SceneNode::updateCurrent(sf::Time dt) {
     // Do nothing as default
+    // std::cerr << std::setprecision(3) << std::fixed << '\n';
+    sf::Vector2f deltaPosition = (targetPosition - getPosition()) * 0.1f;
+    move(deltaPosition);
+    // std::cerr << targetPosition.x << ' ' << getPosition().x << '\n';
+
+    sf::Vector2f deltaScale = (targetScale - getScale()) * 0.1f;
+    // std::cerr << std::setprecision(3) << std::fixed << '\n';
+    // std::cerr << targetScale.x << ' ' << getScale().x << ' ' << deltaScale.x
+    //           << '\n';
+    setScale(getScale() + deltaScale);
 }
 
 void SceneNode::updateChildren(sf::Time dt) {
@@ -52,6 +67,29 @@ void SceneNode::drawChildren(sf::RenderTarget& target,
     for (const Ptr& child : mChildren) {
         child->draw(target, states);
     }
+}
+
+void SceneNode::setTargetPosition(sf::Vector2f position) {
+    targetPosition = position;
+}
+
+void SceneNode::setTargetPosition(float pX, float pY) {
+    targetPosition = sf::Vector2f(pX, pY);
+}
+
+void SceneNode::setTargetScale(sf::Vector2f scale) {
+    targetScale = scale;
+}
+
+void SceneNode::setTargetScale(float pX, float pY) {
+    targetScale = sf::Vector2f(pX, pY);
+    // std::cerr << "Target scale set: " << targetScale.x << '\n';
+}
+
+void SceneNode::moveToWorldPosition(bool teleport) {
+    setTargetPosition(getWorldPosition());
+    if (teleport)
+        setPosition(targetPosition);
 }
 
 sf::Vector2f SceneNode::getWorldPosition() const {
