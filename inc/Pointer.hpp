@@ -1,15 +1,21 @@
 #ifndef POINTER_HPP
 #define POINTER_HPP
 
+#include <ResourceIdentifiers.hpp>
 #include <SceneNode.hpp>
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Text.hpp>
+
+#include <string>
 
 template <typename NodeType>
 class Pointer : public SceneNode {
    public:
-    explicit Pointer(NodeType* target);
+    explicit Pointer(const FontHolder& fonts, NodeType* target);
+
+    void setLabel(const std::string label);
     NodeType* getTarget();
     void setTarget(NodeType* target);
     SceneNode::Ptr releaseNode();
@@ -23,6 +29,7 @@ class Pointer : public SceneNode {
 
     sf::Color mColor;
     sf::RectangleShape mRect;
+    sf::Text mLabel;
 };
 
 #include "Pointer.inl"

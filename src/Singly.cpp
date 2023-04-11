@@ -14,8 +14,9 @@
 #include <string>
 
 SinglyLinkedList::SinglyLinkedList(const FontHolder& fonts)
-    : mHead(new Pointer<SinglyNode>(nullptr)), mFonts(fonts) {
+    : mHead(new Pointer<SinglyNode>(fonts, nullptr)), mFonts(fonts) {
     std::unique_ptr<Pointer<SinglyNode>> headPtr(mHead);
+    mHead->setLabel("head");
     attachChild(std::move(headPtr));
     randomGen();
 }

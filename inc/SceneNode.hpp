@@ -27,11 +27,14 @@ class SceneNode : public sf::Transformable,
 
     void update(sf::Time dt);
 
+    void setLabel(const std::string label);
+
     void moveToWorldPosition(Transition transition);
     void setTargetPosition(sf::Vector2f position, Transition transition);
     void setTargetPosition(float pX, float pY, Transition transition);
     void setTargetScale(sf::Vector2f scale, Transition transition);
     void setTargetScale(float pX, float pY, Transition transition);
+
     sf::Vector2f getWorldPosition() const;
     sf::Transform getWorldTransform() const;
 

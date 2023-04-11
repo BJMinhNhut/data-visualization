@@ -27,7 +27,7 @@ SinglyNode::SinglyNode(const FontHolder& fonts,
                        int value = Random::get(Constants::NODE_MINVALUE,
                                                Constants::NODE_MAXVALUE))
     : mData(new NodeData(value, fonts)),
-      mPointer(new Pointer<SinglyNode>(nullptr)) {
+      mPointer(new Pointer<SinglyNode>(fonts, nullptr)) {
     initData();
 }
 
@@ -35,7 +35,7 @@ SinglyNode::SinglyNode(const FontHolder& fonts)
     : mData(new NodeData(
           Random::get(Constants::NODE_MINVALUE, Constants::NODE_MAXVALUE),
           fonts)),
-      mPointer(new Pointer<SinglyNode>(nullptr)) {
+      mPointer(new Pointer<SinglyNode>(fonts, nullptr)) {
     initData();
 }
 
