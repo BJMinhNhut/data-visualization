@@ -2,7 +2,6 @@
 #include <MenuState.hpp>
 #include <State.hpp>
 #include <StateIdentifiers.hpp>
-#include <TitleState.hpp>
 #include <VisualState.hpp>
 
 #include <iostream>
@@ -31,7 +30,7 @@ Application::Application()
     mStatisticsText.setCharacterSize(12u);
 
     registerStates();
-    mStateStack.pushState(States::Title);
+    mStateStack.pushState(States::Menu);
 }
 
 void Application::run() {
@@ -97,7 +96,6 @@ void Application::updateStatistics(sf::Time dt) {
 }
 
 void Application::registerStates() {
-    mStateStack.registerState<TitleState>(States::Title);
     mStateStack.registerState<MenuState>(States::Menu);
     mStateStack.registerState<VisualState>(States::Visual);
 }
