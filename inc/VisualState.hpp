@@ -1,6 +1,7 @@
 #ifndef VISUALSTATE_HPP
 #define VISUALSTATE_HPP
 
+#include <Container.hpp>
 #include <Screen.hpp>
 #include <State.hpp>
 
@@ -17,6 +18,7 @@ class VisualState : public State {
     virtual bool handleRealtime(const sf::Vector2i mousePosition);
 
    private:
+    GUI::Container mGUIContainer;
     Screen mScreen;
     sf::Sprite mBackgroundSprite;
 };

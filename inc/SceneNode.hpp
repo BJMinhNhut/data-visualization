@@ -14,6 +14,10 @@ class SceneNode : public sf::Transformable,
                   public sf::NonCopyable {
    public:
     typedef std::unique_ptr<SceneNode> Ptr;
+    enum Transition {
+        None,
+        Smooth,
+    };
 
    public:
     SceneNode();
@@ -23,11 +27,11 @@ class SceneNode : public sf::Transformable,
 
     void update(sf::Time dt);
 
-    void moveToWorldPosition(bool teleport);
-    void setTargetPosition(sf::Vector2f position, bool teleport);
-    void setTargetPosition(float pX, float pY, bool teleport);
-    void setTargetScale(sf::Vector2f scale);
-    void setTargetScale(float pX, float pY);
+    void moveToWorldPosition(Transition transition);
+    void setTargetPosition(sf::Vector2f position, Transition transition);
+    void setTargetPosition(float pX, float pY, Transition transition);
+    void setTargetScale(sf::Vector2f scale, Transition transition);
+    void setTargetScale(float pX, float pY, Transition transition);
     sf::Vector2f getWorldPosition() const;
     sf::Transform getWorldTransform() const;
 
@@ -45,6 +49,7 @@ class SceneNode : public sf::Transformable,
     sf::Vector2f targetScale;
     std::vector<Ptr> mChildren;
     SceneNode* mParent;
+    // TODO: node label
 };
 
 #endif  // SCENENODE_HPP

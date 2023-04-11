@@ -59,7 +59,7 @@ void Screen::centerList(SinglyLinkedList* SLL) {
     // std::cerr << "Size: " << SLL->getSize() << '\n';
     if (SLL->getSize() == 0)
         SLL->setTargetPosition(mWindow.getSize().x / 2.f,
-                               mWindow.getSize().y / 4.f, false);
+                               mWindow.getSize().y / 4.f, SceneNode::Smooth);
     else
         SLL->setTargetPosition(
             mWindow.getSize().x / 2.f -
@@ -67,7 +67,7 @@ void Screen::centerList(SinglyLinkedList* SLL) {
                      SLL->getSize() -
                  Constants::NODE_SIZE / 2.f) /
                     2.f,
-            mWindow.getSize().y / 4.f, false);
+            mWindow.getSize().y / 4.f, SceneNode::Smooth);
 }
 
 void Screen::createRandomSLL() {

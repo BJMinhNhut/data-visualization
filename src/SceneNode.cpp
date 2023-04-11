@@ -69,29 +69,34 @@ void SceneNode::drawChildren(sf::RenderTarget& target,
     }
 }
 
-void SceneNode::setTargetPosition(sf::Vector2f position, bool teleport) {
+void SceneNode::setTargetPosition(sf::Vector2f position,
+                                  Transition transition) {
     targetPosition = position;
-    if (teleport)
+    if (transition == None)
         setPosition(targetPosition);
 }
 
-void SceneNode::setTargetPosition(float pX, float pY, bool teleport) {
+void SceneNode::setTargetPosition(float pX, float pY, Transition transition) {
     targetPosition = sf::Vector2f(pX, pY);
-    if (teleport)
+    if (transition == None)
         setPosition(targetPosition);
 }
 
-void SceneNode::setTargetScale(sf::Vector2f scale) {
+void SceneNode::setTargetScale(sf::Vector2f scale, Transition transition) {
     targetScale = scale;
+    if (transition == None)
+        setScale(targetScale);
 }
 
-void SceneNode::setTargetScale(float pX, float pY) {
+void SceneNode::setTargetScale(float pX, float pY, Transition transition) {
     targetScale = sf::Vector2f(pX, pY);
+    if (transition == None)
+        setScale(targetScale);
     // std::cerr << "Target scale set: " << targetScale.x << '\n';
 }
 
-void SceneNode::moveToWorldPosition(bool teleport) {
-    setTargetPosition(getWorldPosition(), teleport);
+void SceneNode::moveToWorldPosition(Transition transition) {
+    setTargetPosition(getWorldPosition(), transition);
 }
 
 sf::Vector2f SceneNode::getWorldPosition() const {

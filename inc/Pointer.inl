@@ -35,8 +35,8 @@ void Pointer<NodeType>::setTarget(NodeType* target) {
 
 template <typename NodeType>
 SceneNode::Ptr Pointer<NodeType>::releaseNode() {
-    mTargetNode->moveToWorldPosition(true);
-    mTargetNode->setTargetScale(0.f, 0.f);
+    mTargetNode->moveToWorldPosition(None);
+    mTargetNode->setTargetScale(0.f, 0.f, Smooth);
     SceneNode::Ptr result = detachChild(mTargetNode);
     mTargetNode = nullptr;
     return result;

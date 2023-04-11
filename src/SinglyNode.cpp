@@ -14,13 +14,13 @@
 #include <string>
 
 void SinglyNode::initData() {
-    mPointer->setTargetPosition(Constants::NODE_SIZE - 7.f, 0.f, true);
+    mPointer->setTargetPosition(Constants::NODE_SIZE - 7.f, 0.f, None);
     std::unique_ptr<NodeData> dataPtr(mData);
     std::unique_ptr<Pointer<SinglyNode>> nextNodePtr(mPointer);
     attachChild(std::move(dataPtr));
     attachChild(std::move(nextNodePtr));
     setScale(0.f, 0.f);
-    setTargetScale(1.f, 1.f);
+    setTargetScale(1.f, 1.f, Smooth);
 }
 
 SinglyNode::SinglyNode(const FontHolder& fonts,
