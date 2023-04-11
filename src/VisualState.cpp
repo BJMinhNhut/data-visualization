@@ -38,3 +38,7 @@ bool VisualState::handleEvent(const sf::Event& event) {
 
     return true;
 }
+
+bool VisualState::handleRealtime(const sf::Vector2i mousePosition) {
+    return false;
+}

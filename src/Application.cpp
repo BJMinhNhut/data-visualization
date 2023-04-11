@@ -65,6 +65,8 @@ void Application::processInput() {
         if (event.type == sf::Event::Closed)
             mWindow.close();
     }
+
+    mStateStack.handleRealtime(sf::Mouse::getPosition(mWindow));
 }
 
 void Application::update(sf::Time dt) {

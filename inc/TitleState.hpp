@@ -6,20 +6,21 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
 
-class TitleState: public State {
-	public:
-		TitleState(StateStack& stack, Context context);
-		
-		virtual void draw();
-		virtual bool update(sf::Time dt);
-		virtual bool handleEvent(const sf::Event& event);
+class TitleState : public State {
+   public:
+    TitleState(StateStack& stack, Context context);
 
-	private:
-		sf::Sprite mBackgroundSprite;
-		sf::Text mText;
+    virtual void draw();
+    virtual bool update(sf::Time dt);
+    virtual bool handleEvent(const sf::Event& event);
+    virtual bool handleRealtime(const sf::Vector2i mousePosition);
 
-		bool mShowText;
-		sf::Time mTextEffectTime;
+   private:
+    sf::Sprite mBackgroundSprite;
+    sf::Text mText;
+
+    bool mShowText;
+    sf::Time mTextEffectTime;
 };
 
-#endif //TITLESTATE_HPP
+#endif  //TITLESTATE_HPP

@@ -11,48 +11,50 @@
 #include <map>
 #include <vector>
 
-class StateStack: private sf::NonCopyable {
-	public: 
-		enum Action {
-			Push,
-			Pop, 
-			Clear, 
-		};
-	
-	public:
-		explicit StateStack(State::Context context);
+class StateStack : private sf::NonCopyable {
+   public:
+    enum Action {
+        Push,
+        Pop,
+        Clear,
+    };
 
-		template <typename T>
-		void registerState(States::ID stateID);
+   public:
+    explicit StateStack(State::Context context);
 
-		void update(sf::Time dt);
-		void draw();
-		void handleEvent(const sf::Event& event);
+    template <typename T>
+    void registerState(States::ID stateID);
 
-		void pushState(States::ID stateID);
-		void popState();
-		void clearStates();
+    void update(sf::Time dt);
+    void draw();
+    void handleEvent(const sf::Event& event);
+    void handleRealtime(const sf::Vector2i mousePosition);
 
-		bool isEmpty() const;
+    void pushState(States::ID stateID);
+    void popState();
+    void clearStates();
 
-	private:
-		State::Ptr createState(States::ID stateID);
-		void applyPendingChanges();
+    bool isEmpty() const;
 
-	private:
-		struct PendingChange {
-			Action action;
-			States::ID stateID;
+   private:
+    State::Ptr createState(States::ID stateID);
+    void applyPendingChanges();
 
-			explicit PendingChange(Action action, States::ID stateID = States::None);
-		};
+   private:
+    struct PendingChange {
+        Action action;
+        States::ID stateID;
 
-	private:
-		std::vector<State::Ptr> mStack;
-		std::vector<PendingChange> mPendingList;
-		State::Context mContext;
-		std::map<States::ID, std::function<State::Ptr()>> mFactories;
+        explicit PendingChange(Action action,
+                               States::ID stateID = States::None);
+    };
+
+   private:
+    std::vector<State::Ptr> mStack;
+    std::vector<PendingChange> mPendingList;
+    State::Context mContext;
+    std::map<States::ID, std::function<State::Ptr()>> mFactories;
 };
 
 #include "StateStack.inl"
-#endif // STATE_STACK_HPP
+#endif  // STATE_STACK_HPP

@@ -1,23 +1,24 @@
 #ifndef VISUALSTATE_HPP
 #define VISUALSTATE_HPP
 
-#include <State.hpp>
 #include <Screen.hpp>
+#include <State.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
 
-class VisualState: public State {
-	public:
-		VisualState(StateStack& stack, Context context);
-		
-		virtual void draw();
-		virtual bool update(sf::Time dt);
-		virtual bool handleEvent(const sf::Event& event);
+class VisualState : public State {
+   public:
+    VisualState(StateStack& stack, Context context);
 
-	private:
-		Screen mScreen;
-		sf::Sprite mBackgroundSprite;
+    virtual void draw();
+    virtual bool update(sf::Time dt);
+    virtual bool handleEvent(const sf::Event& event);
+    virtual bool handleRealtime(const sf::Vector2i mousePosition);
+
+   private:
+    Screen mScreen;
+    sf::Sprite mBackgroundSprite;
 };
 
-#endif //VISUALSTATE_HPP
+#endif  //VISUALSTATE_HPP

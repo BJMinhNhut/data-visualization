@@ -9,7 +9,7 @@
 
 namespace sf {
 class Event;
-}
+}  // namespace sf
 
 namespace GUI {
 class Component : public sf::Drawable,
@@ -30,6 +30,8 @@ class Component : public sf::Drawable,
     virtual bool isActive() const;
     virtual void activate();
     virtual void deactivate();
+
+    virtual bool contains(sf::Vector2i point) const;
 
     virtual void handleEvent(const sf::Event& event) = 0;
 

@@ -23,7 +23,7 @@ MenuState::MenuState(StateStack& stack, Context context)
     });
 
     auto exitButton = std::make_shared<GUI::Button>(*context.fonts);
-    exitButton->setPosition(bounds.x / 2u, bounds.y / 2u + 50u);
+    exitButton->setPosition(bounds.x / 2u, bounds.y / 2u + 80u);
     exitButton->setText("Exit");
     exitButton->setCallback([this]() { requestStackPop(); });
 
@@ -45,5 +45,11 @@ bool MenuState::update(sf::Time dt) {
 
 bool MenuState::handleEvent(const sf::Event& event) {
     mGUIContainer.handleEvent(event);
+    return false;
+}
+
+bool MenuState::handleRealtime(const sf::Vector2i mousePosition) {
+    // real-time mouse input
+    mGUIContainer.updateSelect(mousePosition);
     return false;
 }

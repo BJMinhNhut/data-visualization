@@ -5,18 +5,21 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Window/Event.hpp>
 
+#include <iostream>
+
 namespace GUI {
 Button::Button(const FontHolder& fonts)
     : mCallback(),
       mSelectedColor(76, 175, 80),
       mNormalColor(46, 125, 50),
       mPressedColor(30, 136, 229),
-      mText("", fonts.get(Fonts::Main), 16),
+      mText("", fonts.get(Fonts::Main), 20),
       mIsToggle(false),
-      mRect(sf::Vector2f(100.f, 40.f)) {
+      mRect(sf::Vector2f(100.f, 50.f)) {
 
     mRect.setFillColor(mNormalColor);
-    mText.setPosition(mRect.getSize().x / 2.f, mRect.getSize().y / 2.f);
+    centerOrigin(mRect);
+    centerOrigin(mText);
 }
 
 void Button::setCallback(Callback callback) {
@@ -79,6 +82,17 @@ void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.transform *= getTransform();
     target.draw(mRect, states);
     target.draw(mText, states);
+}
+
+bool Button::contains(sf::Vector2i point) const {
+    sf::IntRect bounds(getPosition().x - mRect.getGlobalBounds().width / 2.f,
+                       getPosition().y - mRect.getGlobalBounds().height / 2.f,
+                       mRect.getGlobalBounds().width,
+                       mRect.getGlobalBounds().height);
+    // std::cerr << "Mouse: " << point.x << ' ' << point.y << '\n';
+    // std::cerr << "Bounds: " << bounds.left << ' ' << bounds.top << ' '
+    //           << bounds.width << ' ' << bounds.height << '\n';
+    return bounds.contains(point);
 }
 
 }  // namespace GUI

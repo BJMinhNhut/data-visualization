@@ -30,4 +30,8 @@ void Component::deactivate() {
     mIsActive = false;
 }
 
+bool Component::contains(sf::Vector2i point) const {
+    return false;
+}
+
 }  // namespace GUI

@@ -46,3 +46,7 @@ bool TitleState::handleEvent(const sf::Event& event) {
 
     return true;
 }
+
+bool TitleState::handleRealtime(const sf::Vector2i mousePosition) {
+    return false;
+}

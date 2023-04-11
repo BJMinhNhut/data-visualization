@@ -10,9 +10,6 @@ Container::Container() : mChildren(), mSelectedChild(-1) {}
 
 void Container::pack(Component::Ptr component) {
     mChildren.push_back(component);
-
-    if (!hasSelection() && component->isSelectable())
-        select(mChildren.size() - 1);
 }
 
 bool Container::isSelectable() const {
@@ -23,14 +20,8 @@ void Container::handleEvent(const sf::Event& event) {
     // If we have selected a child then give it events
     if (hasSelection() && mChildren[mSelectedChild]->isActive()) {
         mChildren[mSelectedChild]->handleEvent(event);
-    }
-
-    else if (event.type == sf::Event::KeyReleased) {
-        if (event.key.code == sf::Keyboard::Up)
-            selectPrevious();
-        else if (event.key.code == sf::Keyboard::Down)
-            selectNext();
-        else if (event.key.code == sf::Keyboard::Return) {
+    } else if (event.type == sf::Event::MouseButtonReleased) {
+        if (event.mouseButton.button == sf::Mouse::Left) {
             if (hasSelection())
                 mChildren[mSelectedChild]->activate();
         }
@@ -58,32 +49,19 @@ void Container::select(std::size_t index) {
     }
 }
 
-void Container::selectNext() {
-    if (!hasSelection())
-        return;
-
-    // Search next component that is selectable, wrap around if necessary
-    int next = mSelectedChild;
-    do
-        next = (next + 1) % mChildren.size();
-    while (!mChildren[next]->isSelectable());
-
-    // select that component
-    select(next);
-}
-
-void Container::selectPrevious() {
-    if (!hasSelection())
-        return;
-
-    // Search next component that is selectable, wrap around if necessary
-    int prev = mSelectedChild;
-    do
-        prev = (prev + mChildren.size() + 1) % mChildren.size();
-    while (!mChildren[prev]->isSelectable());
-
-    // select that component
-    select(prev);
+void Container::updateSelect(sf::Vector2i point) {
+    for (int index = 0; index < mChildren.size(); ++index) {
+        if (mChildren[index]->isSelectable() &&
+            mChildren[index]->contains(point)) {
+            select(index);
+            return;
+        }
+    }
+    // no component is selected
+    if (hasSelection()) {
+        mChildren[mSelectedChild]->deselect();
+        mSelectedChild = -1;
+    }
 }
 
 }  // namespace GUI

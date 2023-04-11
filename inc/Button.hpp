@@ -36,6 +36,7 @@ class Button : public Component {
     virtual void deactivate();
 
     virtual void handleEvent(const sf::Event& event);
+    virtual bool contains(sf::Vector2i point) const;
 
    private:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
