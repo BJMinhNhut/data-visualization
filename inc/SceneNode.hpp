@@ -24,10 +24,9 @@ class SceneNode : public sf::Transformable,
 
     void attachChild(Ptr child);
     Ptr detachChild(SceneNode* node);
+    void detachAllChildren();
 
     void update(sf::Time dt);
-
-    void setLabel(const std::string label);
 
     void moveToWorldPosition(Transition transition);
     void setTargetPosition(sf::Vector2f position, Transition transition);

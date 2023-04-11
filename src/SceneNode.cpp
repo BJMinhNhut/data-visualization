@@ -27,6 +27,15 @@ SceneNode::Ptr SceneNode::detachChild(SceneNode* node) {
     return result;
 }
 
+void SceneNode::detachAllChildren() {
+    std::vector<SceneNode*> detachList;
+    for (Ptr& child : mChildren)
+        detachList.push_back(child.get());
+
+    for (SceneNode* ptr : detachList)
+        detachChild(ptr);
+}
+
 void SceneNode::update(sf::Time dt) {
     updateCurrent(dt);
     updateChildren(dt);

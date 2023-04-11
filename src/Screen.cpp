@@ -26,13 +26,12 @@ void Screen::checkDeleteNode() {
         onDeleteNode.erase(nodePtr);
         mSceneLayers[Objects]->detachChild(nodePtr);
     }
-
-    std::vector<SceneNode*>().swap(deleteList);
 }
 
 void Screen::update(sf::Time dt) {
     mSceneGraph.update(dt);
-    centerList(mSLL);
+    if (mSLL != nullptr)
+        centerList(mSLL);
     checkDeleteNode();
 }
 
@@ -52,7 +51,7 @@ void Screen::buildScene() {
 
         mSceneGraph.attachChild(std::move(layer));
     }
-    createRandomSLL();
+    createNewList();
 }
 
 void Screen::centerList(SinglyLinkedList* SLL) {
@@ -70,7 +69,9 @@ void Screen::centerList(SinglyLinkedList* SLL) {
             mWindow.getSize().y / 4.f, SceneNode::Smooth);
 }
 
-void Screen::createRandomSLL() {
+void Screen::createNewList() {
+    mSceneLayers[Objects]->detachAllChildren();
+
     std::unique_ptr<SinglyLinkedList> sllPtr(new SinglyLinkedList(mFonts));
     mSLL = sllPtr.get();
     mSLL->setPosition(mWindow.getSize().x / 2.f, mWindow.getSize().y / 4.f);

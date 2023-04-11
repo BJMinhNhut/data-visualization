@@ -25,11 +25,11 @@ class Screen : private sf::NonCopyable {
     void draw();
     void insertBack();
     void deleteBack();
+    void createNewList();
 
    private:
     void loadTextures();
     void buildScene();
-    void createRandomSLL();
     void centerList(SinglyLinkedList* SLL);
     void checkDeleteNode();
 

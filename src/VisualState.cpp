@@ -17,7 +17,7 @@ VisualState::VisualState(StateStack& stack, Context context)
 
     auto deleteButton = std::make_shared<GUI::Button>(*context.fonts);
     deleteButton->setPosition(100u, 800u);
-    deleteButton->setText("Remove");
+    deleteButton->setText("Delete");
     deleteButton->setCallback([this]() { mScreen.deleteBack(); });
 
     auto exitButton = std::make_shared<GUI::Button>(*context.fonts);
@@ -25,6 +25,12 @@ VisualState::VisualState(StateStack& stack, Context context)
     exitButton->setText("Exit");
     exitButton->setCallback([this]() { requestStackPop(); });
 
+    auto newButton = std::make_shared<GUI::Button>(*context.fonts);
+    newButton->setPosition(100u, 600u);
+    newButton->setText("New");
+    newButton->setCallback([this]() { mScreen.createNewList(); });
+
+    mGUIContainer.pack(newButton);
     mGUIContainer.pack(addButton);
     mGUIContainer.pack(deleteButton);
     mGUIContainer.pack(exitButton);
