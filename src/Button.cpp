@@ -14,7 +14,7 @@ Button::Button(const FontHolder& fonts)
       mSelectedColor(76, 175, 80),
       mNormalColor(46, 125, 50),
       mPressedColor(30, 136, 229),
-      mText("", fonts.get(Fonts::Main), 20),
+      mText("", fonts.get(Fonts::Bold), 20),
       mIsToggle(false),
       mRect(sf::Vector2f(100.f, 50.f)) {
 

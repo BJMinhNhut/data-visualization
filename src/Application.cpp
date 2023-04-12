@@ -20,7 +20,9 @@ Application::Application()
       mStatisticsNumFrames(0) {
     mWindow.setKeyRepeatEnabled(false);
 
-    mFonts.load(Fonts::Main, "data/fonts/iosevka-etoile-medium.ttf");
+    mFonts.load(Fonts::Bold, "data/fonts/SFPro-Bold.ttf");
+    mFonts.load(Fonts::Main, "data/fonts/SF-Pro.ttf");
+    mFonts.load(Fonts::Mono, "data/fonts/iosevka-etoile-medium.ttf");
     mTextures.load(Textures::TitleScreen, "data/images/background-white.jpg");
 
     mStatisticsText.setFont(mFonts.get(Fonts::Main));

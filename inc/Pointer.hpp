@@ -4,6 +4,7 @@
 #include <ResourceIdentifiers.hpp>
 #include <SceneNode.hpp>
 
+#include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Text.hpp>
@@ -29,6 +30,7 @@ class Pointer : public SceneNode {
 
     sf::Color mColor;
     sf::RectangleShape mRect;
+    sf::CircleShape mCircle;
     sf::Text mLabel;
 };
 

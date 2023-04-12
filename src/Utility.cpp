@@ -15,10 +15,10 @@ void centerOrigin(sf::Text& text) {
                    std::floor(bounds.top + bounds.height / 2.f));
 }
 
-void centerOrigin(sf::RectangleShape& rect) {
-    sf::FloatRect bounds = rect.getLocalBounds();
-    rect.setOrigin(std::floor(bounds.left + bounds.width / 2.f),
-                   std::floor(bounds.top + bounds.height / 2.f));
+void centerOrigin(sf::Shape& shape) {
+    sf::FloatRect bounds = shape.getLocalBounds();
+    shape.setOrigin(std::floor(bounds.left + bounds.width / 2.f),
+                    std::floor(bounds.top + bounds.height / 2.f));
 }
 
 sf::RectangleShape getLineShape(sf::Vector2f line, float thickness = 1.f) {

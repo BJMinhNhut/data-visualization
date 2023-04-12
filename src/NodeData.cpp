@@ -18,7 +18,7 @@ NodeData::NodeData(int value, const FontHolder& fonts)
     mRect.setFillColor(sf::Color::White);
     mRect.setOutlineColor(mColor);
 
-    mText.setFont(fonts.get(Fonts::Main));
+    mText.setFont(fonts.get(Fonts::Mono));
     mText.setString(std::to_string(mValue));
     mText.setCharacterSize(20u);
     centerOrigin(mText);

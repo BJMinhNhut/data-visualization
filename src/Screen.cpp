@@ -40,7 +40,9 @@ void Screen::draw() {
 }
 
 void Screen::loadTextures() {
-    mFonts.load(Fonts::Main, "data/fonts/iosevka-etoile-medium.ttf");
+    mFonts.load(Fonts::Bold, "data/fonts/SFPro-Bold.ttf");
+    mFonts.load(Fonts::Main, "data/fonts/SF-Pro.ttf");
+    mFonts.load(Fonts::Mono, "data/fonts/iosevka-etoile-medium.ttf");
 }
 
 void Screen::buildScene() {
