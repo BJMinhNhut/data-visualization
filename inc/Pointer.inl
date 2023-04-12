@@ -18,7 +18,9 @@ Pointer<NodeType>::Pointer(const FontHolder& fonts, NodeType* targetNode)
       mColor(sf::Color::Black),
       mLabel("", fonts.get(Fonts::Mono), 16u),
       mRect(sf::Vector2f(Constants::NODE_SIZE / 2.f, Constants::NODE_SIZE)),
-      mCircle(3.f, 20) {
+      mCircle(3.f, 20),
+      mSlash(getLineShape(sf::Vector2f(mRect.getSize().x, mRect.getSize().y),
+                          2.f)) {
     centerOrigin(mRect);
     mRect.setOutlineThickness(2);
     mRect.setFillColor(sf::Color::White);
@@ -30,6 +32,9 @@ Pointer<NodeType>::Pointer(const FontHolder& fonts, NodeType* targetNode)
 
     centerOrigin(mCircle);
     mCircle.setFillColor(sf::Color::Black);
+
+    centerOrigin(mSlash);
+    mSlash.setFillColor(mColor);
 }
 
 template <typename NodeType>
@@ -60,33 +65,31 @@ SceneNode::Ptr Pointer<NodeType>::releaseNode() {
 }
 
 template <typename NodeType>
+void Pointer<NodeType>::updateCurrent(sf::Time dt) {
+    sf::Vector2f Delta = mTargetNode->getWorldPosition() - getWorldPosition();
+    Delta.x -= (Constants::NODE_SIZE) / 2.f;
+    mArrowTip = getArrowTip(Delta, 2.f);
+    mArrowTip.setFillColor(mColor);
+
+    mArrow = getArrow(Delta, 2.f);
+    mArrow.setFillColor(mColor);
+}
+
+template <typename NodeType>
 void Pointer<NodeType>::drawCurrent(sf::RenderTarget& target,
                                     sf::RenderStates states) const {
     target.draw(mRect, states);
+
     if (!mLabel.getString().isEmpty()) {
         target.draw(mLabel, states);
     }
+
     if (mTargetNode == nullptr) {
-        sf::RectangleShape slash = getLineShape(
-            sf::Vector2f(mRect.getSize().x, mRect.getSize().y), 2.f);
-        centerOrigin(slash);
-        slash.move(sf::Vector2f(1.f, 0.f));
-        slash.setFillColor(mColor);
-        target.draw(slash, states);
-
+        target.draw(mSlash, states);
     } else {
-        sf::Vector2f Delta =
-            mTargetNode->getWorldPosition() - getWorldPosition();
-        Delta.x -= (Constants::NODE_SIZE) / 2.f;
-        sf::ConvexShape arrowTip = getArrowTip(Delta, 2.f);
-        arrowTip.setFillColor(mColor);
-
-        sf::ConvexShape arrow = getArrow(Delta, 2.f);
-        arrow.setFillColor(mColor);
-
         target.draw(mCircle, states);
-        target.draw(arrow, states);
-        target.draw(arrowTip, states);
+        target.draw(mArrow, states);
+        target.draw(mArrowTip, states);
     }
     // std::cerr << "draw ptr\n";
 }

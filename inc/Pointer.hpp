@@ -6,6 +6,7 @@
 
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/ConvexShape.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Text.hpp>
 
@@ -22,6 +23,7 @@ class Pointer : public SceneNode {
     SceneNode::Ptr releaseNode();
 
    private:
+    virtual void updateCurrent(sf::Time dt);
     virtual void drawCurrent(sf::RenderTarget& target,
                              sf::RenderStates states) const;
 
@@ -32,6 +34,11 @@ class Pointer : public SceneNode {
     sf::RectangleShape mRect;
     sf::CircleShape mCircle;
     sf::Text mLabel;
+
+    sf::ConvexShape mArrow;
+    sf::ConvexShape mArrowTip;
+
+    sf::RectangleShape mSlash;
 };
 
 #include "Pointer.inl"
