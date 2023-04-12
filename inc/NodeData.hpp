@@ -12,6 +12,7 @@ class NodeData : public SceneNode {
    public:
     explicit NodeData(int value, const FontHolder& fonts);
     int getValue();
+    void setValue(int value);
 
    private:
     virtual void updateCurrent(sf::Time dt);

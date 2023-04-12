@@ -6,6 +6,7 @@
 #include <SinglyNode.hpp>
 
 #include <memory>
+#include <vector>
 
 class SinglyLinkedList : public SceneNode {
    public:
@@ -14,13 +15,19 @@ class SinglyLinkedList : public SceneNode {
     void randomGen();
     std::size_t getSize();
 
-    void pushBack();
-    SceneNode::Ptr popBack();
-    // bool removeNode(int index);
+    void insertNode(std::size_t index, int value = -1);
+
+    // SinglyNode* popBack();
+
+   private:
+    virtual void updateCurrent(sf::Time dt);
+    void insertNode(std::size_t index, SinglyNode* node);
+    void resetNodes();
 
    private:
     const FontHolder& mFonts;
-    Pointer<SinglyNode>* mHead;
+    Pointer* mHead;
+    std::vector<SinglyNode*> nodes;
 };
 
 #endif  // SINGLYLINKEDLIST_HPP

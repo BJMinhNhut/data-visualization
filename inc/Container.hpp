@@ -25,11 +25,13 @@ class Container : public Component {
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
     bool hasSelection() const;
+    bool hasActivation() const;
     void select(std::size_t index);
 
    private:
     std::vector<Component::Ptr> mChildren;
     int mSelectedChild;
+    int mActivatedChild;
 };
 }  // namespace GUI
 

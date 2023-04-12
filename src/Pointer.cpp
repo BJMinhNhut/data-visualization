@@ -1,4 +1,5 @@
 #include <Constants.hpp>
+#include <Pointer.hpp>
 #include <ResourceHolder.hpp>
 #include <Utility.hpp>
 
@@ -12,13 +13,13 @@
 #include <cassert>
 #include <iostream>
 
-template <typename NodeType>
-Pointer<NodeType>::Pointer(const FontHolder& fonts, NodeType* targetNode)
-    : mTargetNode(targetNode),
-      mColor(sf::Color::Black),
+Pointer::Pointer(const FontHolder& fonts)
+    : mColor(sf::Color::Black),
       mLabel("", fonts.get(Fonts::Mono), 16u),
       mRect(sf::Vector2f(Constants::NODE_SIZE / 2.f, Constants::NODE_SIZE)),
       mCircle(3.f, 20),
+      mIsNULL(true),
+      mDestination(0.f, 0.f),
       mSlash(getLineShape(sf::Vector2f(mRect.getSize().x, mRect.getSize().y),
                           2.f)) {
     centerOrigin(mRect);
@@ -37,54 +38,51 @@ Pointer<NodeType>::Pointer(const FontHolder& fonts, NodeType* targetNode)
     mSlash.setFillColor(mColor);
 }
 
-template <typename NodeType>
-void Pointer<NodeType>::setLabel(const std::string label) {
+void Pointer::setLabel(const std::string label) {
     mLabel.setString(label);
     centerOrigin(mLabel);
 }
 
-template <typename NodeType>
-NodeType* Pointer<NodeType>::getTarget() {
-    return mTargetNode;
+void Pointer::setNull() {
+    mIsNULL = true;
 }
 
-template <typename NodeType>
-void Pointer<NodeType>::setTarget(NodeType* target) {
-    mTargetNode = target;
-    std::unique_ptr<NodeType> nodePtr(target);
-    attachChild(std::move(nodePtr));
+void Pointer::setDestination(sf::Vector2f destination) {
+    mDestination = destination;
+    mIsNULL = false;
 }
 
-template <typename NodeType>
-SceneNode::Ptr Pointer<NodeType>::releaseNode() {
-    mTargetNode->moveToWorldPosition(None);
-    mTargetNode->setTargetScale(0.f, 0.f, Smooth);
-    SceneNode::Ptr result = detachChild(mTargetNode);
-    mTargetNode = nullptr;
-    return result;
+sf::Vector2f Pointer::getDestination() const {
+    return mDestination;
 }
 
-template <typename NodeType>
-void Pointer<NodeType>::updateCurrent(sf::Time dt) {
-    sf::Vector2f Delta = mTargetNode->getWorldPosition() - getWorldPosition();
-    Delta.x -= (Constants::NODE_SIZE) / 2.f;
-    mArrowTip = getArrowTip(Delta, 2.f);
-    mArrowTip.setFillColor(mColor);
-
-    mArrow = getArrow(Delta, 2.f);
-    mArrow.setFillColor(mColor);
+bool Pointer::isNULL() const {
+    return mIsNULL;
 }
 
-template <typename NodeType>
-void Pointer<NodeType>::drawCurrent(sf::RenderTarget& target,
-                                    sf::RenderStates states) const {
+void Pointer::updateCurrent(sf::Time dt) {
+    if (!mIsNULL) {
+        // std::cerr << mDestination.x << ' ' << mDestination.y << '\n';
+
+        sf::Vector2f Delta = mDestination - getWorldPosition();
+        Delta.x -= (Constants::NODE_SIZE) / 2.f;
+        mArrowTip = getArrowTip(Delta, 2.f);
+        mArrowTip.setFillColor(mColor);
+
+        mArrow = getArrow(Delta, 2.f);
+        mArrow.setFillColor(mColor);
+    }
+}
+
+void Pointer::drawCurrent(sf::RenderTarget& target,
+                          sf::RenderStates states) const {
     target.draw(mRect, states);
 
     if (!mLabel.getString().isEmpty()) {
         target.draw(mLabel, states);
     }
 
-    if (mTargetNode == nullptr) {
+    if (mIsNULL) {
         target.draw(mSlash, states);
     } else {
         target.draw(mCircle, states);

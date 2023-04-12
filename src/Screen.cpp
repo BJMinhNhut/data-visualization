@@ -76,19 +76,24 @@ void Screen::createNewList() {
 
     std::unique_ptr<SinglyLinkedList> sllPtr(new SinglyLinkedList(mFonts));
     mSLL = sllPtr.get();
-    mSLL->setPosition(mWindow.getSize().x / 2.f, mWindow.getSize().y / 4.f);
+    mSLL->setTargetPosition(mWindow.getSize().x / 2.f,
+                            mWindow.getSize().y / 4.f, SceneNode::None);
     mSceneLayers[Objects]->attachChild(std::move(sllPtr));
 }
 
 void Screen::insertBack() {
-    mSLL->pushBack();
+    mSLL->insertNode(mSLL->getSize());
 }
 
-void Screen::deleteBack() {
-    SceneNode::Ptr tempNode = mSLL->popBack();
-
-    if (tempNode != nullptr) {
-        onDeleteNode.insert(tempNode.get());
-        mSceneLayers[Objects]->attachChild(std::move(tempNode));
-    }
+void Screen::insertFront() {
+    mSLL->insertNode(0);
 }
+
+// void Screen::deleteBack() {
+//     SceneNode::Ptr tempNode(mSLL->popBack());
+
+//     if (tempNode != nullptr) {
+//         onDeleteNode.insert(tempNode.get());
+//         mSceneLayers[Objects]->attachChild(std::move(tempNode));
+//     }
+// }

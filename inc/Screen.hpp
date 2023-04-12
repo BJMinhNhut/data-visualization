@@ -23,9 +23,13 @@ class Screen : private sf::NonCopyable {
     explicit Screen(sf::RenderWindow& window);
     void update(sf::Time dt);
     void draw();
-    void insertBack();
-    void deleteBack();
+
     void createNewList();
+
+    void insertBack();
+    void insertFront();
+
+    // void deleteBack();
 
    private:
     void loadTextures();

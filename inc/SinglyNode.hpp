@@ -12,22 +12,26 @@
 
 class SinglyNode : public SceneNode {
    public:
-    explicit SinglyNode(const FontHolder& fonts, int value);
     explicit SinglyNode(const FontHolder& fonts);
 
     SinglyNode* getNextNode();
     int getValue();
-    void setNextNode(SinglyNode* newNode);
-    SceneNode::Ptr releaseNextNode();
+
+    void setValue(int value);
+    void setNextNode(SinglyNode* node);
+
+    SinglyNode* releaseNextNode();
 
    private:
     void initData();
+    virtual void updateCurrent(sf::Time dt);
     virtual void drawCurrent(sf::RenderTarget& target,
                              sf::RenderStates states) const;
 
    private:
     NodeData* mData;
-    Pointer<SinglyNode>* mPointer;
+    Pointer* mPointer;
+    SinglyNode* mNextNode;
 };
 
 #endif  // SINGLYNODE_HPP

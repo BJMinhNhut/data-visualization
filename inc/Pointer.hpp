@@ -12,15 +12,16 @@
 
 #include <string>
 
-template <typename NodeType>
 class Pointer : public SceneNode {
    public:
-    explicit Pointer(const FontHolder& fonts, NodeType* target);
+    explicit Pointer(const FontHolder& fonts);
 
     void setLabel(const std::string label);
-    NodeType* getTarget();
-    void setTarget(NodeType* target);
-    SceneNode::Ptr releaseNode();
+    void setDestination(sf::Vector2f destination);
+    void setNull();
+
+    sf::Vector2f getDestination() const;
+    bool isNULL() const;
 
    private:
     virtual void updateCurrent(sf::Time dt);
@@ -28,7 +29,9 @@ class Pointer : public SceneNode {
                              sf::RenderStates states) const;
 
    private:
-    NodeType* mTargetNode;
+    bool mIsNULL;
+
+    sf::Vector2f mDestination;
 
     sf::Color mColor;
     sf::RectangleShape mRect;
@@ -40,7 +43,5 @@ class Pointer : public SceneNode {
 
     sf::RectangleShape mSlash;
 };
-
-#include "Pointer.inl"
 
 #endif  // POINTER_HPP

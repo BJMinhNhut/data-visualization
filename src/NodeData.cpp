@@ -39,3 +39,8 @@ void NodeData::drawCurrent(sf::RenderTarget& target,
 int NodeData::getValue() {
     return mValue;
 }
+
+void NodeData::setValue(int value) {
+    mValue = value;
+    mText.setString(std::to_string(mValue));
+}

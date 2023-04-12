@@ -6,7 +6,7 @@
 
 namespace GUI {
 
-Container::Container() : mChildren(), mSelectedChild(-1) {}
+Container::Container() : mChildren(), mSelectedChild(-1), mActivatedChild(-1) {}
 
 void Container::pack(Component::Ptr component) {
     mChildren.push_back(component);
@@ -22,8 +22,14 @@ void Container::handleEvent(const sf::Event& event) {
         mChildren[mSelectedChild]->handleEvent(event);
     } else if (event.type == sf::Event::MouseButtonReleased) {
         if (event.mouseButton.button == sf::Mouse::Left) {
-            if (hasSelection())
+            if (hasSelection()) {
+                if (hasActivation()) {
+                    mChildren[mActivatedChild]->deactivate();
+                    mChildren[mActivatedChild]->deselect();
+                }
                 mChildren[mSelectedChild]->activate();
+                mActivatedChild = mSelectedChild;
+            }
         }
     }
 }
@@ -39,9 +45,13 @@ bool Container::hasSelection() const {
     return mSelectedChild >= 0;
 }
 
+bool Container::hasActivation() const {
+    return mActivatedChild >= 0;
+}
+
 void Container::select(std::size_t index) {
-    if (mChildren[index]->isSelectable()) {
-        if (hasSelection())
+    if (mChildren[index]->isSelectable() && !mChildren[index]->isActive()) {
+        if (hasSelection() && !mChildren[mSelectedChild]->isActive())
             mChildren[mSelectedChild]->deselect();
 
         mChildren[index]->select();
@@ -51,14 +61,14 @@ void Container::select(std::size_t index) {
 
 void Container::updateSelect(sf::Vector2i point) {
     for (int index = 0; index < mChildren.size(); ++index) {
-        if (mChildren[index]->isSelectable() &&
+        if (mChildren[index]->isSelectable() && !mChildren[index]->isActive() &&
             mChildren[index]->contains(point)) {
             select(index);
             return;
         }
     }
     // no component is selected
-    if (hasSelection()) {
+    if (hasSelection() && !mChildren[mSelectedChild]->isActive()) {
         mChildren[mSelectedChild]->deselect();
         mSelectedChild = -1;
     }

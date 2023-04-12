@@ -37,12 +37,6 @@ void SceneNode::detachAllChildren() {
 }
 
 void SceneNode::update(sf::Time dt) {
-    updateCurrent(dt);
-    updateChildren(dt);
-}
-
-void SceneNode::updateCurrent(sf::Time dt) {
-    // Do nothing as default
     // std::cerr << std::setprecision(3) << std::fixed << '\n';
     sf::Vector2f deltaPosition = (targetPosition - getPosition()) * 0.1f;
     move(deltaPosition);
@@ -53,6 +47,13 @@ void SceneNode::updateCurrent(sf::Time dt) {
     // std::cerr << targetScale.x << ' ' << getScale().x << ' ' << deltaScale.x
     //           << '\n';
     setScale(getScale() + deltaScale);
+
+    updateCurrent(dt);
+    updateChildren(dt);
+}
+
+void SceneNode::updateCurrent(sf::Time dt) {
+    // Do nothing as default
 }
 
 void SceneNode::updateChildren(sf::Time dt) {
