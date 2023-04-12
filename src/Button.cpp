@@ -8,6 +8,7 @@
 #include <iostream>
 
 namespace GUI {
+
 Button::Button(const FontHolder& fonts)
     : mCallback(),
       mSelectedColor(76, 175, 80),

@@ -51,7 +51,6 @@ class SceneNode : public sf::Transformable,
     sf::Vector2f targetScale;
     std::vector<Ptr> mChildren;
     SceneNode* mParent;
-    // TODO: node label
 };
 
 #endif  // SCENENODE_HPP

@@ -1,5 +1,4 @@
 #include <Constants.hpp>
-#include <Pointer.hpp>
 #include <ResourceHolder.hpp>
 #include <Utility.hpp>
 
@@ -19,7 +18,7 @@ Pointer<NodeType>::Pointer(const FontHolder& fonts, NodeType* targetNode)
       mLabel("", fonts.get(Fonts::Main), 16u),
       mRect(sf::Vector2f(Constants::NODE_SIZE / 2.f, Constants::NODE_SIZE)) {
     centerOrigin(mRect);
-    mRect.setOutlineThickness(3);
+    mRect.setOutlineThickness(2);
     mRect.setFillColor(sf::Color::White);
     mRect.setOutlineColor(mColor);
 
@@ -64,7 +63,7 @@ void Pointer<NodeType>::drawCurrent(sf::RenderTarget& target,
     }
     if (mTargetNode == nullptr) {
         sf::RectangleShape slash = getLineShape(
-            sf::Vector2f(mRect.getSize().x, mRect.getSize().y), 3.f);
+            sf::Vector2f(mRect.getSize().x, mRect.getSize().y), 2.f);
         centerOrigin(slash);
         slash.move(sf::Vector2f(1.f, 0.f));
         slash.setFillColor(mColor);
@@ -73,13 +72,13 @@ void Pointer<NodeType>::drawCurrent(sf::RenderTarget& target,
     } else {
         sf::Vector2f Delta =
             mTargetNode->getWorldPosition() - getWorldPosition();
-        Delta.x -= (mRect.getSize().x + Constants::NODE_SIZE) / 2.f;
-        sf::ConvexShape arrowTip = getArrowTip(Delta, 3.f);
-        arrowTip.move(sf::Vector2f(mRect.getSize().x / 2.f, 0.f));
+        Delta.x -= (Constants::NODE_SIZE) / 2.f;
+        sf::ConvexShape arrowTip = getArrowTip(Delta, 2.f);
+        // arrowTip.move(sf::Vector2f(mRect.getSize().x / 2.f, 0.f));
         arrowTip.setFillColor(mColor);
 
-        sf::ConvexShape arrow = getArrow(Delta, 3.f);
-        arrow.move(sf::Vector2f(mRect.getSize().x / 2.f, 0.f));
+        sf::ConvexShape arrow = getArrow(Delta, 2.f);
+        // arrow.move(sf::Vector2f(mRect.getSize().x / 2.f, 0.f));
         arrow.setFillColor(mColor);
 
         target.draw(arrow, states);

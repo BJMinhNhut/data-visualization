@@ -14,7 +14,7 @@ NodeData::NodeData(int value, const FontHolder& fonts)
       mColor(sf::Color::Black),
       mRect(sf::Vector2f(Constants::NODE_SIZE, Constants::NODE_SIZE)) {
     centerOrigin(mRect);
-    mRect.setOutlineThickness(3);
+    mRect.setOutlineThickness(2);
     mRect.setFillColor(sf::Color::White);
     mRect.setOutlineColor(mColor);
 

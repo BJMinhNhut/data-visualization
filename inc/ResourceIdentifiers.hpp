@@ -3,21 +3,21 @@
 
 // Forward declaration of SFML classes
 namespace sf {
-	class Texture;
-	class Font;
-}
+class Texture;
+class Font;
+}  // namespace sf
 
 namespace Textures {
-	enum ID {
-		TitleScreen, 
-		NodeData,
-	};
+enum ID {
+    TitleScreen,
+    NodeData,
+};
 }
 
 namespace Fonts {
-	enum ID {
-		Main, 
-	};
+enum ID {
+    Main,
+};
 }
 
 template <typename Resource, typename Identifier>
@@ -26,4 +26,4 @@ class ResourceHolder;
 typedef ResourceHolder<sf::Texture, Textures::ID> TextureHolder;
 typedef ResourceHolder<sf::Font, Fonts::ID> FontHolder;
 
-#endif //RESOURCEIDENTIFIERS_HPP
+#endif  //RESOURCEIDENTIFIERS_HPP

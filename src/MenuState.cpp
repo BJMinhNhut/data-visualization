@@ -17,10 +17,7 @@ MenuState::MenuState(StateStack& stack, Context context)
     auto startButton = std::make_shared<GUI::Button>(*context.fonts);
     startButton->setPosition(bounds.x / 2u, bounds.y / 2u);
     startButton->setText("Start");
-    startButton->setCallback([this]() {
-        requestStackPop();
-        requestStackPush(States::Visual);
-    });
+    startButton->setCallback([this]() { requestStackPush(States::Visual); });
 
     auto exitButton = std::make_shared<GUI::Button>(*context.fonts);
     exitButton->setPosition(bounds.x / 2u, bounds.y / 2u + 80u);
