@@ -55,11 +55,8 @@ void SinglyNode::setValue(int value) {
 
 void SinglyNode::setNextNode(SinglyNode* node) {
     mNextNode = node;
-    mPointer->setDestination(node->getWorldPosition());
-}
-
-SinglyNode* SinglyNode::releaseNextNode() {
-    detachAllChildren();
-    mPointer->setNull();
-    return mNextNode;
+    if (node != nullptr)
+        mPointer->setDestination(node->getWorldPosition());
+    else
+        mPointer->setNull();
 }

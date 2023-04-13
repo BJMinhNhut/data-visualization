@@ -29,7 +29,8 @@ class Screen : private sf::NonCopyable {
     void insertBack();
     void insertFront();
 
-    // void deleteBack();
+    void deleteBack();
+    void deleteFront();
 
    private:
     void loadTextures();

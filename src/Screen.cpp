@@ -89,11 +89,16 @@ void Screen::insertFront() {
     mSLL->insertNode(0);
 }
 
-// void Screen::deleteBack() {
-//     SceneNode::Ptr tempNode(mSLL->popBack());
+void Screen::deleteBack() {
+    if (mSLL->getSize() == 0)
+        return;
 
-//     if (tempNode != nullptr) {
-//         onDeleteNode.insert(tempNode.get());
-//         mSceneLayers[Objects]->attachChild(std::move(tempNode));
-//     }
-// }
+    mSLL->eraseNode(mSLL->getSize() - 1);
+}
+
+void Screen::deleteFront() {
+    if (mSLL->getSize() == 0)
+        return;
+
+    mSLL->eraseNode(0);
+}

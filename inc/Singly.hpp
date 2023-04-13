@@ -17,7 +17,7 @@ class SinglyLinkedList : public SceneNode {
 
     void insertNode(std::size_t index, int value = -1);
 
-    // SinglyNode* popBack();
+    void eraseNode(std::size_t index);
 
    private:
     virtual void updateCurrent(sf::Time dt);
@@ -28,6 +28,8 @@ class SinglyLinkedList : public SceneNode {
     const FontHolder& mFonts;
     Pointer* mHead;
     std::vector<SinglyNode*> nodes;
+
+    SinglyNode* tempNode;
 };
 
 #endif  // SINGLYLINKEDLIST_HPP

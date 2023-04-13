@@ -20,8 +20,6 @@ class SinglyNode : public SceneNode {
     void setValue(int value);
     void setNextNode(SinglyNode* node);
 
-    SinglyNode* releaseNextNode();
-
    private:
     void initData();
     virtual void updateCurrent(sf::Time dt);

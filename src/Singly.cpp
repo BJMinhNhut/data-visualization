@@ -14,7 +14,7 @@
 #include <string>
 
 SinglyLinkedList::SinglyLinkedList(const FontHolder& fonts)
-    : mHead(new Pointer(fonts)), mFonts(fonts) {
+    : mHead(new Pointer(fonts)), mFonts(fonts), tempNode(nullptr) {
     std::unique_ptr<Pointer> headPtr(mHead);
     mHead->setLabel("head");
     attachChild(std::move(headPtr));
@@ -45,11 +45,13 @@ void SinglyLinkedList::insertNode(std::size_t index, SinglyNode* node) {
 
     if (index > 0) {
         nodes[index - 1]->setNextNode(node);
-        node->setPosition(nodes[index - 1]->getPosition());
+        node->setTargetPosition(nodes[index - 1]->getPosition(), None);
     }
 
     if (index + 1 < nodes.size())
         node->setNextNode(nodes[index + 1]);
+
+    std::cerr << "Insert " << node->getValue() << " at " << index << '\n';
 }
 
 void SinglyLinkedList::resetNodes() {
@@ -71,74 +73,34 @@ void SinglyLinkedList::randomGen() {
         insertNode(index);
 }
 
-// void SinglyLinkedList::pushBack() {
-//     if (getSize() == Constants::LIST_MAXSIZE) {
-//         std::cerr << "Maximum size reached.\n";
-//         return;
-//     }
+void SinglyLinkedList::eraseNode(std::size_t index) {
+    if (index >= nodes.size())
+        return;
 
-//     SinglyNode* currentNode = getHead();
+    if (index > 0) {
+        if (index + 1 < nodes.size())
+            nodes[index - 1]->setNextNode(nodes[index + 1]);
+        else
+            nodes[index - 1]->setNextNode(nullptr);
+    } else {
+        if (index + 1 < nodes.size())
+            mHead->setDestination(nodes[1]->getWorldPosition());
+        else
+            mHead->setNull();
+    }
 
-//     if (currentNode != nullptr)
-//         while (currentNode->getNextNode() != nullptr)
-//             currentNode = currentNode->getNextNode();
+    SinglyNode* erasedNode = nodes[index];
 
-//     std::unique_ptr<SinglyNode> nodePtr(new SinglyNode(mFonts));
-//     nodePtr->setTargetPosition(Constants::NODE_DISTANCE * getSize(), 0.f,
-//                                Smooth);
+    erasedNode->setNextNode(nullptr);
+    erasedNode->setTargetScale(0.f, 0.f, Smooth);
+    erasedNode->setTargetPosition(
+        erasedNode->getPosition() + sf::Vector2f(0.f, Constants::NODE_SIZE),
+        Smooth);
 
-//     if (getHead() == nullptr) {
-//         currentNode = nodePtr.get();
-//         mHead->setDestination(nodePtr->getWorldPosition());
-//     } else {
-//         currentNode->setNextNode(nodePtr.get());
-//     }
+    nodes.erase(nodes.begin() + index);
 
-//     std::cerr << "Push Back: " << nodePtr->getValue() << '\n';
-//     nodes.push_back(nodePtr.get());
-//     attachChild(std::move(nodePtr));
-// }
-
-// void SinglyLinkedList::pushFront() {
-//     if (getSize() == Constants::LIST_MAXSIZE) {
-//         std::cerr << "Maximum size reached.\n";
-//         return;
-//     }
-
-//     SinglyNode* newNode = new SinglyNode(mFonts);
-//     newNode->setTargetPosition(Constants::NODE_DISTANCE * getSize(), 0.f,
-//                                Smooth);
-
-//     if (getHead() == nullptr) {
-//         mHead->setDestination(newNode->getWorldPosition());
-//     } else {
-//         SinglyNode* oldFirstNode = mHead->releaseNode();
-//         mHead->setDestination(newNode->getWorldPosition());
-//         newNode->setNextNode(oldFirstNode);
-//     }
-
-//     std::cerr << "Push Front: " << newNode->getValue() << '\n';
-// }
-
-// SinglyNode* SinglyLinkedList::popBack() {
-//     if (getHead() == nullptr) {
-//         std::cerr << "List empty!";
-//         return nullptr;
-//     }
-
-//     if (getHead()->getNextNode() == nullptr) {
-//         std::cerr << "Last element found!\n";
-//         return mHead->releaseNode();
-//     }
-
-//     SinglyNode* currentNode = getHead();
-
-//     while (currentNode->getNextNode()->getNextNode() != nullptr)
-//         currentNode = currentNode->getNextNode();
-
-//     std::cerr << "Removed: " << currentNode->getNextNode()->getValue() << '\n';
-//     return currentNode->releaseNextNode();
-// }
+    tempNode = erasedNode;
+}
 
 void SinglyLinkedList::updateCurrent(sf::Time dt) {
     for (std::size_t index = 0; index < nodes.size(); ++index) {
@@ -154,4 +116,11 @@ void SinglyLinkedList::updateCurrent(sf::Time dt) {
     }
     if (!nodes.empty())
         mHead->setDestination(nodes[0]->getWorldPosition());
+    else
+        mHead->setNull();
+
+    if (tempNode != nullptr && tempNode->getScale().x == 0.f) {
+        // detachChild(tempNode);
+        // tempNode = nullptr;
+    }
 }

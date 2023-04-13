@@ -111,12 +111,18 @@ void VisualState::loadAddGUI() {
 }
 
 void VisualState::loadDeleteGUI() {
-    // auto backButton = std::make_shared<GUI::Button>(*getContext().fonts);
-    // backButton->setPosition(1150.f, getContext().window->getSize().y - 200.f);
-    // backButton->setText("Back");
-    // backButton->setCallback([this]() { mScreen.deleteBack(); });
+    auto frontButton = std::make_shared<GUI::Button>(*getContext().fonts);
+    frontButton->setPosition(1150.f, getContext().window->getSize().y - 200.f);
+    frontButton->setText("Front");
+    frontButton->setCallback([this]() { mScreen.deleteFront(); });
 
-    // GUICommandContainer[Delete].pack(backButton);
+    auto backButton = std::make_shared<GUI::Button>(*getContext().fonts);
+    backButton->setPosition(1150.f, getContext().window->getSize().y - 150.f);
+    backButton->setText("Back");
+    backButton->setCallback([this]() { mScreen.deleteBack(); });
+
+    GUICommandContainer[Delete].pack(frontButton);
+    GUICommandContainer[Delete].pack(backButton);
 }
 
 void VisualState::draw() {
