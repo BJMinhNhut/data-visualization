@@ -8,11 +8,12 @@
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
 
 class SinglyNode : public SceneNode {
    public:
-    explicit SinglyNode(const FontHolder& fonts);
+    explicit SinglyNode(const FontHolder& fonts, const TextureHolder& textures);
 
     SinglyNode* getNextNode();
     int getValue();
@@ -21,12 +22,13 @@ class SinglyNode : public SceneNode {
     void setNextNode(SinglyNode* node);
 
    private:
-    void initData();
     virtual void updateCurrent(sf::Time dt);
     virtual void drawCurrent(sf::RenderTarget& target,
                              sf::RenderStates states) const;
 
    private:
+    const TextureHolder& mTextures;
+    sf::Sprite mSprite;
     NodeData* mData;
     Pointer* mPointer;
     SinglyNode* mNextNode;

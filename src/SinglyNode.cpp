@@ -13,33 +13,40 @@
 #include <memory>
 #include <string>
 
-void SinglyNode::initData() {
-    mPointer->setTargetPosition(Constants::NODE_SIZE - 7.f, 0.f, None);
-    std::unique_ptr<NodeData> dataPtr(mData);
-    std::unique_ptr<Pointer> nextNodePtr(mPointer);
-    attachChild(std::move(dataPtr));
-    attachChild(std::move(nextNodePtr));
-    setScale(0.f, 0.f);
-    setTargetScale(1.f, 1.f, Smooth);
-}
-
-SinglyNode::SinglyNode(const FontHolder& fonts)
+SinglyNode::SinglyNode(const FontHolder& fonts, const TextureHolder& textures)
     : mData(new NodeData(
           Random::get(Constants::NODE_MINVALUE, Constants::NODE_MAXVALUE),
           fonts)),
       mPointer(new Pointer(fonts)),
+      mTextures(textures),
       mNextNode(nullptr) {
-    initData();
+    std::unique_ptr<NodeData> dataPtr(mData);
+    std::unique_ptr<Pointer> nextNodePtr(mPointer);
+
+    attachChild(std::move(dataPtr));
+    attachChild(std::move(nextNodePtr));
+
+    setScale(0.f, 0.f);
+    setTargetScale(1.f, 1.f, Smooth);
+
+    mPointer->setTargetPosition(28.f, 0.f, None);
+    mPointer->setNull();
+
+    mSprite.setOrigin(Constants::NODE_SIZE / 2.f, Constants::NODE_SIZE / 2.f);
+    mSprite.setTexture(mTextures.get(Textures::SinglyNodeNormal), true);
 }
 
 void SinglyNode::updateCurrent(sf::Time dt) {
     if (mNextNode != nullptr) {
         mPointer->setDestination(mNextNode->getWorldPosition());
-    }
+    } else
+        mPointer->setNull();
 }
 
 void SinglyNode::drawCurrent(sf::RenderTarget& target,
-                             sf::RenderStates states) const {}
+                             sf::RenderStates states) const {
+    target.draw(mSprite, states);
+}
 
 SinglyNode* SinglyNode::getNextNode() {
     return mNextNode;

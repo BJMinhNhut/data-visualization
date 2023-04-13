@@ -13,8 +13,12 @@
 #include <memory>
 #include <string>
 
-SinglyLinkedList::SinglyLinkedList(const FontHolder& fonts)
-    : mHead(new Pointer(fonts)), mFonts(fonts), tempNode(nullptr) {
+SinglyLinkedList::SinglyLinkedList(const FontHolder& fonts,
+                                   const TextureHolder& textures)
+    : mHead(new Pointer(fonts)),
+      mFonts(fonts),
+      mTextures(textures),
+      tempNode(nullptr) {
     std::unique_ptr<Pointer> headPtr(mHead);
     mHead->setLabel("head");
     attachChild(std::move(headPtr));
@@ -26,7 +30,7 @@ std::size_t SinglyLinkedList::getSize() {
 }
 
 void SinglyLinkedList::insertNode(std::size_t index, int value) {
-    SinglyNode* newNode = new SinglyNode(mFonts);
+    SinglyNode* newNode = new SinglyNode(mFonts, mTextures);
     if (value != -1)
         newNode->setValue(value);
 
@@ -100,6 +104,8 @@ void SinglyLinkedList::eraseNode(std::size_t index) {
     nodes.erase(nodes.begin() + index);
 
     tempNode = erasedNode;
+
+    std::cerr << "Delete " << erasedNode->getValue() << " at " << index << '\n';
 }
 
 void SinglyLinkedList::updateCurrent(sf::Time dt) {
@@ -120,7 +126,7 @@ void SinglyLinkedList::updateCurrent(sf::Time dt) {
         mHead->setNull();
 
     if (tempNode != nullptr && tempNode->getScale().x == 0.f) {
-        // detachChild(tempNode);
-        // tempNode = nullptr;
+        detachChild(tempNode);
+        tempNode = nullptr;
     }
 }

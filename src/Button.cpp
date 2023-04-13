@@ -1,4 +1,5 @@
 #include <Button.hpp>
+#include <Constants.hpp>
 #include <Utility.hpp>
 
 #include <SFML/Graphics/RenderStates.hpp>
@@ -9,18 +10,64 @@
 
 namespace GUI {
 
-Button::Button(const FontHolder& fonts)
+Button::Button(Type type, const FontHolder& fonts,
+               const TextureHolder& textures)
     : mCallback(),
-      mSelectedColor(76, 175, 80),
-      mNormalColor(46, 125, 50),
-      mPressedColor(30, 136, 229),
       mText("", fonts.get(Fonts::Bold), 18),
       mIsToggle(false),
-      mRect(sf::Vector2f(100.f, 30.f)) {
+      mNormalTexture(textures.get(getNormalTextureID(type))),
+      mSelectedTexture(textures.get(getSelectedTextureID(type))),
+      mPressedTexture(textures.get(getPressedTextureID(type))) {
+    mText.setFillColor(Constants::mBlack);
+    mSprite.setTexture(mNormalTexture);
 
-    mRect.setFillColor(mNormalColor);
-    centerOrigin(mRect);
+    centerOrigin(mSprite);
     centerOrigin(mText);
+}
+
+Textures::ID Button::getNormalTextureID(Type type) const {
+    switch (type) {
+        case Command:
+            return Textures::CommandNormal;
+        case Home:
+            return Textures::HomeNormal;
+        case Checkbox:
+            return Textures::CheckboxNormal;
+        case Play:
+            return Textures::PlayNormal;
+        default:
+            return Textures::CommandNormal;
+    }
+}
+
+Textures::ID Button::getSelectedTextureID(Type type) const {
+    switch (type) {
+        case Command:
+            return Textures::CommandSelected;
+        case Home:
+            return Textures::HomeSelected;
+        case Checkbox:
+            return Textures::CheckboxSelected;
+        case Play:
+            return Textures::PlaySelected;
+        default:
+            return Textures::CommandSelected;
+    }
+}
+
+Textures::ID Button::getPressedTextureID(Type type) const {
+    switch (type) {
+        case Command:
+            return Textures::CommandActivated;
+        case Home:
+            return Textures::HomeSelected;
+        case Checkbox:
+            return Textures::CheckboxActivated;
+        case Play:
+            return Textures::PlaySelected;
+        default:
+            return Textures::CommandActivated;
+    }
 }
 
 void Button::setCallback(Callback callback) {
@@ -42,12 +89,12 @@ bool Button::isSelectable() const {
 
 void Button::select() {
     Component::select();
-    mRect.setFillColor(mSelectedColor);
+    mSprite.setTexture(mSelectedTexture, true);
 }
 
 void Button::deselect() {
     Component::deselect();
-    mRect.setFillColor(mNormalColor);
+    mSprite.setTexture(mNormalTexture, true);
 }
 
 void Button::activate() {
@@ -55,7 +102,7 @@ void Button::activate() {
 
     // If we are toggle then we should show that the button is pressed and thus "toggled".
     if (mIsToggle)
-        mRect.setFillColor(mPressedColor);
+        mSprite.setTexture(mPressedTexture, true);
 
     if (mCallback)
         mCallback();
@@ -71,9 +118,9 @@ void Button::deactivate() {
     if (mIsToggle) {
         // Reset texture to right one depending on if we are selected or not.
         if (isSelected())
-            mRect.setFillColor(mSelectedColor);
+            mSprite.setTexture(mSelectedTexture, true);
         else
-            mRect.setFillColor(mNormalColor);
+            mSprite.setTexture(mNormalTexture, true);
     }
 }
 
@@ -81,15 +128,15 @@ void Button::handleEvent(const sf::Event& event) {}
 
 void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.transform *= getTransform();
-    target.draw(mRect, states);
+    target.draw(mSprite, states);
     target.draw(mText, states);
 }
 
 bool Button::contains(sf::Vector2i point) const {
-    sf::IntRect bounds(getPosition().x - mRect.getGlobalBounds().width / 2.f,
-                       getPosition().y - mRect.getGlobalBounds().height / 2.f,
-                       mRect.getGlobalBounds().width,
-                       mRect.getGlobalBounds().height);
+    sf::IntRect bounds(getPosition().x - mSprite.getGlobalBounds().width / 2.f,
+                       getPosition().y - mSprite.getGlobalBounds().height / 2.f,
+                       mSprite.getGlobalBounds().width,
+                       mSprite.getGlobalBounds().height);
     // std::cerr << "Mouse: " << point.x << ' ' << point.y << '\n';
     // std::cerr << "Bounds: " << bounds.left << ' ' << bounds.top << ' '
     //           << bounds.width << ' ' << bounds.height << '\n';

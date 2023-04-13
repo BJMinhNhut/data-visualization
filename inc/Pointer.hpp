@@ -36,7 +36,9 @@ class Pointer : public SceneNode {
     sf::Color mColor;
     sf::RectangleShape mRect;
     sf::CircleShape mCircle;
+
     sf::Text mLabel;
+    sf::Text TextNULL;
 
     sf::ConvexShape mArrow;
     sf::ConvexShape mArrowTip;

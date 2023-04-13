@@ -12,6 +12,14 @@ void Container::pack(Component::Ptr component) {
     mChildren.push_back(component);
 }
 
+void Container::reset() {
+    if (hasActivation()) {
+        mChildren[mActivatedChild]->deactivate();
+        mChildren[mActivatedChild]->deselect();
+    }
+    mSelectedChild = mActivatedChild = -1;
+}
+
 bool Container::isSelectable() const {
     return false;
 }

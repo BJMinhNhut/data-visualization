@@ -1,3 +1,4 @@
+#include <Constants.hpp>
 #include <Label.hpp>
 #include <Utility.hpp>
 
@@ -7,7 +8,10 @@
 namespace GUI {
 
 Label::Label(const std::string& text, const FontHolder& fonts)
-    : mText(text, fonts.get(Fonts::Main), 16) {}
+    : mText(text, fonts.get(Fonts::Main), 18) {
+    mText.setFillColor(Constants::mBlack);
+    mText.setOrigin(0.f, mText.getGlobalBounds().height / 2.f);
+}
 
 bool Label::isSelectable() const {
     return false;

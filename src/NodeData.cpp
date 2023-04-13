@@ -11,14 +11,14 @@
 
 NodeData::NodeData(int value, const FontHolder& fonts)
     : mValue(value),
-      mColor(sf::Color::Black),
+      mColor(Constants::mBlack),
       mRect(sf::Vector2f(Constants::NODE_SIZE, Constants::NODE_SIZE)) {
     centerOrigin(mRect);
     mRect.setOutlineThickness(2);
     mRect.setFillColor(sf::Color::White);
     mRect.setOutlineColor(mColor);
 
-    mText.setFont(fonts.get(Fonts::Mono));
+    mText.setFont(fonts.get(Fonts::Main));
     mText.setString(std::to_string(mValue));
     mText.setCharacterSize(20u);
     centerOrigin(mText);
@@ -32,7 +32,7 @@ void NodeData::updateCurrent(sf::Time dt) {
 
 void NodeData::drawCurrent(sf::RenderTarget& target,
                            sf::RenderStates states) const {
-    target.draw(mRect, states);
+    // target.draw(mRect, states);
     target.draw(mText, states);
 }
 

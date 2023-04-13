@@ -10,7 +10,8 @@
 
 class SinglyLinkedList : public SceneNode {
    public:
-    explicit SinglyLinkedList(const FontHolder& fonts);
+    explicit SinglyLinkedList(const FontHolder& fonts,
+                              const TextureHolder& textures);
     SinglyNode* getHead();
     void randomGen();
     std::size_t getSize();
@@ -26,6 +27,8 @@ class SinglyLinkedList : public SceneNode {
 
    private:
     const FontHolder& mFonts;
+    const TextureHolder& mTextures;
+
     Pointer* mHead;
     std::vector<SinglyNode*> nodes;
 

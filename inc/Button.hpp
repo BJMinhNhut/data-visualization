@@ -6,7 +6,7 @@
 #include <ResourceIdentifiers.hpp>
 
 #include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
 
 #include <functional>
@@ -16,13 +16,24 @@
 
 namespace GUI {
 class Button : public Component {
+   public:
+    enum Type {
+        Home,
+        Command,
+        Checkbox,
+        Play,
+    };
 
    public:
     typedef std::shared_ptr<Button> Ptr;
     typedef std::function<void()> Callback;
 
    public:
-    Button(const FontHolder& fonts);
+    Button(Type type, const FontHolder& fonts, const TextureHolder& textures);
+
+    Textures::ID getNormalTextureID(Type type) const;
+    Textures::ID getSelectedTextureID(Type type) const;
+    Textures::ID getPressedTextureID(Type type) const;
 
     void setCallback(Callback callback);
     void setText(const std::string& text);
@@ -43,11 +54,11 @@ class Button : public Component {
 
    private:
     Callback mCallback;
-    const sf::Color mNormalColor;
-    const sf::Color mSelectedColor;
-    const sf::Color mPressedColor;
+    const sf::Texture mNormalTexture;
+    const sf::Texture mSelectedTexture;
+    const sf::Texture mPressedTexture;
 
-    sf::RectangleShape mRect;
+    sf::Sprite mSprite;
     sf::Text mText;
 
     bool mIsToggle;

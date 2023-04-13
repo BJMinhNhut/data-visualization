@@ -10,7 +10,17 @@ class Font;
 namespace Textures {
 enum ID {
     TitleScreen,
-    NodeData,
+    SinglyNodeNormal,
+    HomeNormal,
+    HomeSelected,
+    CommandNormal,
+    CommandSelected,
+    CommandActivated,
+    CheckboxNormal,
+    CheckboxSelected,
+    CheckboxActivated,
+    PlayNormal,
+    PlaySelected,
 };
 }
 

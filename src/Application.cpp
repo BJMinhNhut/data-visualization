@@ -20,10 +20,28 @@ Application::Application()
       mStatisticsNumFrames(0) {
     mWindow.setKeyRepeatEnabled(false);
 
-    mFonts.load(Fonts::Bold, "data/fonts/SFPro-Bold.ttf");
-    mFonts.load(Fonts::Main, "data/fonts/SF-Pro.ttf");
+    mFonts.load(Fonts::Bold, "data/fonts/Montserrat-Bold.ttf");
+    mFonts.load(Fonts::Main, "data/fonts/Montserrat-Medium.ttf");
     mFonts.load(Fonts::Mono, "data/fonts/iosevka-etoile-medium.ttf");
-    mTextures.load(Textures::TitleScreen, "data/images/background-white.jpg");
+    mTextures.load(Textures::TitleScreen, "data/images/background.png");
+
+    mTextures.load(Textures::HomeNormal, "data/images/home-normal.png");
+    mTextures.load(Textures::HomeSelected, "data/images/home-selected.png");
+
+    mTextures.load(Textures::CommandNormal, "data/images/command-normal.png");
+    mTextures.load(Textures::CommandSelected,
+                   "data/images/command-selected.png");
+    mTextures.load(Textures::CommandActivated,
+                   "data/images/command-activated.png");
+
+    mTextures.load(Textures::CheckboxNormal, "data/images/checkbox-normal.png");
+    mTextures.load(Textures::CheckboxSelected,
+                   "data/images/checkbox-selected.png");
+    mTextures.load(Textures::CheckboxActivated,
+                   "data/images/checkbox-activated.png");
+
+    mTextures.load(Textures::PlayNormal, "data/images/play-normal.png");
+    mTextures.load(Textures::PlaySelected, "data/images/play-selected.png");
 
     mStatisticsText.setFont(mFonts.get(Fonts::Main));
     mStatisticsText.setFillColor(sf::Color::Black);
