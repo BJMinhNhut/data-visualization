@@ -16,12 +16,18 @@
 SinglyLinkedList::SinglyLinkedList(const FontHolder& fonts,
                                    const TextureHolder& textures)
     : mHead(new Pointer(fonts)),
+      mHighlight(new Pointer(fonts)),
       mFonts(fonts),
       mTextures(textures),
-      tempNode(nullptr) {
+      tempNode(nullptr),
+      highlightIndex(-1) {
+
     std::unique_ptr<Pointer> headPtr(mHead);
     mHead->setLabel("head");
     attachChild(std::move(headPtr));
+
+    mHighlight->setLabel("cur");
+
     randomGen();
 }
 
@@ -60,6 +66,7 @@ void SinglyLinkedList::insertNode(std::size_t index, SinglyNode* node) {
 
 void SinglyLinkedList::resetNodes() {
     mHead->setNull();
+    mHighlight->setNull();
 
     for (SinglyNode* nodePtr : nodes)
         detachChild(nodePtr);
@@ -87,10 +94,11 @@ void SinglyLinkedList::eraseNode(std::size_t index) {
         else
             nodes[index - 1]->setNextNode(nullptr);
     } else {
-        if (index + 1 < nodes.size())
+        if (index + 1 < nodes.size()) {
             mHead->setDestination(nodes[1]->getWorldPosition());
-        else
+        } else {
             mHead->setNull();
+        }
     }
 
     SinglyNode* erasedNode = nodes[index];
@@ -108,6 +116,34 @@ void SinglyLinkedList::eraseNode(std::size_t index) {
     std::cerr << "Delete " << erasedNode->getValue() << " at " << index << '\n';
 }
 
+void SinglyLinkedList::setHighlight(int index) {
+    assert(index < (int)nodes.size());
+
+    if (index == -1) {
+        // Remove highlight
+        if (highlightIndex > -1) {
+            std::cerr << "Remove highlight index " << highlightIndex << '\n';
+            detachChild(mHighlight);
+            mHighlight = nullptr;
+        }
+
+    } else if (index < (int)nodes.size()) {  // Set highlight
+        if (highlightIndex == -1) {
+            // haven't draw highlight so we need to attach it
+            mHighlight = new Pointer(mFonts);
+            mHighlight->setLabel("cur");
+
+            std::unique_ptr<Pointer> highlightPtr(mHighlight);
+            attachChild(std::move(highlightPtr));
+            std::cerr << "Add highlight index " << index << '\n';
+        } else {
+            std::cerr << "Change highlight index " << index << '\n';
+        }
+    }
+
+    highlightIndex = index;
+}
+
 void SinglyLinkedList::updateCurrent(sf::Time dt) {
     for (std::size_t index = 0; index < nodes.size(); ++index) {
         if (index == 0)
@@ -120,10 +156,19 @@ void SinglyLinkedList::updateCurrent(sf::Time dt) {
                     Constants::NODE_DISTANCE,
                 0.f, Smooth);
     }
-    if (!nodes.empty())
+    if (!nodes.empty()) {
         mHead->setDestination(nodes[0]->getWorldPosition());
-    else
+    } else {
         mHead->setNull();
+    }
+
+    if (highlightIndex < nodes.size()) {
+        mHighlight->setDestination(nodes[highlightIndex]->getWorldPosition());
+        mHighlight->setTargetPosition(
+            nodes[highlightIndex]->getPosition() +
+                sf::Vector2f(-Constants::NODE_DISTANCE, 50.f),
+            Smooth);
+    }
 
     if (tempNode != nullptr && tempNode->getScale().x == 0.f) {
         detachChild(tempNode);

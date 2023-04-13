@@ -90,6 +90,14 @@ void VisualState::initGUIButtons() {
         resetParam();
     });
 
+    GUIOptionContainer.pack(newButton);
+    GUIOptionContainer.pack(addButton);
+    GUIOptionContainer.pack(deleteButton);
+
+    GUIOptionContainer.pack(createNewGUIButton(
+        GUI::Button::Command, sf::Vector2f(400u, 825u), "Search",
+        [this]() { currentOption = Search; }, true));
+
     auto homeButton = std::make_shared<GUI::Button>(
         GUI::Button::Home, *getContext().fonts, *getContext().textures);
     homeButton->setPosition(1560u, 30u);
@@ -97,11 +105,6 @@ void VisualState::initGUIButtons() {
         requestStackPop();
         requestStackPush(States::Menu);
     });
-
-    GUIOptionContainer.pack(newButton);
-    GUIOptionContainer.pack(addButton);
-    GUIOptionContainer.pack(deleteButton);
-
     mGUIContainer.pack(homeButton);
 
     mGUIContainer.pack(createNewGUIButton(
@@ -194,6 +197,9 @@ void VisualState::execute() {
             else if (indexParam == -1)
                 mScreen.deleteBack();
             break;
+        }
+        case Search: {
+            mScreen.searchByIndex();
         }
     }
 }

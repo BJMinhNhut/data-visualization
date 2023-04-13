@@ -13,12 +13,13 @@ class SinglyLinkedList : public SceneNode {
     explicit SinglyLinkedList(const FontHolder& fonts,
                               const TextureHolder& textures);
     SinglyNode* getHead();
-    void randomGen();
     std::size_t getSize();
 
-    void insertNode(std::size_t index, int value = -1);
+    void randomGen();
 
+    void insertNode(std::size_t index, int value = -1);
     void eraseNode(std::size_t index);
+    void setHighlight(int index);
 
    private:
     virtual void updateCurrent(sf::Time dt);
@@ -30,6 +31,10 @@ class SinglyLinkedList : public SceneNode {
     const TextureHolder& mTextures;
 
     Pointer* mHead;
+    Pointer* mHighlight;
+
+    int highlightIndex;
+
     std::vector<SinglyNode*> nodes;
 
     SinglyNode* tempNode;

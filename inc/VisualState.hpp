@@ -35,6 +35,7 @@ class VisualState : public State {
     void loadNewGUI();
     void loadAddGUI();
     void loadDeleteGUI();
+    void loadSearchGUI();
 
     void execute();
     void resetParam();

@@ -32,6 +32,9 @@ class Screen : private sf::NonCopyable {
     void deleteBack();
     void deleteFront();
 
+    void searchByIndex();
+    // void searchByValue();
+
    private:
     void loadTextures();
     void buildScene();

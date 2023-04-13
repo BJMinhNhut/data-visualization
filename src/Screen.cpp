@@ -30,6 +30,7 @@ void Screen::checkDeleteNode() {
 
 void Screen::update(sf::Time dt) {
     mSceneGraph.update(dt);
+
     if (mSLL != nullptr)
         centerList(mSLL);
     checkDeleteNode();
@@ -103,14 +104,20 @@ void Screen::createNewList() {
 }
 
 void Screen::insertBack() {
+    mSLL->setHighlight(-1);  // temperary
+
     mSLL->insertNode(mSLL->getSize());
 }
 
 void Screen::insertFront() {
+    mSLL->setHighlight(-1);  // temperary
+
     mSLL->insertNode(0);
 }
 
 void Screen::deleteBack() {
+    mSLL->setHighlight(-1);  // temperary
+
     if (mSLL->getSize() == 0)
         return;
 
@@ -118,8 +125,17 @@ void Screen::deleteBack() {
 }
 
 void Screen::deleteFront() {
+    mSLL->setHighlight(-1);  // temperary
+
     if (mSLL->getSize() == 0)
         return;
 
     mSLL->eraseNode(0);
+}
+
+void Screen::searchByIndex() {
+    if (mSLL->getSize() == 0)
+        return;
+    int index = Random::get(0, mSLL->getSize() - 1);
+    mSLL->setHighlight(index);
 }
