@@ -1,4 +1,5 @@
 #include <Button.hpp>
+#include <Constants.hpp>
 #include <Label.hpp>
 #include <Panel.hpp>
 #include <ResourceHolder.hpp>
@@ -14,6 +15,8 @@ VisualState::VisualState(StateStack& stack, Context context)
       mGUIContainer(),
       GUIOptionContainer(),
       GUICommandContainer(Options::OptionCount),
+      GUIValueInput(nullptr),
+      GUIIndexInput(nullptr),
       currentOption(None),
       indexParam(-2),
       valueParam(-1) {
@@ -22,10 +25,12 @@ VisualState::VisualState(StateStack& stack, Context context)
 
     initGUIPanels();
     initGUIButtons();
+    initGUIInputs();
 
     loadNewGUI();
     loadAddGUI();
     loadDeleteGUI();
+    loadSearchGUI();
 }
 
 void VisualState::initGUIPanels() {
@@ -51,9 +56,9 @@ void VisualState::initGUIPanels() {
     mGUIContainer.pack(topPanel);
     mGUIContainer.pack(codePanel);
     mGUIContainer.pack(progressPanel);
+    mGUIContainer.pack(logPanel);
     mGUIContainer.pack(commandPanel);
     mGUIContainer.pack(executePanel);
-    mGUIContainer.pack(logPanel);
 }
 
 void VisualState::initGUIButtons() {
@@ -96,7 +101,13 @@ void VisualState::initGUIButtons() {
 
     GUIOptionContainer.pack(createNewGUIButton(
         GUI::Button::Command, sf::Vector2f(400u, 825u), "Search",
-        [this]() { currentOption = Search; }, true));
+        [this]() {
+            currentOption = Search;
+            GUICommandContainer[Search].reset();
+            GUIIndexInput->setRange(0, (int)mScreen.getListSize() - 1);
+            GUIIndexInput->randomizeValue();
+        },
+        true));
 
     auto homeButton = std::make_shared<GUI::Button>(
         GUI::Button::Home, *getContext().fonts, *getContext().textures);
@@ -111,6 +122,15 @@ void VisualState::initGUIButtons() {
         GUI::Button::Play,
         sf::Vector2f(1050.f, getContext().window->getSize().y - 100.f), "",
         [this]() { execute(); }));
+}
+
+void VisualState::initGUIInputs() {
+    GUIIndexInput = std::make_shared<GUI::Input>(*getContext().fonts,
+                                                 *getContext().textures);
+
+    GUIIndexInput->setPosition(650.f, getContext().window->getSize().y - 100.f);
+
+    GUICommandContainer[Search].pack(GUIIndexInput);
 }
 
 void VisualState::loadNewGUI() {
@@ -130,7 +150,7 @@ void VisualState::loadAddGUI() {
 
     auto frontLabel =
         std::make_shared<GUI::Label>("At front", *getContext().fonts);
-    frontLabel->setPosition(600.f, position.y - 4.f);
+    frontLabel->setPosition(555.f, position.y - 4.f);
     GUICommandContainer[Add].pack(frontLabel);
 
     position += sf::Vector2f(0.f, 35.f);
@@ -141,7 +161,7 @@ void VisualState::loadAddGUI() {
 
     auto backLabel =
         std::make_shared<GUI::Label>("At back", *getContext().fonts);
-    backLabel->setPosition(600.f, position.y - 4.f);
+    backLabel->setPosition(555.f, position.y - 4.f);
     GUICommandContainer[Add].pack(backLabel);
 }
 
@@ -154,7 +174,7 @@ void VisualState::loadDeleteGUI() {
 
     auto frontLabel =
         std::make_shared<GUI::Label>("At front", *getContext().fonts);
-    frontLabel->setPosition(600.f, position.y - 4.f);
+    frontLabel->setPosition(555.f, position.y - 4.f);
     GUICommandContainer[Delete].pack(frontLabel);
 
     position += sf::Vector2f(0.f, 35.f);
@@ -165,8 +185,15 @@ void VisualState::loadDeleteGUI() {
 
     auto backLabel =
         std::make_shared<GUI::Label>("At back", *getContext().fonts);
-    backLabel->setPosition(600.f, position.y - 4.f);
+    backLabel->setPosition(555.f, position.y - 4.f);
     GUICommandContainer[Delete].pack(backLabel);
+}
+
+void VisualState::loadSearchGUI() {
+    auto indexLabel =
+        std::make_shared<GUI::Label>("By index", *getContext().fonts);
+    indexLabel->setPosition(555.f, getContext().window->getSize().y - 150.f);
+    GUICommandContainer[Search].pack(indexLabel);
 }
 
 std::shared_ptr<GUI::Button> VisualState::createNewGUIButton(
@@ -199,7 +226,7 @@ void VisualState::execute() {
             break;
         }
         case Search: {
-            mScreen.searchByIndex();
+            mScreen.searchByIndex(GUIIndexInput->getValue());
         }
     }
 }
@@ -230,6 +257,11 @@ bool VisualState::handleEvent(const sf::Event& event) {
     mGUIContainer.handleEvent(event);
     GUIOptionContainer.handleEvent(event);
     GUICommandContainer[currentOption].handleEvent(event);
+
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::Return)
+            execute();
+    }
     return false;
 }
 

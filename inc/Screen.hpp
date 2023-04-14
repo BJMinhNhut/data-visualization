@@ -32,7 +32,9 @@ class Screen : private sf::NonCopyable {
     void deleteBack();
     void deleteFront();
 
-    void searchByIndex();
+    void searchByIndex(const std::size_t index);
+
+    std::size_t getListSize() const;
     // void searchByValue();
 
    private:

@@ -3,6 +3,7 @@
 
 #include <Button.hpp>
 #include <Container.hpp>
+#include <Input.hpp>
 #include <Screen.hpp>
 #include <State.hpp>
 
@@ -31,6 +32,7 @@ class VisualState : public State {
    private:
     void initGUIButtons();
     void initGUIPanels();
+    void initGUIInputs();
 
     void loadNewGUI();
     void loadAddGUI();
@@ -50,6 +52,8 @@ class VisualState : public State {
     std::vector<GUI::Container> GUICommandContainer;
 
     // std::vector<GUI::Input> GUIInputContainer;
+    GUI::Input::Ptr GUIValueInput;
+    GUI::Input::Ptr GUIIndexInput;
 
     Options currentOption;
     int indexParam;
@@ -59,4 +63,4 @@ class VisualState : public State {
     sf::Sprite mBackgroundSprite;
 };
 
-#endif  //VISUALSTATE_HPP
+#endif  // VISUALSTATE_HPP

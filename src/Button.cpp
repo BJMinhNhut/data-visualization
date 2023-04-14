@@ -126,21 +126,19 @@ void Button::deactivate() {
 
 void Button::handleEvent(const sf::Event& event) {}
 
-void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    states.transform *= getTransform();
-    target.draw(mSprite, states);
-    target.draw(mText, states);
-}
-
 bool Button::contains(sf::Vector2i point) const {
     sf::IntRect bounds(getPosition().x - mSprite.getGlobalBounds().width / 2.f,
                        getPosition().y - mSprite.getGlobalBounds().height / 2.f,
                        mSprite.getGlobalBounds().width,
                        mSprite.getGlobalBounds().height);
-    // std::cerr << "Mouse: " << point.x << ' ' << point.y << '\n';
-    // std::cerr << "Bounds: " << bounds.left << ' ' << bounds.top << ' '
-    //           << bounds.width << ' ' << bounds.height << '\n';
+
     return bounds.contains(point);
+}
+
+void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    states.transform *= getTransform();
+    target.draw(mSprite, states);
+    target.draw(mText, states);
 }
 
 }  // namespace GUI

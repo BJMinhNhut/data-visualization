@@ -43,6 +43,9 @@ Application::Application()
     mTextures.load(Textures::PlayNormal, "data/images/play-normal.png");
     mTextures.load(Textures::PlaySelected, "data/images/play-selected.png");
 
+    mTextures.load(Textures::InputNormal, "data/images/input-normal.png");
+    mTextures.load(Textures::InputSelected, "data/images/input-selected.png");
+
     mStatisticsText.setFont(mFonts.get(Fonts::Main));
     mStatisticsText.setFillColor(sf::Color::Black);
 

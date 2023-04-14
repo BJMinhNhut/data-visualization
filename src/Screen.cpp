@@ -64,6 +64,9 @@ void Screen::loadTextures() {
 
     mTextures.load(Textures::PlayNormal, "data/images/play-normal.png");
     mTextures.load(Textures::PlaySelected, "data/images/play-selected.png");
+
+    mTextures.load(Textures::InputNormal, "data/images/input-normal.png");
+    mTextures.load(Textures::InputSelected, "data/images/input-selected.png");
 }
 
 void Screen::buildScene() {
@@ -133,9 +136,13 @@ void Screen::deleteFront() {
     mSLL->eraseNode(0);
 }
 
-void Screen::searchByIndex() {
-    if (mSLL->getSize() == 0)
+void Screen::searchByIndex(const std::size_t index) {
+    if (index >= mSLL->getSize())
         return;
-    int index = Random::get(0, mSLL->getSize() - 1);
+
     mSLL->setHighlight(index);
+}
+
+std::size_t Screen::getListSize() const {
+    return mSLL->getSize();
 }

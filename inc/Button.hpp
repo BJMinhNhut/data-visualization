@@ -31,10 +31,6 @@ class Button : public Component {
    public:
     Button(Type type, const FontHolder& fonts, const TextureHolder& textures);
 
-    Textures::ID getNormalTextureID(Type type) const;
-    Textures::ID getSelectedTextureID(Type type) const;
-    Textures::ID getPressedTextureID(Type type) const;
-
     void setCallback(Callback callback);
     void setText(const std::string& text);
     void setToggle(bool flag);
@@ -51,6 +47,10 @@ class Button : public Component {
 
    private:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+    Textures::ID getNormalTextureID(Type type) const;
+    Textures::ID getSelectedTextureID(Type type) const;
+    Textures::ID getPressedTextureID(Type type) const;
 
    private:
     Callback mCallback;

@@ -21,6 +21,8 @@ enum ID {
     CheckboxActivated,
     PlayNormal,
     PlaySelected,
+    InputNormal,
+    InputSelected
 };
 }
 
