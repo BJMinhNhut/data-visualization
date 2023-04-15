@@ -7,7 +7,7 @@ FLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -O2
 REBUILDABLES = $(OBJSDIR) $(BINDIR)
 
 TARGET = DataVisual
-SOURCES = $(wildcard $(SOURCEDIR)/*.cpp)
+SOURCES = $(wildcard $(SOURCEDIR)/*.cpp) $(wildcard $(SOURCEDIR)/**/*.cpp)
 OBJS = $(SOURCES:$(SOURCEDIR)/%.cpp=$(OBJSDIR)/%.o)
 DEPS = $(OBJS:(OBJSDIR)/%.o=(OBJSDIR)/%.d)
 
@@ -24,8 +24,8 @@ all: dir build
 
 build: $(BINDIR)/$(TARGET)
 
-# Compile & run program
-run: build
+# Run program
+run: build 
 	$(HIDE)./$(BINDIR)/$(TARGET)
 
 dir:
@@ -33,6 +33,8 @@ dir:
 	$(HIDE)mkdir -p $(BINDIR)
 	$(HIDE)[ -d $(OBJSDIR) ] && echo $(OBJSDIR)/ found || echo Make directory $(OBJSDIR)/
 	$(HIDE)mkdir -p $(OBJSDIR)
+	$(HIDE)[ -d $(OBJSDIR)/GUI ] && echo $(OBJSDIR)/GUI/ found || echo Make directory $(OBJSDIR)/GUI/
+	$(HIDE)mkdir -p $(OBJSDIR)/GUI/
 
 $(BINDIR)/$(TARGET): $(OBJS)
 	$(HIDE)echo Linking $@
