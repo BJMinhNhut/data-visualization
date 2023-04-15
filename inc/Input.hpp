@@ -6,6 +6,7 @@
 #include <ResourceIdentifiers.hpp>
 
 #include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
 
@@ -31,6 +32,7 @@ class Input : public Component {
     virtual void activate();
     virtual void deactivate();
 
+    virtual void update(sf::Time dt);
     virtual void handleEvent(const sf::Event& event);
     virtual bool contains(sf::Vector2i point) const;
 
@@ -38,7 +40,10 @@ class Input : public Component {
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
    private:
-    int mCursor;
+    sf::RectangleShape mCursor;
+    bool cursorDrawable;
+    sf::Time cursorLife;
+    sf::Time cursorCountdown;
 
     int mValue;
     int mMinValue;

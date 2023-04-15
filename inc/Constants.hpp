@@ -2,6 +2,7 @@
 #define CONSTANTS_HPP
 
 #include <SFML/Graphics/Color.hpp>
+#include <SFML/System/Time.hpp>
 
 namespace Constants {
 // Drawing properties
@@ -15,9 +16,13 @@ unsigned int const LIST_MAXSIZE = 10;
 // Math
 float const PI = 3.14159265;
 
+// Color
 sf::Color const mBlack(66, 66, 66);
 
-int const INPUT_MAX_LENGTH = 2;
+// Input
+int const INPUT_MAX_LENGTH = 9;
+sf::Time const INPUT_CURSOR_LIFE(sf::milliseconds(400));
+
 }  // namespace Constants
 
 #endif  // CONSTANTS_HPP

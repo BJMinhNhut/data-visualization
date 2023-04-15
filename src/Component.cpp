@@ -34,4 +34,8 @@ bool Component::contains(sf::Vector2i point) const {
     return false;
 }
 
+void Component::update(sf::Time dt) {
+    // do nothing as default
+}
+
 }  // namespace GUI

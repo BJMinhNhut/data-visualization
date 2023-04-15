@@ -24,6 +24,12 @@ bool Container::isSelectable() const {
     return false;
 }
 
+void Container::update(sf::Time dt) {
+    for (int index = 0; index < mChildren.size(); index++) {
+        mChildren[index]->update(dt);
+    }
+}
+
 void Container::handleEvent(const sf::Event& event) {
     // If we have selected a child then give it events
     if (hasSelection() && mChildren[mSelectedChild]->isActive()) {

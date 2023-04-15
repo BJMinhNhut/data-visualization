@@ -4,6 +4,7 @@
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/System/NonCopyable.hpp>
+#include <SFML/System/Time.hpp>
 
 #include <memory>
 
@@ -33,6 +34,7 @@ class Component : public sf::Drawable,
 
     virtual bool contains(sf::Vector2i point) const;
 
+    virtual void update(sf::Time dt);
     virtual void handleEvent(const sf::Event& event) = 0;
 
    private:

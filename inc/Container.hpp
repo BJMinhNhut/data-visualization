@@ -19,6 +19,7 @@ class Container : public Component {
     void reset();
 
     virtual bool isSelectable() const;
+    virtual void update(sf::Time dt);
     virtual void handleEvent(const sf::Event& event);
 
     void updateSelect(sf::Vector2i point);

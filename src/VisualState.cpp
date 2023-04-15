@@ -104,7 +104,8 @@ void VisualState::initGUIButtons() {
         [this]() {
             currentOption = Search;
             GUICommandContainer[Search].reset();
-            GUIIndexInput->setRange(0, (int)mScreen.getListSize() - 1);
+            GUIIndexInput->setRange(
+                0, std::max(0, (int)mScreen.getListSize() - 1));
             GUIIndexInput->randomizeValue();
         },
         true));
@@ -250,6 +251,11 @@ void VisualState::draw() {
 
 bool VisualState::update(sf::Time dt) {
     mScreen.update(dt);
+
+    mGUIContainer.update(dt);
+    GUIOptionContainer.update(dt);
+    GUICommandContainer[currentOption].update(dt);
+
     return true;
 }
 
@@ -262,6 +268,16 @@ bool VisualState::handleEvent(const sf::Event& event) {
         if (event.key.code == sf::Keyboard::Return)
             execute();
     }
+
+    if (event.type == sf::Event::MouseButtonReleased) {
+        if (event.mouseButton.button == sf::Mouse::Left) {
+            if (!GUIIndexInput->contains(
+                    sf::Vector2(event.mouseButton.x, event.mouseButton.y))) {
+                GUIIndexInput->deactivate();
+                GUIIndexInput->deselect();
+            }
+        }
+    }
     return false;
 }
 
@@ -269,6 +285,5 @@ bool VisualState::handleRealtime(const sf::Vector2i mousePosition) {
     mGUIContainer.updateSelect(mousePosition);
     GUIOptionContainer.updateSelect(mousePosition);
     GUICommandContainer[currentOption].updateSelect(mousePosition);
-
     return false;
 }

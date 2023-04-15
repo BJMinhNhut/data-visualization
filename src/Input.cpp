@@ -5,6 +5,7 @@
 
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/System/Time.hpp>
 #include <SFML/Window/Event.hpp>
 
 #include <iostream>
@@ -16,15 +17,21 @@ Input::Input(const FontHolder& fonts, const TextureHolder& textures)
       mSelectedTexture(textures.get(Textures::InputSelected)),
       mPressedTexture(textures.get(Textures::InputSelected)),
       mText("", fonts.get(Fonts::Main), 16),
-      mCursor(0),
+      cursorDrawable(true),
+      mCursor(getLineShape(sf::Vector2f(0.f, 16.f), 2.f)),
+      cursorCountdown(Constants::INPUT_CURSOR_LIFE),
       mValue(0),
       mMinValue(0),
       mMaxValue(0) {
     mText.setFillColor(Constants::mBlack);
-    mSprite.setTexture(mNormalTexture);
-
-    centerOrigin(mSprite);
     centerOrigin(mText);
+
+    mSprite.setTexture(mNormalTexture);
+    centerOrigin(mSprite);
+
+    mCursor.setFillColor(Constants::mBlack);
+    mCursor.setPosition(mText.getGlobalBounds().width / 2.f + 2.f, 0.f);
+    centerOrigin(mCursor);
 }
 
 bool Input::setValue(const int value) {
@@ -34,6 +41,8 @@ bool Input::setValue(const int value) {
     mValue = value;
     mText.setString(std::to_string(mValue));
     centerOrigin(mText);
+
+    mCursor.setPosition(mText.getGlobalBounds().width / 2.f + 3.f, 0.f);
     return true;
 }
 
@@ -85,6 +94,18 @@ void Input::deactivate() {
         mSprite.setTexture(mNormalTexture, true);
 }
 
+void Input::update(sf::Time dt) {
+    if (isActive()) {
+        cursorCountdown += dt;
+
+        if (cursorCountdown > Constants::INPUT_CURSOR_LIFE) {
+            cursorDrawable ^= 1;
+            cursorCountdown = sf::milliseconds(0.f);
+        }
+    } else
+        cursorDrawable = 0;
+}
+
 void Input::handleEvent(const sf::Event& event) {
     std::string buffer(mText.getString());
 
@@ -92,9 +113,12 @@ void Input::handleEvent(const sf::Event& event) {
         // handle text input
         std::cerr << "text hit!\n";
         char digit = static_cast<char>(event.text.unicode);
-        if (buffer.length() < Constants::INPUT_MAX_LENGTH &&
-            std::isdigit(digit)) {
+        if (std::isdigit(digit)) {
             buffer.push_back(digit);
+        }
+
+        if (buffer.length() > Constants::INPUT_MAX_LENGTH) {
+            buffer.erase(0, 1);
         }
     } else if (event.type == sf::Event::KeyPressed) {
         std::cerr << "keyboard hit!\n";
@@ -113,11 +137,10 @@ void Input::handleEvent(const sf::Event& event) {
 
     mValue = atoi(buffer.c_str());
 
-    mValue = std::max(mValue, mMinValue);
-    mValue = std::min(mValue, mMaxValue);
-
     mText.setString(std::to_string(mValue));
     centerOrigin(mText);
+
+    mCursor.setPosition(mText.getGlobalBounds().width / 2.f + 3.f, 0.f);
 }
 
 bool Input::contains(sf::Vector2i point) const {
@@ -133,6 +156,9 @@ void Input::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.transform *= getTransform();
     target.draw(mSprite, states);
     target.draw(mText, states);
+
+    if (cursorDrawable)
+        target.draw(mCursor, states);
 }
 
 }  // namespace GUI
