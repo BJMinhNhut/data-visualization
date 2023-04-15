@@ -12,13 +12,15 @@ class SinglyLinkedList : public SceneNode {
    public:
     explicit SinglyLinkedList(const FontHolder& fonts,
                               const TextureHolder& textures);
-    SinglyNode* getHead();
-    std::size_t getSize();
+
+    std::size_t getSize() const;
+    int getValue(std::size_t index) const;
 
     void randomGen();
 
     void insertNode(std::size_t index, int value = -1);
     void eraseNode(std::size_t index);
+    void updateNode(std::size_t index, int newValue);
     void setHighlight(int index);
 
    private:

@@ -31,8 +31,14 @@ SinglyLinkedList::SinglyLinkedList(const FontHolder& fonts,
     randomGen();
 }
 
-std::size_t SinglyLinkedList::getSize() {
+std::size_t SinglyLinkedList::getSize() const {
     return nodes.size();
+}
+
+int SinglyLinkedList::getValue(std::size_t index) const {
+    if (index >= nodes.size())
+        return -1;
+    return nodes[index]->getValue();
 }
 
 void SinglyLinkedList::insertNode(std::size_t index, int value) {
@@ -173,5 +179,13 @@ void SinglyLinkedList::updateCurrent(sf::Time dt) {
     if (tempNode != nullptr && tempNode->getScale().x == 0.f) {
         detachChild(tempNode);
         tempNode = nullptr;
+    }
+}
+
+void SinglyLinkedList::updateNode(std::size_t index, int newValue) {
+    if (index < nodes.size()) {
+        std::cerr << "Update node " << index << " to " << newValue << '\n';
+        nodes[index]->setValue(newValue);
+        setHighlight(index);
     }
 }

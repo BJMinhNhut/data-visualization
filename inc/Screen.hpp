@@ -25,17 +25,13 @@ class Screen : private sf::NonCopyable {
     void draw();
 
     void createNewList();
+    void insertList(std::size_t index, int value);
+    void eraseList(std::size_t index);
+    void updateList(std::size_t index, int value);
+    void searchList(const int value);
 
-    void insertBack();
-    void insertFront();
-
-    void deleteBack();
-    void deleteFront();
-
-    void searchByIndex(const std::size_t index);
-
+    int getRandomNodeValue() const;
     std::size_t getListSize() const;
-    // void searchByValue();
 
    private:
     void loadTextures();

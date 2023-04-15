@@ -14,23 +14,24 @@ VisualState::VisualState(StateStack& stack, Context context)
       mScreen(*context.window),
       mGUIContainer(),
       GUIOptionContainer(),
-      GUICommandContainer(Options::OptionCount),
-      GUIValueInput(nullptr),
-      GUIIndexInput(nullptr),
-      currentOption(None),
-      indexParam(-2),
-      valueParam(-1) {
+      GUICommandContainer(OptionCount),
+      GUIValueInput(OptionCount),
+      GUIIndexInput(OptionCount),
+      GUICallback(OptionCount, [this]() {}),
+      currentOption(None) {
 
     mBackgroundSprite.setTexture(context.textures->get(Textures::TitleScreen));
 
     initGUIPanels();
     initGUIButtons();
-    initGUIInputs();
 
     loadNewGUI();
     loadAddGUI();
     loadDeleteGUI();
+    loadUpdateGUI();
     loadSearchGUI();
+
+    loadCallback();
 }
 
 void VisualState::initGUIPanels() {
@@ -44,69 +45,97 @@ void VisualState::initGUIPanels() {
     auto progressPanel = std::make_shared<GUI::Panel>(500.f, 100.f);
     progressPanel->setPosition(800.f, getContext().window->getSize().y - 150.f);
 
-    auto logPanel = std::make_shared<GUI::Panel>(500.f, 150.f);
+    auto logPanel = std::make_shared<GUI::Panel>(500.f, 100.f);
     logPanel->setPosition(300.f, getContext().window->getSize().y - 400.f);
 
-    auto commandPanel = std::make_shared<GUI::Panel>(200.f, 200.f);
-    commandPanel->setPosition(300.f, getContext().window->getSize().y - 250.f);
+    auto commandPanel = std::make_shared<GUI::Panel>(200.f, 250.f);
+    commandPanel->setPosition(300.f, getContext().window->getSize().y - 300.f);
 
-    auto executePanel = std::make_shared<GUI::Panel>(300.f, 200.f);
-    executePanel->setPosition(500.f, getContext().window->getSize().y - 250.f);
+    auto executePanel = std::make_shared<GUI::Panel>(300.f, 250.f);
+    executePanel->setPosition(500.f, getContext().window->getSize().y - 300.f);
 
     mGUIContainer.pack(topPanel);
     mGUIContainer.pack(codePanel);
     mGUIContainer.pack(progressPanel);
     mGUIContainer.pack(logPanel);
-    mGUIContainer.pack(commandPanel);
     mGUIContainer.pack(executePanel);
+    mGUIContainer.pack(commandPanel);
 }
 
 void VisualState::initGUIButtons() {
+    sf::Vector2f position(400u, 625u);
+
     auto newButton = std::make_shared<GUI::Button>(
         GUI::Button::Command, *getContext().fonts, *getContext().textures);
     newButton->setToggle(true);
-    newButton->setPosition(400u, 675u);
+    newButton->setPosition(position);
     newButton->setText("New");
     newButton->setCallback([this]() {
         currentOption = New;
         GUICommandContainer[currentOption].reset();
-        resetParam();
     });
+    GUIOptionContainer.pack(newButton);
+
+    position.y += 50.f;
 
     auto addButton = std::make_shared<GUI::Button>(
         GUI::Button::Command, *getContext().fonts, *getContext().textures);
     addButton->setToggle(true);
-    addButton->setPosition(400u, 725u);
+    addButton->setPosition(position);
     addButton->setText("Add");
     addButton->setCallback([this]() {
         currentOption = Add;
         GUICommandContainer[currentOption].reset();
-        resetParam();
+
+        GUIIndexInput[Add]->setRange(0, mScreen.getListSize());
+        GUIIndexInput[Add]->randomizeValue();
+
+        GUIValueInput[Add]->randomizeValue();
     });
+    GUIOptionContainer.pack(addButton);
+
+    position.y += 50.f;
 
     auto deleteButton = std::make_shared<GUI::Button>(
         GUI::Button::Command, *getContext().fonts, *getContext().textures);
     deleteButton->setToggle(true);
-    deleteButton->setPosition(400u, 775u);
+    deleteButton->setPosition(position);
     deleteButton->setText("Delete");
     deleteButton->setCallback([this]() {
         currentOption = Delete;
-        GUICommandContainer[currentOption].reset();
-        resetParam();
-    });
+        GUICommandContainer[Delete].reset();
 
-    GUIOptionContainer.pack(newButton);
-    GUIOptionContainer.pack(addButton);
+        GUIIndexInput[Delete]->setRange(0, mScreen.getListSize());
+        GUIIndexInput[Delete]->randomizeValue();
+    });
     GUIOptionContainer.pack(deleteButton);
 
+    position.y += 50.f;
+
+    // Update
+
     GUIOptionContainer.pack(createNewGUIButton(
-        GUI::Button::Command, sf::Vector2f(400u, 825u), "Search",
+        GUI::Button::Command, position, "Update",
+        [this]() {
+            currentOption = Update;
+            GUICommandContainer[Update].reset();
+
+            GUIIndexInput[Update]->setRange(
+                0, std::max(0, (int)mScreen.getListSize() - 1));
+            GUIIndexInput[Update]->randomizeValue();
+
+            GUIValueInput[Update]->randomizeValue();
+        },
+        true));
+
+    position.y += 50.f;
+
+    GUIOptionContainer.pack(createNewGUIButton(
+        GUI::Button::Command, position, "Search",
         [this]() {
             currentOption = Search;
             GUICommandContainer[Search].reset();
-            GUIIndexInput->setRange(
-                0, std::max(0, (int)mScreen.getListSize() - 1));
-            GUIIndexInput->randomizeValue();
+            GUIValueInput[Search]->setValue(mScreen.getRandomNodeValue());
         },
         true));
 
@@ -119,23 +148,15 @@ void VisualState::initGUIButtons() {
     });
     mGUIContainer.pack(homeButton);
 
-    mGUIContainer.pack(createNewGUIButton(
+    GUIExecuteButton = createNewGUIButton(
         GUI::Button::Play,
         sf::Vector2f(1050.f, getContext().window->getSize().y - 100.f), "",
-        [this]() { execute(); }));
-}
-
-void VisualState::initGUIInputs() {
-    GUIIndexInput = std::make_shared<GUI::Input>(*getContext().fonts,
-                                                 *getContext().textures);
-
-    GUIIndexInput->setPosition(650.f, getContext().window->getSize().y - 100.f);
-
-    GUICommandContainer[Search].pack(GUIIndexInput);
+        [this]() { execute(); });
+    mGUIContainer.pack(GUIExecuteButton);
 }
 
 void VisualState::loadNewGUI() {
-    sf::Vector2f position(700.f, getContext().window->getSize().y - 225.f);
+    sf::Vector2f position(650.f, getContext().window->getSize().y - 225.f);
 
     GUICommandContainer[New].pack(
         createNewGUIButton(GUI::Button::Command, position, "Randomize",
@@ -143,58 +164,84 @@ void VisualState::loadNewGUI() {
 }
 
 void VisualState::loadAddGUI() {
-    sf::Vector2f position(700.f, getContext().window->getSize().y - 215.f);
+    auto indexLabel =
+        std::make_shared<GUI::Label>("Position", *getContext().fonts);
+    indexLabel->setPosition(555.f, getContext().window->getSize().y - 250.f);
+    GUICommandContainer[Add].pack(indexLabel);
 
-    GUICommandContainer[Add].pack(createNewGUIButton(
-        GUI::Button::Checkbox, position, "", [this]() { indexParam = 0; },
-        true));
+    GUIIndexInput[Add] = std::make_shared<GUI::Input>(*getContext().fonts,
+                                                      *getContext().textures);
+    GUIIndexInput[Add]->setPosition(650.f,
+                                    getContext().window->getSize().y - 205.f);
+    GUICommandContainer[Add].pack(GUIIndexInput[Add]);
 
-    auto frontLabel =
-        std::make_shared<GUI::Label>("At front", *getContext().fonts);
-    frontLabel->setPosition(555.f, position.y - 4.f);
-    GUICommandContainer[Add].pack(frontLabel);
+    auto valueLabel =
+        std::make_shared<GUI::Label>("Value", *getContext().fonts);
+    valueLabel->setPosition(555.f, getContext().window->getSize().y - 170.f);
+    GUICommandContainer[Add].pack(valueLabel);
 
-    position += sf::Vector2f(0.f, 35.f);
-
-    GUICommandContainer[Add].pack(createNewGUIButton(
-        GUI::Button::Checkbox, position, "", [this]() { indexParam = -1; },
-        true));
-
-    auto backLabel =
-        std::make_shared<GUI::Label>("At back", *getContext().fonts);
-    backLabel->setPosition(555.f, position.y - 4.f);
-    GUICommandContainer[Add].pack(backLabel);
+    GUIValueInput[Add] = std::make_shared<GUI::Input>(*getContext().fonts,
+                                                      *getContext().textures);
+    GUIValueInput[Add]->setPosition(650.f,
+                                    getContext().window->getSize().y - 125.f);
+    GUIValueInput[Add]->setRange(Constants::NODE_MINVALUE,
+                                 Constants::NODE_MAXVALUE);
+    GUICommandContainer[Add].pack(GUIValueInput[Add]);
 }
 
 void VisualState::loadDeleteGUI() {
-    sf::Vector2f position(700.f, getContext().window->getSize().y - 215.f);
+    auto indexLabel =
+        std::make_shared<GUI::Label>("Position", *getContext().fonts);
+    indexLabel->setPosition(555.f, getContext().window->getSize().y - 250.f);
+    GUICommandContainer[Delete].pack(indexLabel);
 
-    GUICommandContainer[Delete].pack(createNewGUIButton(
-        GUI::Button::Checkbox, position, "", [this]() { indexParam = 0; },
-        true));
-
-    auto frontLabel =
-        std::make_shared<GUI::Label>("At front", *getContext().fonts);
-    frontLabel->setPosition(555.f, position.y - 4.f);
-    GUICommandContainer[Delete].pack(frontLabel);
-
-    position += sf::Vector2f(0.f, 35.f);
-
-    GUICommandContainer[Delete].pack(createNewGUIButton(
-        GUI::Button::Checkbox, position, "", [this]() { indexParam = -1; },
-        true));
-
-    auto backLabel =
-        std::make_shared<GUI::Label>("At back", *getContext().fonts);
-    backLabel->setPosition(555.f, position.y - 4.f);
-    GUICommandContainer[Delete].pack(backLabel);
+    GUIIndexInput[Delete] = std::make_shared<GUI::Input>(
+        *getContext().fonts, *getContext().textures);
+    GUIIndexInput[Delete]->setPosition(
+        650.f, getContext().window->getSize().y - 205.f);
+    GUICommandContainer[Delete].pack(GUIIndexInput[Delete]);
 }
 
 void VisualState::loadSearchGUI() {
+    auto valueLabel =
+        std::make_shared<GUI::Label>("By value", *getContext().fonts);
+    valueLabel->setPosition(555.f, getContext().window->getSize().y - 250.f);
+
+    GUIValueInput[Search] = std::make_shared<GUI::Input>(
+        *getContext().fonts, *getContext().textures);
+    GUIValueInput[Search]->setPosition(
+        650.f, getContext().window->getSize().y - 205.f);
+    GUIValueInput[Search]->setRange(Constants::NODE_MINVALUE,
+                                    Constants::NODE_MAXVALUE);
+
+    GUICommandContainer[Search].pack(valueLabel);
+    GUICommandContainer[Search].pack(GUIValueInput[Search]);
+}
+
+void VisualState::loadUpdateGUI() {
     auto indexLabel =
-        std::make_shared<GUI::Label>("By index", *getContext().fonts);
-    indexLabel->setPosition(555.f, getContext().window->getSize().y - 150.f);
-    GUICommandContainer[Search].pack(indexLabel);
+        std::make_shared<GUI::Label>("Position", *getContext().fonts);
+    indexLabel->setPosition(555.f, getContext().window->getSize().y - 250.f);
+    GUICommandContainer[Update].pack(indexLabel);
+
+    GUIIndexInput[Update] = std::make_shared<GUI::Input>(
+        *getContext().fonts, *getContext().textures);
+    GUIIndexInput[Update]->setPosition(
+        650.f, getContext().window->getSize().y - 205.f);
+    GUICommandContainer[Update].pack(GUIIndexInput[Update]);
+
+    auto valueLabel =
+        std::make_shared<GUI::Label>("New value", *getContext().fonts);
+    valueLabel->setPosition(555.f, getContext().window->getSize().y - 170.f);
+    GUICommandContainer[Update].pack(valueLabel);
+
+    GUIValueInput[Update] = std::make_shared<GUI::Input>(
+        *getContext().fonts, *getContext().textures);
+    GUIValueInput[Update]->setPosition(
+        650.f, getContext().window->getSize().y - 125.f);
+    GUIValueInput[Update]->setRange(Constants::NODE_MINVALUE,
+                                    Constants::NODE_MAXVALUE);
+    GUICommandContainer[Update].pack(GUIValueInput[Update]);
 }
 
 std::shared_ptr<GUI::Button> VisualState::createNewGUIButton(
@@ -210,31 +257,30 @@ std::shared_ptr<GUI::Button> VisualState::createNewGUIButton(
     return button;
 }
 
-void VisualState::execute() {
-    switch (currentOption) {
-        case Add: {
-            if (indexParam == 0)
-                mScreen.insertFront();
-            else if (indexParam == -1)
-                mScreen.insertBack();
-            break;
-        }
-        case Delete: {
-            if (indexParam == 0)
-                mScreen.deleteFront();
-            else if (indexParam == -1)
-                mScreen.deleteBack();
-            break;
-        }
-        case Search: {
-            mScreen.searchByIndex(GUIIndexInput->getValue());
-        }
-    }
+void VisualState::loadCallback() {
+    GUICallback[Add] = [this]() {
+        mScreen.insertList(GUIIndexInput[Add]->getValue(),
+                           GUIValueInput[Add]->getValue());
+    };
+
+    GUICallback[Delete] = [this]() {
+        mScreen.eraseList(GUIIndexInput[Delete]->getValue());
+    };
+
+    GUICallback[Update] = [this]() {
+        mScreen.updateList(GUIIndexInput[Update]->getValue(),
+                           GUIValueInput[Update]->getValue());
+    };
+
+    GUICallback[Search] = [this]() {
+        mScreen.searchList(GUIValueInput[Search]->getValue());
+    };
 }
 
-void VisualState::resetParam() {
-    indexParam = -2;
-    valueParam = -1;
+void VisualState::execute() {
+    GUICallback[currentOption]();
+    GUIOptionContainer.reset();
+    currentOption = None;
 }
 
 void VisualState::draw() {
@@ -266,15 +312,23 @@ bool VisualState::handleEvent(const sf::Event& event) {
 
     if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::Return)
-            execute();
+            GUIExecuteButton->activate();
     }
 
     if (event.type == sf::Event::MouseButtonReleased) {
         if (event.mouseButton.button == sf::Mouse::Left) {
-            if (!GUIIndexInput->contains(
+            if (GUIIndexInput[currentOption] != nullptr &&
+                !GUIIndexInput[currentOption]->contains(
                     sf::Vector2(event.mouseButton.x, event.mouseButton.y))) {
-                GUIIndexInput->deactivate();
-                GUIIndexInput->deselect();
+                GUIIndexInput[currentOption]->deactivate();
+                GUIIndexInput[currentOption]->deselect();
+            }
+
+            if (GUIValueInput[currentOption] != nullptr &&
+                !GUIValueInput[currentOption]->contains(
+                    sf::Vector2(event.mouseButton.x, event.mouseButton.y))) {
+                GUIValueInput[currentOption]->deactivate();
+                GUIValueInput[currentOption]->deselect();
             }
         }
     }

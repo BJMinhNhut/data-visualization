@@ -17,6 +17,7 @@ class VisualState : public State {
         New,
         Add,
         Delete,
+        Update,
         Search,
         OptionCount,
     };
@@ -32,15 +33,15 @@ class VisualState : public State {
    private:
     void initGUIButtons();
     void initGUIPanels();
-    void initGUIInputs();
 
     void loadNewGUI();
     void loadAddGUI();
     void loadDeleteGUI();
+    void loadUpdateGUI();
     void loadSearchGUI();
+    void loadCallback();
 
     void execute();
-    void resetParam();
 
     std::shared_ptr<GUI::Button> createNewGUIButton(
         GUI::Button::Type type, sf::Vector2f position, std::string label,
@@ -50,14 +51,13 @@ class VisualState : public State {
     GUI::Container mGUIContainer;
     GUI::Container GUIOptionContainer;
     std::vector<GUI::Container> GUICommandContainer;
+    std::vector<std::function<void()>> GUICallback;
+    std::vector<GUI::Input::Ptr> GUIValueInput;
+    std::vector<GUI::Input::Ptr> GUIIndexInput;
 
-    // std::vector<GUI::Input> GUIInputContainer;
-    GUI::Input::Ptr GUIValueInput;
-    GUI::Input::Ptr GUIIndexInput;
+    GUI::Button::Ptr GUIExecuteButton;
 
     Options currentOption;
-    int indexParam;
-    int valueParam;
 
     Screen mScreen;
     sf::Sprite mBackgroundSprite;

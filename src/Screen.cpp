@@ -106,41 +106,40 @@ void Screen::createNewList() {
     mSceneLayers[Objects]->attachChild(std::move(sllPtr));
 }
 
-void Screen::insertBack() {
+void Screen::insertList(std::size_t index, int value) {
     mSLL->setHighlight(-1);  // temperary
 
-    mSLL->insertNode(mSLL->getSize());
+    if (index <= mSLL->getSize())
+        mSLL->insertNode(index, value);
 }
 
-void Screen::insertFront() {
+void Screen::eraseList(std::size_t index) {
     mSLL->setHighlight(-1);  // temperary
 
-    mSLL->insertNode(0);
+    if (index < mSLL->getSize())
+        mSLL->eraseNode(index);
 }
 
-void Screen::deleteBack() {
-    mSLL->setHighlight(-1);  // temperary
+void Screen::updateList(std::size_t index, int value) {
+    mSLL->setHighlight(-1);
 
-    if (mSLL->getSize() == 0)
-        return;
-
-    mSLL->eraseNode(mSLL->getSize() - 1);
+    if (index < mSLL->getSize())
+        mSLL->updateNode(index, value);
 }
 
-void Screen::deleteFront() {
-    mSLL->setHighlight(-1);  // temperary
-
-    if (mSLL->getSize() == 0)
-        return;
-
-    mSLL->eraseNode(0);
+void Screen::searchList(const int value) {
+    for (int index = 0; index < mSLL->getSize(); ++index) {
+        if (mSLL->getValue(index) == value) {
+            mSLL->setHighlight(index);
+            return;
+        }
+    }
+    mSLL->setHighlight(-1);
 }
 
-void Screen::searchByIndex(const std::size_t index) {
-    if (index >= mSLL->getSize())
-        return;
-
-    mSLL->setHighlight(index);
+int Screen::getRandomNodeValue() const {
+    int index = Random::get(0, std::max(0, (int)mSLL->getSize() - 1));
+    return mSLL->getValue(index);
 }
 
 std::size_t Screen::getListSize() const {

@@ -43,4 +43,5 @@ int NodeData::getValue() {
 void NodeData::setValue(int value) {
     mValue = value;
     mText.setString(std::to_string(mValue));
+    centerOrigin(mText);
 }

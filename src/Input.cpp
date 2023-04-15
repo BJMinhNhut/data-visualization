@@ -121,8 +121,8 @@ void Input::handleEvent(const sf::Event& event) {
             buffer.erase(0, 1);
         }
     } else if (event.type == sf::Event::KeyPressed) {
-        std::cerr << "keyboard hit!\n";
         if (event.key.code == sf::Keyboard::BackSpace) {
+            std::cerr << "backspace hit!\n";
             // pop back buffer
             if (!buffer.empty())
                 buffer.pop_back();
@@ -136,8 +136,8 @@ void Input::handleEvent(const sf::Event& event) {
     }
 
     mValue = atoi(buffer.c_str());
+    mText.setString(buffer);
 
-    mText.setString(std::to_string(mValue));
     centerOrigin(mText);
 
     mCursor.setPosition(mText.getGlobalBounds().width / 2.f + 3.f, 0.f);
