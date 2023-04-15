@@ -1,7 +1,7 @@
-#include <Button.hpp>
 #include <Constants.hpp>
-#include <Label.hpp>
-#include <Panel.hpp>
+#include <GUI/Button.hpp>
+#include <GUI/Label.hpp>
+#include <GUI/Panel.hpp>
 #include <ResourceHolder.hpp>
 #include <Utility.hpp>
 #include <VisualState.hpp>

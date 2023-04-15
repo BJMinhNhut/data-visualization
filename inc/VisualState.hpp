@@ -1,9 +1,9 @@
 #ifndef VISUALSTATE_HPP
 #define VISUALSTATE_HPP
 
-#include <Button.hpp>
-#include <Container.hpp>
-#include <Input.hpp>
+#include <GUI/Button.hpp>
+#include <GUI/Container.hpp>
+#include <GUI/Input.hpp>
 #include <Screen.hpp>
 #include <State.hpp>
 

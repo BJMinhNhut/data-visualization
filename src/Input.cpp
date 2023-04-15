@@ -1,5 +1,5 @@
 #include <Constants.hpp>
-#include <Input.hpp>
+#include <GUI/Input.hpp>
 #include <Random.hpp>
 #include <Utility.hpp>
 

@@ -1,7 +1,7 @@
 #ifndef PANEL_HPP
 #define PANEL_HPP
 
-#include <Component.hpp>
+#include <GUI/Component.hpp>
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>

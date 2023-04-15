@@ -1,7 +1,7 @@
 #ifndef INPUT_HPP
 #define INPUT_HPP
 
-#include <Component.hpp>
+#include <GUI/Component.hpp>
 #include <ResourceHolder.hpp>
 #include <ResourceIdentifiers.hpp>
 

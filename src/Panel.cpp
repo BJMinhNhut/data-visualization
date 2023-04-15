@@ -1,4 +1,4 @@
-#include <Panel.hpp>
+#include <GUI/Panel.hpp>
 
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>

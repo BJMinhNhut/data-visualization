@@ -1,4 +1,4 @@
-#include <Container.hpp>
+#include <GUI/Container.hpp>
 
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>

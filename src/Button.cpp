@@ -1,5 +1,5 @@
-#include <Button.hpp>
 #include <Constants.hpp>
+#include <GUI/Button.hpp>
 #include <Utility.hpp>
 
 #include <SFML/Graphics/RenderStates.hpp>

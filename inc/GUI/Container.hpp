@@ -1,7 +1,7 @@
 #ifndef CONTAINER_HPP
 #define CONTAINER_HPP
 
-#include <Component.hpp>
+#include <GUI/Component.hpp>
 
 #include <memory>
 #include <vector>

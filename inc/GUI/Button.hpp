@@ -1,7 +1,7 @@
 #ifndef BUTTON_HPP
 #define BUTTON_HPP
 
-#include <Component.hpp>
+#include <GUI/Component.hpp>
 #include <ResourceHolder.hpp>
 #include <ResourceIdentifiers.hpp>
 

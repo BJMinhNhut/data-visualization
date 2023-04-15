@@ -1,7 +1,7 @@
 #ifndef MENUSTATE_HPP
 #define MENUSTATE_HPP
 
-#include <Container.hpp>
+#include <GUI/Container.hpp>
 #include <State.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>

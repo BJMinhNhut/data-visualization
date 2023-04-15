@@ -1,5 +1,5 @@
 #include <Constants.hpp>
-#include <Label.hpp>
+#include <GUI/Label.hpp>
 #include <Utility.hpp>
 
 #include <SFML/Graphics/RenderStates.hpp>
