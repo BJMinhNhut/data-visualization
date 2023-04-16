@@ -43,7 +43,7 @@ void VisualSLLState::initGUIButtons() {
     });
 
     addOption(Update, "Update", [this]() {
-        setCurrentOption(Delete);
+        setCurrentOption(Update);
         GUIIndexInput[Update]->setRange(
             0, std::max(0, (int)mScreen.getListSize() - 1));
         GUIIndexInput[Update]->randomizeValue();
