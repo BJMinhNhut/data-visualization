@@ -11,17 +11,6 @@
 #include <SFML/Graphics/Text.hpp>
 
 class VisualState : public State {
-   private:
-    enum Options {
-        None,
-        New,
-        Add,
-        Delete,
-        Update,
-        Search,
-        OptionCount,
-    };
-
    public:
     VisualState(StateStack& stack, Context context);
 
@@ -30,36 +19,33 @@ class VisualState : public State {
     virtual bool handleEvent(const sf::Event& event);
     virtual bool handleRealtime(const sf::Vector2i mousePosition);
 
+   protected:
+    int getCurrentOption() const;
+
+    void addOption(int option, std::string title,
+                   GUI::Button::Callback callback);
+    void packOptionGUI(int option, GUI::Component::Ptr component);
+    void setCurrentOption(int option);
+    void setExecuteCallback(int option, GUI::Button::Callback callback);
+    std::shared_ptr<GUI::Button> createNewGUIButton(
+        GUI::Button::Type type, sf::Vector2f position, std::string label,
+        GUI::Button::Callback callback, bool toggle = false);
+
    private:
     void initGUIButtons();
     void initGUIPanels();
-
-    void loadNewGUI();
-    void loadAddGUI();
-    void loadDeleteGUI();
-    void loadUpdateGUI();
-    void loadSearchGUI();
-    void loadCallback();
-
     void execute();
 
-    std::shared_ptr<GUI::Button> createNewGUIButton(
-        GUI::Button::Type type, sf::Vector2f position, std::string label,
-        std::function<void()> callback, bool toggle = false);
-
    private:
+    // GUI
+    int currentOption;
     GUI::Container mGUIContainer;
     GUI::Container GUIOptionContainer;
-    std::vector<GUI::Container> GUICommandContainer;
-    std::vector<std::function<void()>> GUICallback;
-    std::vector<GUI::Input::Ptr> GUIValueInput;
-    std::vector<GUI::Input::Ptr> GUIIndexInput;
-
+    std::map<int, GUI::Container> GUICommandContainer;
+    std::map<int, std::function<void()>> GUICallback;
     GUI::Button::Ptr GUIExecuteButton;
 
-    Options currentOption;
-
-    Screen mScreen;
+    // Graphics
     sf::Sprite mBackgroundSprite;
 };
 

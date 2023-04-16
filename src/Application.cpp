@@ -2,7 +2,7 @@
 #include <States/MenuState.hpp>
 #include <States/State.hpp>
 #include <States/StateIdentifiers.hpp>
-#include <States/VisualState.hpp>
+#include <States/VisualSLLState.hpp>
 
 #include <iostream>
 #include <string>
@@ -120,5 +120,5 @@ void Application::updateStatistics(sf::Time dt) {
 
 void Application::registerStates() {
     mStateStack.registerState<MenuState>(States::Menu);
-    mStateStack.registerState<VisualState>(States::Visual);
+    mStateStack.registerState<VisualSLLState>(States::VisualSLL);
 }
