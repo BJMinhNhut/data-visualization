@@ -1,8 +1,8 @@
 #include <Constants.hpp>
+#include <Graphics/Screen.hpp>
+#include <Graphics/Singly.hpp>
+#include <Graphics/SinglyNode.hpp>
 #include <Random.hpp>
-#include <Screen.hpp>
-#include <Singly.hpp>
-#include <SinglyNode.hpp>
 
 #include <SFML/Graphics/RenderWindow.hpp>
 

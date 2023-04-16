@@ -1,6 +1,6 @@
 #include <Constants.hpp>
-#include <NodeData.hpp>
-#include <ResourceHolder.hpp>
+#include <Graphics/NodeData.hpp>
+#include <Graphics/ResourceHolder.hpp>
 #include <Utility.hpp>
 
 #include <SFML/Graphics/RenderStates.hpp>

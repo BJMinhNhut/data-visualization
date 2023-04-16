@@ -1,9 +1,9 @@
 #ifndef SINGLYLINKEDLIST_HPP
 #define SINGLYLINKEDLIST_HPP
 
-#include <Pointer.hpp>
-#include <SceneNode.hpp>
-#include <SinglyNode.hpp>
+#include <Graphics/Pointer.hpp>
+#include <Graphics/SceneNode.hpp>
+#include <Graphics/SinglyNode.hpp>
 
 #include <memory>
 #include <vector>

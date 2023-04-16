@@ -1,8 +1,8 @@
 #ifndef NODEDATA_HPP
 #define NODEDATA_HPP
 
-#include <ResourceIdentifiers.hpp>
-#include <SceneNode.hpp>
+#include <Graphics/ResourceIdentifiers.hpp>
+#include <Graphics/SceneNode.hpp>
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>

@@ -1,11 +1,11 @@
 #ifndef SCREEN_HPP
 #define SCREEN_HPP
 
-#include <ResourceHolder.hpp>
-#include <ResourceIdentifiers.hpp>
-#include <SceneNode.hpp>
-#include <Singly.hpp>
-#include <SinglyNode.hpp>
+#include <Graphics/ResourceHolder.hpp>
+#include <Graphics/ResourceIdentifiers.hpp>
+#include <Graphics/SceneNode.hpp>
+#include <Graphics/Singly.hpp>
+#include <Graphics/SinglyNode.hpp>
 
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/View.hpp>

@@ -1,5 +1,5 @@
-#include <State.hpp>
-#include <StateStack.hpp>
+#include <States/State.hpp>
+#include <States/StateStack.hpp>
 
 State::Context::Context(sf::RenderWindow& window, TextureHolder& textures,
                         FontHolder& fonts)

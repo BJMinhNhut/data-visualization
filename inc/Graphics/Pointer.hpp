@@ -1,8 +1,8 @@
 #ifndef POINTER_HPP
 #define POINTER_HPP
 
-#include <ResourceIdentifiers.hpp>
-#include <SceneNode.hpp>
+#include <Graphics/ResourceIdentifiers.hpp>
+#include <Graphics/SceneNode.hpp>
 
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Color.hpp>

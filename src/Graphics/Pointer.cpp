@@ -1,6 +1,6 @@
 #include <Constants.hpp>
-#include <Pointer.hpp>
-#include <ResourceHolder.hpp>
+#include <Graphics/Pointer.hpp>
+#include <Graphics/ResourceHolder.hpp>
 #include <Utility.hpp>
 
 #include <SFML/Graphics/CircleShape.hpp>

@@ -2,9 +2,9 @@
 #include <GUI/Button.hpp>
 #include <GUI/Label.hpp>
 #include <GUI/Panel.hpp>
-#include <ResourceHolder.hpp>
+#include <Graphics/ResourceHolder.hpp>
+#include <States/VisualState.hpp>
 #include <Utility.hpp>
-#include <VisualState.hpp>
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <iostream>

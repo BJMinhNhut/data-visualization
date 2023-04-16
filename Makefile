@@ -35,6 +35,10 @@ dir:
 	$(HIDE)mkdir -p $(OBJSDIR)
 	$(HIDE)[ -d $(OBJSDIR)/GUI ] && echo $(OBJSDIR)/GUI/ found || echo Make directory $(OBJSDIR)/GUI/
 	$(HIDE)mkdir -p $(OBJSDIR)/GUI/
+	$(HIDE)[ -d $(OBJSDIR)/Graphics ] && echo $(OBJSDIR)/Graphics/ found || echo Make directory $(OBJSDIR)/Graphics/
+	$(HIDE)mkdir -p $(OBJSDIR)/Graphics/
+	$(HIDE)[ -d $(OBJSDIR)/States ] && echo $(OBJSDIR)/States/ found || echo Make directory $(OBJSDIR)/States/
+	$(HIDE)mkdir -p $(OBJSDIR)/States/
 
 $(BINDIR)/$(TARGET): $(OBJS)
 	$(HIDE)echo Linking $@

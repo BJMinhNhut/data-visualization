@@ -2,7 +2,7 @@
 #define MENUSTATE_HPP
 
 #include <GUI/Container.hpp>
-#include <State.hpp>
+#include <States/State.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>

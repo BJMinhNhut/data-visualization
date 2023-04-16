@@ -1,10 +1,10 @@
 #ifndef SINGLYNODE_HPP
 #define SINGLYNODE_HPP
 
-#include <NodeData.hpp>
-#include <Pointer.hpp>
-#include <ResourceIdentifiers.hpp>
-#include <SceneNode.hpp>
+#include <Graphics/NodeData.hpp>
+#include <Graphics/Pointer.hpp>
+#include <Graphics/ResourceIdentifiers.hpp>
+#include <Graphics/SceneNode.hpp>
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>

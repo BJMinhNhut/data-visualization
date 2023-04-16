@@ -2,8 +2,8 @@
 #define LABEL_HPP
 
 #include <GUI/Component.hpp>
-#include <ResourceHolder.hpp>
-#include <ResourceIdentifiers.hpp>
+#include <Graphics/ResourceHolder.hpp>
+#include <Graphics/ResourceIdentifiers.hpp>
 
 #include <SFML/Graphics/Text.hpp>
 

@@ -1,8 +1,8 @@
 #ifndef STATE_STACK_HPP
 #define STATE_STACK_HPP
 
-#include <State.hpp>
-#include <StateIdentifiers.hpp>
+#include <States/State.hpp>
+#include <States/StateIdentifiers.hpp>
 
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/System/Time.hpp>

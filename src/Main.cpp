@@ -1,7 +1,7 @@
-#include <Application.hpp>
+#include "Application.hpp"
 
-#include <stdexcept>
 #include <iostream>
+#include <stdexcept>
 
 int main() {
     try {

@@ -1,8 +1,8 @@
-#include <Application.hpp>
-#include <MenuState.hpp>
-#include <State.hpp>
-#include <StateIdentifiers.hpp>
-#include <VisualState.hpp>
+#include "Application.hpp"
+#include <States/MenuState.hpp>
+#include <States/State.hpp>
+#include <States/StateIdentifiers.hpp>
+#include <States/VisualState.hpp>
 
 #include <iostream>
 #include <string>

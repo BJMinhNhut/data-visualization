@@ -1,4 +1,4 @@
-#include <SceneNode.hpp>
+#include <Graphics/SceneNode.hpp>
 
 #include <algorithm>
 #include <cassert>

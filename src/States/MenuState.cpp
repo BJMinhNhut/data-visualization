@@ -1,6 +1,6 @@
 #include <GUI/Button.hpp>
-#include <MenuState.hpp>
-#include <ResourceHolder.hpp>
+#include <Graphics/ResourceHolder.hpp>
+#include <States/MenuState.hpp>
 #include <Utility.hpp>
 
 #include <SFML/Graphics/RenderWindow.hpp>

@@ -1,9 +1,9 @@
 #include <Constants.hpp>
+#include <Graphics/ResourceHolder.hpp>
+#include <Graphics/SceneNode.hpp>
+#include <Graphics/Singly.hpp>
+#include <Graphics/SinglyNode.hpp>
 #include <Random.hpp>
-#include <ResourceHolder.hpp>
-#include <SceneNode.hpp>
-#include <Singly.hpp>
-#include <SinglyNode.hpp>
 #include <Utility.hpp>
 
 #include <SFML/Graphics/RenderStates.hpp>
