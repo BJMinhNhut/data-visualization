@@ -4,11 +4,9 @@
 #include <GUI/Button.hpp>
 #include <GUI/Container.hpp>
 #include <GUI/Input.hpp>
-#include <Graphics/Screen.hpp>
 #include <States/State.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Text.hpp>
 
 class VisualState : public State {
    public:

@@ -15,12 +15,14 @@ class SinglyLinkedList : public SceneNode {
 
     std::size_t getSize() const;
     int getValue(std::size_t index) const;
+    int getRandomNodeValue() const;
 
     void randomGen();
 
     void insertNode(std::size_t index, int value = -1);
     void eraseNode(std::size_t index);
     void updateNode(std::size_t index, int newValue);
+    void searchNode(int value);
     void setHighlight(int index);
 
    private:

@@ -41,6 +41,11 @@ int SinglyLinkedList::getValue(std::size_t index) const {
     return nodes[index]->getValue();
 }
 
+int SinglyLinkedList::getRandomNodeValue() const {
+    int index = Random::get(0, std::max(0, (int)nodes.size() - 1));
+    return nodes[index]->getValue();
+}
+
 void SinglyLinkedList::insertNode(std::size_t index, int value) {
     SinglyNode* newNode = new SinglyNode(mFonts, mTextures);
     if (value != -1)
@@ -120,6 +125,16 @@ void SinglyLinkedList::eraseNode(std::size_t index) {
     tempNode = erasedNode;
 
     std::cerr << "Delete " << erasedNode->getValue() << " at " << index << '\n';
+}
+
+void SinglyLinkedList::searchNode(int value) {
+    for (int index = 0; index < nodes.size(); ++index) {
+        if (value == nodes[index]->getValue()) {
+            setHighlight(index);
+            return;
+        }
+    }
+    setHighlight(-1);
 }
 
 void SinglyLinkedList::setHighlight(int index) {

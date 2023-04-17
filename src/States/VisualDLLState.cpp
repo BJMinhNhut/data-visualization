@@ -11,7 +11,6 @@
 
 VisualDLLState::VisualDLLState(StateStack& stack, Context context)
     : VisualState(stack, context),
-      mScreen(*context.window),
       GUIValueInput(OptionCount),
       GUIIndexInput(OptionCount) {
 

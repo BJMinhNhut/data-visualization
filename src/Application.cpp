@@ -45,6 +45,8 @@ Application::Application()
     mTextures.load(Textures::MenuSLLNormal, "data/images/menu-sll-normal.png");
     mTextures.load(Textures::MenuSLLSelected,
                    "data/images/menu-sll-selected.png");
+    mTextures.load(Textures::SinglyNodeNormal,
+                   "data/images/node-singly-normal.png");
 
     mTextures.load(Textures::MenuDLLNormal, "data/images/menu-dll-normal.png");
     mTextures.load(Textures::MenuDLLSelected,

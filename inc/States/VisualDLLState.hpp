@@ -4,7 +4,6 @@
 #include <GUI/Button.hpp>
 #include <GUI/Container.hpp>
 #include <GUI/Input.hpp>
-#include <Graphics/Screen.hpp>
 #include <States/VisualState.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
@@ -43,6 +42,6 @@ class VisualDLLState : public VisualState {
     std::vector<GUI::Input::Ptr> GUIValueInput;
     std::vector<GUI::Input::Ptr> GUIIndexInput;
 
-    Screen mScreen;
+    // Screen mScreen;
 };
 #endif  // VISUALDLLSTATE_HPP

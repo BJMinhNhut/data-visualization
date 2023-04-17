@@ -11,9 +11,11 @@
 
 VisualSLLState::VisualSLLState(StateStack& stack, Context context)
     : VisualState(stack, context),
-      mScreen(*context.window),
+      mSLL(*context.fonts, *context.textures),
       GUIValueInput(OptionCount),
       GUIIndexInput(OptionCount) {
+
+    centerSLL();
 
     initGUIButtons();
 
@@ -26,33 +28,48 @@ VisualSLLState::VisualSLLState(StateStack& stack, Context context)
     loadCallback();
 }
 
+void VisualSLLState::centerSLL() {
+    sf::Vector2u windowSize = getContext().window->getSize();
+    if (mSLL.getSize() == 0)
+        mSLL.setTargetPosition(windowSize.x / 2.f, windowSize.y / 4.f,
+                               SceneNode::Smooth);
+    else
+        mSLL.setTargetPosition(
+            windowSize.x / 2.f -
+                ((Constants::NODE_DISTANCE + Constants::NODE_SIZE) *
+                     mSLL.getSize() -
+                 Constants::NODE_SIZE / 2.f) /
+                    2.f,
+            windowSize.y / 4.f, SceneNode::Smooth);
+}
+
 void VisualSLLState::initGUIButtons() {
     addOption(New, "New", [this]() { setCurrentOption(New); });
 
     addOption(Add, "Add", [this]() {
         setCurrentOption(Add);
-        GUIIndexInput[Add]->setRange(0, mScreen.getListSize());
+        GUIIndexInput[Add]->setRange(0, mSLL.getSize());
         GUIIndexInput[Add]->randomizeValue();
         GUIValueInput[Add]->randomizeValue();
     });
 
     addOption(Delete, "Delete", [this]() {
         setCurrentOption(Delete);
-        GUIIndexInput[Delete]->setRange(0, mScreen.getListSize());
+        GUIIndexInput[Delete]->setRange(0, mSLL.getSize());
         GUIIndexInput[Delete]->randomizeValue();
     });
 
     addOption(Update, "Update", [this]() {
         setCurrentOption(Update);
-        GUIIndexInput[Update]->setRange(
-            0, std::max(0, (int)mScreen.getListSize() - 1));
+        GUIIndexInput[Update]->setRange(0,
+                                        std::max(0, (int)mSLL.getSize() - 1));
         GUIIndexInput[Update]->randomizeValue();
         GUIValueInput[Update]->randomizeValue();
     });
 
     addOption(Search, "Search", [this]() {
         setCurrentOption(Search);
-        GUIValueInput[Search]->setValue(mScreen.getRandomNodeValue());
+        GUIValueInput[Search]->setValue(mSLL.getRandomNodeValue());
     });
 }
 
@@ -61,7 +78,7 @@ void VisualSLLState::loadNewGUI() {
 
     packOptionGUI(
         New, createNewGUIButton(GUI::Button::Command, position, "Randomize",
-                                [this]() { mScreen.createNewList(); }));
+                                [this]() { mSLL.randomGen(); }));
 }
 
 void VisualSLLState::loadAddGUI() {
@@ -147,31 +164,32 @@ void VisualSLLState::loadUpdateGUI() {
 
 void VisualSLLState::loadCallback() {
     setExecuteCallback(Add, [this]() {
-        mScreen.insertList(GUIIndexInput[Add]->getValue(),
-                           GUIValueInput[Add]->getValue());
+        mSLL.insertNode(GUIIndexInput[Add]->getValue(),
+                        GUIValueInput[Add]->getValue());
     });
 
     setExecuteCallback(Delete, [this]() {
-        mScreen.eraseList(GUIIndexInput[Delete]->getValue());
+        mSLL.eraseNode(GUIIndexInput[Delete]->getValue());
     });
 
     setExecuteCallback(Update, [this]() {
-        mScreen.updateList(GUIIndexInput[Update]->getValue(),
-                           GUIValueInput[Update]->getValue());
+        mSLL.updateNode(GUIIndexInput[Update]->getValue(),
+                        GUIValueInput[Update]->getValue());
     });
 
     setExecuteCallback(Search, [this]() {
-        mScreen.searchList(GUIValueInput[Search]->getValue());
+        mSLL.searchNode(GUIValueInput[Search]->getValue());
     });
 }
 
 void VisualSLLState::draw() {
     VisualState::draw();
-    mScreen.draw();
+    getContext().window->draw(mSLL);
 }
 
 bool VisualSLLState::update(sf::Time dt) {
-    mScreen.update(dt);
+    mSLL.update(dt);
+    centerSLL();
     return VisualState::update(dt);
 }
 
