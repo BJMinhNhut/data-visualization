@@ -10,19 +10,36 @@ class Font;
 namespace Textures {
 enum ID {
     TitleScreen,
+
     SinglyNodeNormal,
+
     HomeNormal,
     HomeSelected,
+
     CommandNormal,
     CommandSelected,
     CommandActivated,
-    CheckboxNormal,
-    CheckboxSelected,
-    CheckboxActivated,
+
     PlayNormal,
     PlaySelected,
+
     InputNormal,
-    InputSelected
+    InputSelected,
+
+    MenuSLLNormal,
+    MenuSLLSelected,
+    MenuDLLNormal,
+    MenuDLLSelected,
+    MenuCLLNormal,
+    MenuCLLSelected,
+    MenuStackNormal,
+    MenuStackSelected,
+    MenuQueueNormal,
+    MenuQueueSelected,
+    MenuStaticNormal,
+    MenuStaticSelected,
+    MenuDynamicNormal,
+    MenuDynamicSelected,
 };
 }
 

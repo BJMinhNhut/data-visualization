@@ -31,10 +31,22 @@ Textures::ID Button::getNormalTextureID(Type type) const {
             return Textures::CommandNormal;
         case Home:
             return Textures::HomeNormal;
-        case Checkbox:
-            return Textures::CheckboxNormal;
         case Play:
             return Textures::PlayNormal;
+        case MenuSLL:
+            return Textures::MenuSLLNormal;
+        case MenuDLL:
+            return Textures::MenuDLLNormal;
+        case MenuCLL:
+            return Textures::MenuCLLNormal;
+        case MenuStack:
+            return Textures::MenuStackNormal;
+        case MenuQueue:
+            return Textures::MenuQueueNormal;
+        case MenuStatic:
+            return Textures::MenuStaticNormal;
+        case MenuDynamic:
+            return Textures::MenuDynamicNormal;
         default:
             return Textures::CommandNormal;
     }
@@ -46,10 +58,22 @@ Textures::ID Button::getSelectedTextureID(Type type) const {
             return Textures::CommandSelected;
         case Home:
             return Textures::HomeSelected;
-        case Checkbox:
-            return Textures::CheckboxSelected;
         case Play:
             return Textures::PlaySelected;
+        case MenuSLL:
+            return Textures::MenuSLLSelected;
+        case MenuDLL:
+            return Textures::MenuDLLSelected;
+        case MenuCLL:
+            return Textures::MenuCLLSelected;
+        case MenuStack:
+            return Textures::MenuStackSelected;
+        case MenuQueue:
+            return Textures::MenuQueueSelected;
+        case MenuStatic:
+            return Textures::MenuStaticSelected;
+        case MenuDynamic:
+            return Textures::MenuDynamicSelected;
         default:
             return Textures::CommandSelected;
     }
@@ -61,10 +85,22 @@ Textures::ID Button::getPressedTextureID(Type type) const {
             return Textures::CommandActivated;
         case Home:
             return Textures::HomeSelected;
-        case Checkbox:
-            return Textures::CheckboxActivated;
         case Play:
             return Textures::PlaySelected;
+        case MenuSLL:
+            return Textures::MenuSLLSelected;
+        case MenuDLL:
+            return Textures::MenuDLLSelected;
+        case MenuCLL:
+            return Textures::MenuCLLSelected;
+        case MenuStack:
+            return Textures::MenuStackSelected;
+        case MenuQueue:
+            return Textures::MenuQueueSelected;
+        case MenuStatic:
+            return Textures::MenuStaticSelected;
+        case MenuDynamic:
+            return Textures::MenuDynamicSelected;
         default:
             return Textures::CommandActivated;
     }

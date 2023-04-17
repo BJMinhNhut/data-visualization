@@ -20,7 +20,7 @@ MenuState::MenuState(StateStack& stack, Context context)
     startButton->setText("Start");
     startButton->setCallback([this]() {
         requestStackPop();
-        requestStackPush(States::VisualSLL);
+        requestStackPush(States::MenuData);
     });
 
     auto exitButton = std::make_shared<GUI::Button>(

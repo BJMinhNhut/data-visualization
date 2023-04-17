@@ -1,7 +1,9 @@
 #include <Application.hpp>
+#include <States/MenuDataState.hpp>
 #include <States/MenuState.hpp>
 #include <States/State.hpp>
 #include <States/StateIdentifiers.hpp>
+#include <States/VisualDLLState.hpp>
 #include <States/VisualSLLState.hpp>
 
 #include <iostream>
@@ -34,17 +36,43 @@ Application::Application()
     mTextures.load(Textures::CommandActivated,
                    "data/images/command-activated.png");
 
-    mTextures.load(Textures::CheckboxNormal, "data/images/checkbox-normal.png");
-    mTextures.load(Textures::CheckboxSelected,
-                   "data/images/checkbox-selected.png");
-    mTextures.load(Textures::CheckboxActivated,
-                   "data/images/checkbox-activated.png");
-
     mTextures.load(Textures::PlayNormal, "data/images/play-normal.png");
     mTextures.load(Textures::PlaySelected, "data/images/play-selected.png");
 
     mTextures.load(Textures::InputNormal, "data/images/input-normal.png");
     mTextures.load(Textures::InputSelected, "data/images/input-selected.png");
+
+    mTextures.load(Textures::MenuSLLNormal, "data/images/menu-sll-normal.png");
+    mTextures.load(Textures::MenuSLLSelected,
+                   "data/images/menu-sll-selected.png");
+
+    mTextures.load(Textures::MenuDLLNormal, "data/images/menu-dll-normal.png");
+    mTextures.load(Textures::MenuDLLSelected,
+                   "data/images/menu-dll-selected.png");
+
+    mTextures.load(Textures::MenuCLLNormal, "data/images/menu-cll-normal.png");
+    mTextures.load(Textures::MenuCLLSelected,
+                   "data/images/menu-cll-selected.png");
+
+    mTextures.load(Textures::MenuStackNormal,
+                   "data/images/menu-stack-normal.png");
+    mTextures.load(Textures::MenuStackSelected,
+                   "data/images/menu-stack-selected.png");
+
+    mTextures.load(Textures::MenuQueueNormal,
+                   "data/images/menu-queue-normal.png");
+    mTextures.load(Textures::MenuQueueSelected,
+                   "data/images/menu-queue-selected.png");
+
+    mTextures.load(Textures::MenuStaticNormal,
+                   "data/images/menu-static-normal.png");
+    mTextures.load(Textures::MenuStaticSelected,
+                   "data/images/menu-static-selected.png");
+
+    mTextures.load(Textures::MenuDynamicNormal,
+                   "data/images/menu-dynamic-normal.png");
+    mTextures.load(Textures::MenuDynamicSelected,
+                   "data/images/menu-dynamic-selected.png");
 
     mStatisticsText.setFont(mFonts.get(Fonts::Main));
     mStatisticsText.setFillColor(sf::Color::Black);
@@ -120,5 +148,7 @@ void Application::updateStatistics(sf::Time dt) {
 
 void Application::registerStates() {
     mStateStack.registerState<MenuState>(States::Menu);
+    mStateStack.registerState<MenuDataState>(States::MenuData);
     mStateStack.registerState<VisualSLLState>(States::VisualSLL);
+    mStateStack.registerState<VisualDLLState>(States::VisualDLL);
 }

@@ -22,6 +22,13 @@ class Button : public Component {
         Command,
         Checkbox,
         Play,
+        MenuSLL,
+        MenuDLL,
+        MenuCLL,
+        MenuStack,
+        MenuQueue,
+        MenuStatic,
+        MenuDynamic,
     };
 
    public:
