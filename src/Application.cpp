@@ -1,4 +1,4 @@
-#include "Application.hpp"
+#include <Application.hpp>
 #include <States/MenuState.hpp>
 #include <States/State.hpp>
 #include <States/StateIdentifiers.hpp>
