@@ -21,6 +21,7 @@ VisualState::VisualState(StateStack& stack, Context context)
 
     initGUIPanels();
     initGUIButtons();
+    setExecuteCallback(0, [this]() {});
 }
 
 int VisualState::getCurrentOption() const {
