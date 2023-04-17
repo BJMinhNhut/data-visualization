@@ -55,6 +55,8 @@ void SinglyLinkedList::insertNode(std::size_t index, int value) {
 }
 
 void SinglyLinkedList::insertNode(std::size_t index, SinglyNode* node) {
+    setHighlight(-1);
+
     if (nodes.size() == Constants::LIST_MAXSIZE) {
         std::cerr << "Maximum size reached!";
         return;
@@ -96,6 +98,8 @@ void SinglyLinkedList::randomGen() {
 }
 
 void SinglyLinkedList::eraseNode(std::size_t index) {
+    setHighlight(-1);
+
     if (index >= nodes.size())
         return;
 
