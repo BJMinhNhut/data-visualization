@@ -15,8 +15,10 @@ void Container::pack(Component::Ptr component) {
 void Container::reset() {
     if (hasActivation()) {
         mChildren[mActivatedChild]->deactivate();
-        mChildren[mActivatedChild]->deselect();
     }
+
+    if (hasSelection())
+        mChildren[mSelectedChild]->deselect();
     mSelectedChild = mActivatedChild = -1;
 }
 
@@ -32,17 +34,20 @@ void Container::update(sf::Time dt) {
 
 void Container::handleEvent(const sf::Event& event) {
     // If we have selected a child then give it events
-    if (hasActivation() && mChildren[mActivatedChild]->isActive()) {
+    if (hasActivation()) {
         mChildren[mActivatedChild]->handleEvent(event);
-    } else if (event.type == sf::Event::MouseButtonReleased) {
+    }
+
+    if (event.type == sf::Event::MouseButtonReleased) {
         if (event.mouseButton.button == sf::Mouse::Left) {
             if (hasSelection()) {
                 if (hasActivation()) {
                     mChildren[mActivatedChild]->deactivate();
-                    mChildren[mActivatedChild]->deselect();
                 }
+                mChildren[mSelectedChild]->deselect();
                 mChildren[mSelectedChild]->activate();
                 mActivatedChild = mSelectedChild;
+                mSelectedChild = -1;
             }
         }
     }

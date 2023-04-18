@@ -55,7 +55,8 @@ void VisualSLLState::initGUIButtons() {
 
     addOption(Delete, "Delete", [this]() {
         setCurrentOption(Delete);
-        GUIIndexInput[Delete]->setRange(0, mSLL.getSize());
+        GUIIndexInput[Delete]->setRange(0,
+                                        std::max(0, (int)mSLL.getSize() - 1));
         GUIIndexInput[Delete]->randomizeValue();
     });
 
@@ -163,6 +164,8 @@ void VisualSLLState::loadUpdateGUI() {
 }
 
 void VisualSLLState::loadCallback() {
+    setExecuteCallback(New, [this]() {});
+
     setExecuteCallback(Add, [this]() {
         {
             mSLL.insertNode(GUIIndexInput[Add]->getValue(),

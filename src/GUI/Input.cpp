@@ -116,40 +116,41 @@ void Input::update(sf::Time dt) {
 }
 
 void Input::handleEvent(const sf::Event& event) {
-    std::string buffer(mText.getString());
+    if (event.type == sf::Event::KeyPressed ||
+        event.type == sf::Event::TextEntered) {
+        std::string buffer(mText.getString());
 
-    if (event.type == sf::Event::TextEntered) {
-        // handle text input
-        std::cerr << "text hit!\n";
-        char digit = static_cast<char>(event.text.unicode);
-        if (std::isdigit(digit)) {
-            buffer.push_back(digit);
+        if (event.type == sf::Event::TextEntered) {
+            // handle text input
+            std::cerr << "text hit!\n";
+            char digit = static_cast<char>(event.text.unicode);
+            if (std::isdigit(digit)) {
+                buffer.push_back(digit);
+            }
+
+            if (buffer.length() > Constants::INPUT_MAX_LENGTH) {
+                buffer.erase(0, 1);
+            }
+        } else if (event.type == sf::Event::KeyPressed) {
+            if (event.key.code == sf::Keyboard::BackSpace) {
+                std::cerr << "backspace hit!\n";
+                // pop back buffer
+                if (!buffer.empty())
+                    buffer.pop_back();
+            } else if (event.key.code == sf::Keyboard::Left) {
+                // move cursor to the left
+            } else if (event.key.code == sf::Keyboard::Right) {
+                // move cursor to the right
+            } else if (event.key.code == sf::Keyboard::Delete) {
+                // erase char at current index
+            }
         }
 
-        if (buffer.length() > Constants::INPUT_MAX_LENGTH) {
-            buffer.erase(0, 1);
-        }
-    } else if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::BackSpace) {
-            std::cerr << "backspace hit!\n";
-            // pop back buffer
-            if (!buffer.empty())
-                buffer.pop_back();
-        } else if (event.key.code == sf::Keyboard::Left) {
-            // move cursor to the left
-        } else if (event.key.code == sf::Keyboard::Right) {
-            // move cursor to the right
-        } else if (event.key.code == sf::Keyboard::Delete) {
-            // erase char at current index
-        }
+        mValue = atoi(buffer.c_str());
+        mText.setString(buffer);
+        centerOrigin(mText);
+        mCursor.setPosition(mText.getGlobalBounds().width / 2.f + 3.f, 0.f);
     }
-
-    mValue = atoi(buffer.c_str());
-    mText.setString(buffer);
-
-    centerOrigin(mText);
-
-    mCursor.setPosition(mText.getGlobalBounds().width / 2.f + 3.f, 0.f);
 }
 
 bool Input::contains(sf::Vector2i point) const {

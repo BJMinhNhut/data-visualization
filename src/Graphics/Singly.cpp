@@ -16,7 +16,7 @@
 SinglyLinkedList::SinglyLinkedList(const FontHolder& fonts,
                                    const TextureHolder& textures)
     : mHead(new Pointer(fonts)),
-      mHighlight(new Pointer(fonts)),
+      mHighlight(nullptr),
       mFonts(fonts),
       mTextures(textures),
       tempNode(nullptr),
@@ -25,8 +25,6 @@ SinglyLinkedList::SinglyLinkedList(const FontHolder& fonts,
     std::unique_ptr<Pointer> headPtr(mHead);
     mHead->setLabel("head");
     attachChild(std::move(headPtr));
-
-    mHighlight->setLabel("cur");
 
     randomGen();
 }
@@ -79,7 +77,8 @@ void SinglyLinkedList::insertNode(std::size_t index, SinglyNode* node) {
 
 void SinglyLinkedList::resetNodes() {
     mHead->setNull();
-    mHighlight->setNull();
+    if (mHighlight != nullptr)
+        mHighlight->setNull();
 
     for (SinglyNode* nodePtr : nodes)
         detachChild(nodePtr);
@@ -143,7 +142,8 @@ int SinglyLinkedList::searchNode(int value) {
 }
 
 void SinglyLinkedList::setHighlight(int index) {
-    assert(index < (int)nodes.size());
+    if (index >= (int)nodes.size())
+        return;
 
     if (index == -1) {
         // Remove highlight
@@ -155,16 +155,12 @@ void SinglyLinkedList::setHighlight(int index) {
 
     } else if (index < (int)nodes.size()) {  // Set highlight
         if (highlightIndex == -1) {
-            // haven't draw highlight so we need to attach it
             mHighlight = new Pointer(mFonts);
             mHighlight->setLabel("cur");
-
             std::unique_ptr<Pointer> highlightPtr(mHighlight);
             attachChild(std::move(highlightPtr));
-            std::cerr << "Add highlight index " << index << '\n';
-        } else {
-            std::cerr << "Change highlight index " << index << '\n';
         }
+        std::cerr << "Change highlight index " << index << '\n';
     }
 
     highlightIndex = index;
@@ -188,7 +184,8 @@ void SinglyLinkedList::updateCurrent(sf::Time dt) {
         mHead->setNull();
     }
 
-    if (highlightIndex < nodes.size()) {
+    if (highlightIndex > -1) {
+        assert(mHighlight);
         mHighlight->setDestination(nodes[highlightIndex]->getWorldPosition());
         mHighlight->setTargetPosition(
             nodes[highlightIndex]->getPosition() +

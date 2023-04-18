@@ -2,7 +2,8 @@
 #include <Graphics/ResourceHolder.hpp>
 
 namespace GUI {
-Console::Console(const FontHolder& fonts) : Label(Mono, "", fonts) {}
+Console::Console(const FontHolder& fonts)
+    : Label(Mono, "", fonts), currentType(Info) {}
 
 void Console::log(LogType type, const std::string& text) {
     if (type == Console::Info)
