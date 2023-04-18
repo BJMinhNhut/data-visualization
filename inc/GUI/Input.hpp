@@ -23,7 +23,9 @@ class Input : public Component {
     void randomizeValue();
 
     std::pair<int, int> getRange() const;
+    std::string getStringRange() const;
     int getValue() const;
+    bool valueInRange() const;
 
     virtual bool isSelectable() const;
     virtual void select();

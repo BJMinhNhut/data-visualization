@@ -164,6 +164,8 @@ void VisualDLLState::loadCallback() {
     // });
 }
 
+void VisualDLLState::validateCommand() {}
+
 void VisualDLLState::draw() {
     VisualState::draw();
     // mScreen.draw();

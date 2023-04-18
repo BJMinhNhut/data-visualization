@@ -82,8 +82,8 @@ void VisualSLLState::loadNewGUI() {
 }
 
 void VisualSLLState::loadAddGUI() {
-    auto indexLabel =
-        std::make_shared<GUI::Label>("Position", *getContext().fonts);
+    auto indexLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "Position",
+                                                   *getContext().fonts);
     indexLabel->setPosition(555.f, getContext().window->getSize().y - 250.f);
     packOptionGUI(Add, indexLabel);
 
@@ -93,8 +93,8 @@ void VisualSLLState::loadAddGUI() {
                                     getContext().window->getSize().y - 205.f);
     packOptionGUI(Add, GUIIndexInput[Add]);
 
-    auto valueLabel =
-        std::make_shared<GUI::Label>("Value", *getContext().fonts);
+    auto valueLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "Value",
+                                                   *getContext().fonts);
     valueLabel->setPosition(555.f, getContext().window->getSize().y - 170.f);
     packOptionGUI(Add, valueLabel);
 
@@ -108,8 +108,8 @@ void VisualSLLState::loadAddGUI() {
 }
 
 void VisualSLLState::loadDeleteGUI() {
-    auto indexLabel =
-        std::make_shared<GUI::Label>("Position", *getContext().fonts);
+    auto indexLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "Position",
+                                                   *getContext().fonts);
     indexLabel->setPosition(555.f, getContext().window->getSize().y - 250.f);
     packOptionGUI(Delete, indexLabel);
 
@@ -121,8 +121,8 @@ void VisualSLLState::loadDeleteGUI() {
 }
 
 void VisualSLLState::loadSearchGUI() {
-    auto valueLabel =
-        std::make_shared<GUI::Label>("By value", *getContext().fonts);
+    auto valueLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "By value",
+                                                   *getContext().fonts);
     valueLabel->setPosition(555.f, getContext().window->getSize().y - 250.f);
 
     GUIValueInput[Search] = std::make_shared<GUI::Input>(
@@ -137,8 +137,8 @@ void VisualSLLState::loadSearchGUI() {
 }
 
 void VisualSLLState::loadUpdateGUI() {
-    auto indexLabel =
-        std::make_shared<GUI::Label>("Position", *getContext().fonts);
+    auto indexLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "Position",
+                                                   *getContext().fonts);
     indexLabel->setPosition(555.f, getContext().window->getSize().y - 250.f);
     packOptionGUI(Update, indexLabel);
 
@@ -148,8 +148,8 @@ void VisualSLLState::loadUpdateGUI() {
         650.f, getContext().window->getSize().y - 205.f);
     packOptionGUI(Update, GUIIndexInput[Update]);
 
-    auto valueLabel =
-        std::make_shared<GUI::Label>("New value", *getContext().fonts);
+    auto valueLabel = std::make_shared<GUI::Label>(
+        GUI::Label::Main, "New value", *getContext().fonts);
     valueLabel->setPosition(555.f, getContext().window->getSize().y - 170.f);
     packOptionGUI(Update, valueLabel);
 
@@ -164,8 +164,10 @@ void VisualSLLState::loadUpdateGUI() {
 
 void VisualSLLState::loadCallback() {
     setExecuteCallback(Add, [this]() {
-        mSLL.insertNode(GUIIndexInput[Add]->getValue(),
-                        GUIValueInput[Add]->getValue());
+        {
+            mSLL.insertNode(GUIIndexInput[Add]->getValue(),
+                            GUIValueInput[Add]->getValue());
+        }
     });
 
     setExecuteCallback(Delete, [this]() {
@@ -180,6 +182,77 @@ void VisualSLLState::loadCallback() {
     setExecuteCallback(Search, [this]() {
         mSLL.searchNode(GUIValueInput[Search]->getValue());
     });
+}
+
+void VisualSLLState::validateCommand() {
+    switch (getCurrentOption()) {
+        case New: {
+            callInfo("Init a new singly linked list");
+            break;
+        }
+
+        case Add: {
+            if (mSLL.getSize() == Constants::LIST_MAXSIZE) {
+                callError("List size limit reached!");
+            } else if (!GUIIndexInput[Add]->valueInRange()) {
+                callError("Index must be in range " +
+                          GUIIndexInput[Add]->getStringRange());
+            } else if (!GUIValueInput[Add]->valueInRange()) {
+                callError("Value must be in range " +
+                          GUIValueInput[Add]->getStringRange());
+            } else {
+                callInfo("Insert " +
+                         std::to_string(GUIValueInput[Add]->getValue()) +
+                         " to index " +
+                         std::to_string(GUIIndexInput[Add]->getValue()));
+            }
+            break;
+        }
+
+        case Delete: {
+            if (mSLL.getSize() == 0) {
+                callError("There is nothing left to delete!");
+            } else if (!GUIIndexInput[Delete]->valueInRange()) {
+                callError("Index must be in range " +
+                          GUIIndexInput[Delete]->getStringRange());
+            } else {
+                callInfo("Delete node at index " +
+                         std::to_string(GUIIndexInput[Delete]->getValue()));
+            }
+            break;
+        }
+
+        case Update: {
+            if (mSLL.getSize() == 0) {
+                callInfo("List Empty");
+            } else if (!GUIIndexInput[Update]->valueInRange()) {
+                callError("Index must be in range " +
+                          GUIIndexInput[Update]->getStringRange());
+            } else if (!GUIValueInput[Update]->valueInRange()) {
+                callError("Value must be in range " +
+                          GUIValueInput[Update]->getStringRange());
+            } else {
+                callInfo("Update node at index " +
+                         std::to_string(GUIIndexInput[Update]->getValue()) +
+                         " to " +
+                         std::to_string(GUIValueInput[Update]->getValue()));
+            }
+            break;
+        }
+
+        case Search: {
+            if (mSLL.getSize() == 0) {
+                callInfo("List Empty");
+            } else if (!GUIValueInput[Search]->valueInRange()) {
+                callError("Value must be in range " +
+                          GUIValueInput[Search]->getStringRange());
+            } else {
+                callInfo("Search for a node having value " +
+                         std::to_string(GUIValueInput[Search]->getValue()));
+            }
+            break;
+        }
+    };
 }
 
 void VisualSLLState::draw() {

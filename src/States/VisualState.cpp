@@ -14,13 +14,13 @@ VisualState::VisualState(StateStack& stack, Context context)
       mGUIContainer(),
       GUIOptionContainer(),
       GUICommandContainer(),
-      GUIExecuteButton(nullptr),
       currentOption(0) {
 
     mBackgroundSprite.setTexture(context.textures->get(Textures::TitleScreen));
 
     initGUIPanels();
     initGUIButtons();
+    initConsole();
     setExecuteCallback(0, [this]() {});
 }
 
@@ -39,8 +39,8 @@ void VisualState::initGUIPanels() {
     auto progressPanel = std::make_shared<GUI::Panel>(500.f, 100.f);
     progressPanel->setPosition(800.f, getContext().window->getSize().y - 150.f);
 
-    auto logPanel = std::make_shared<GUI::Panel>(500.f, 100.f);
-    logPanel->setPosition(300.f, getContext().window->getSize().y - 400.f);
+    auto consolePanel = std::make_shared<GUI::Panel>(500.f, 100.f);
+    consolePanel->setPosition(300.f, getContext().window->getSize().y - 400.f);
 
     auto commandPanel = std::make_shared<GUI::Panel>(200.f, 250.f);
     commandPanel->setPosition(300.f, getContext().window->getSize().y - 300.f);
@@ -51,7 +51,7 @@ void VisualState::initGUIPanels() {
     mGUIContainer.pack(topPanel);
     mGUIContainer.pack(codePanel);
     mGUIContainer.pack(progressPanel);
-    mGUIContainer.pack(logPanel);
+    mGUIContainer.pack(consolePanel);
     mGUIContainer.pack(executePanel);
     mGUIContainer.pack(commandPanel);
 }
@@ -79,6 +79,13 @@ void VisualState::addOption(int option, std::string title,
                                                title, callback, true));
 }
 
+void VisualState::initConsole() {
+    GUIConsole = std::make_shared<GUI::Console>(*getContext().fonts);
+    GUIConsole->setPosition(325.f, getContext().window->getSize().y - 375.f);
+
+    mGUIContainer.pack(GUIConsole);
+}
+
 void VisualState::packOptionGUI(int option, GUI::Component::Ptr component) {
     GUICommandContainer[option].pack(component);
 }
@@ -88,9 +95,26 @@ void VisualState::setCurrentOption(int option) {
     GUICommandContainer[currentOption].reset();
 }
 
+void VisualState::resetOption() {
+    GUIOptionContainer.reset();
+    currentOption = 0;
+}
+
 void VisualState::setExecuteCallback(int option,
                                      GUI::Button::Callback callback) {
     GUICallback[option] = callback;
+}
+
+void VisualState::callError(const std::string& text) {
+    GUIConsole->log(GUI::Console::Error, text);
+}
+
+void VisualState::callInfo(const std::string& text) {
+    GUIConsole->log(GUI::Console::Info, text);
+}
+
+void VisualState::cleanLog() {
+    GUIConsole->clean();
 }
 
 std::shared_ptr<GUI::Button> VisualState::createNewGUIButton(
@@ -107,9 +131,10 @@ std::shared_ptr<GUI::Button> VisualState::createNewGUIButton(
 }
 
 void VisualState::execute() {
-    GUICallback[currentOption]();
-    GUIOptionContainer.reset();
-    currentOption = 0;
+    if (GUIConsole->getLogType() != GUI::Console::Error) {
+        GUICallback[currentOption]();
+        resetOption();
+    }
 }
 
 void VisualState::draw() {
@@ -123,6 +148,7 @@ void VisualState::draw() {
 }
 
 bool VisualState::update(sf::Time dt) {
+    validateCommand();
     mGUIContainer.update(dt);
     GUIOptionContainer.update(dt);
     GUICommandContainer[currentOption].update(dt);
@@ -137,7 +163,7 @@ bool VisualState::handleEvent(const sf::Event& event) {
 
     if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::Return)
-            GUIExecuteButton->activate();
+            execute();
     }
 
     return false;

@@ -59,8 +59,17 @@ std::pair<int, int> Input::getRange() const {
     return std::make_pair(mMinValue, mMaxValue);
 }
 
+std::string Input::getStringRange() const {
+    return "[" + std::to_string(mMinValue) + ", " + std::to_string(mMaxValue) +
+           "]";
+}
+
 int Input::getValue() const {
     return mValue;
+}
+
+bool Input::valueInRange() const {
+    return mValue >= mMinValue && mValue <= mMaxValue;
 }
 
 bool Input::isSelectable() const {

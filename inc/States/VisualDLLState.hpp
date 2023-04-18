@@ -38,6 +38,8 @@ class VisualDLLState : public VisualState {
     void loadSearchGUI();
     void loadCallback();
 
+    virtual void validateCommand();
+
    private:
     std::vector<GUI::Input::Ptr> GUIValueInput;
     std::vector<GUI::Input::Ptr> GUIIndexInput;
