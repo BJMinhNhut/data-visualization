@@ -131,14 +131,15 @@ void SinglyLinkedList::eraseNode(std::size_t index) {
     std::cerr << "Delete " << erasedNode->getValue() << " at " << index << '\n';
 }
 
-void SinglyLinkedList::searchNode(int value) {
+int SinglyLinkedList::searchNode(int value) {
     for (int index = 0; index < nodes.size(); ++index) {
         if (value == nodes[index]->getValue()) {
             setHighlight(index);
-            return;
+            return index;
         }
     }
     setHighlight(-1);
+    return -1;
 }
 
 void SinglyLinkedList::setHighlight(int index) {

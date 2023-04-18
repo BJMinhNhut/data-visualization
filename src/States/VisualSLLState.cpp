@@ -180,7 +180,15 @@ void VisualSLLState::loadCallback() {
     });
 
     setExecuteCallback(Search, [this]() {
-        mSLL.searchNode(GUIValueInput[Search]->getValue());
+        int findIndex = mSLL.searchNode(GUIValueInput[Search]->getValue());
+        if (findIndex > -1) {
+            callInfo("Value " +
+                     std::to_string(GUIValueInput[Search]->getValue()) +
+                     " is at index " + std::to_string(findIndex));
+        } else {
+            callInfo("Not found value " +
+                     std::to_string(GUIValueInput[Search]->getValue()));
+        }
     });
 }
 

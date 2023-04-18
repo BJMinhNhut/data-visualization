@@ -32,8 +32,8 @@ void Container::update(sf::Time dt) {
 
 void Container::handleEvent(const sf::Event& event) {
     // If we have selected a child then give it events
-    if (hasSelection() && mChildren[mSelectedChild]->isActive()) {
-        mChildren[mSelectedChild]->handleEvent(event);
+    if (hasActivation() && mChildren[mActivatedChild]->isActive()) {
+        mChildren[mActivatedChild]->handleEvent(event);
     } else if (event.type == sf::Event::MouseButtonReleased) {
         if (event.mouseButton.button == sf::Mouse::Left) {
             if (hasSelection()) {

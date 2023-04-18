@@ -22,7 +22,7 @@ class SinglyLinkedList : public SceneNode {
     void insertNode(std::size_t index, int value = -1);
     void eraseNode(std::size_t index);
     void updateNode(std::size_t index, int newValue);
-    void searchNode(int value);
+    int searchNode(int value);
     void setHighlight(int index);
 
    private:
