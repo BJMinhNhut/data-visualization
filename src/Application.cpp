@@ -20,7 +20,7 @@ Application::Application()
       mStatisticsText(),
       mStatisticsUpdateTime(),
       mStatisticsNumFrames(0) {
-    mWindow.setKeyRepeatEnabled(false);
+    // mWindow.setKeyRepeatEnabled(false);
 
     mFonts.load(Fonts::Bold, "data/fonts/Montserrat-Bold.ttf");
     mFonts.load(Fonts::Main, "data/fonts/Montserrat-Medium.ttf");

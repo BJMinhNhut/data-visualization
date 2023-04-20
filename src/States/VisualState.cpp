@@ -81,7 +81,7 @@ void VisualState::addOption(int option, std::string title,
 
 void VisualState::initConsole() {
     GUIConsole = std::make_shared<GUI::Console>(*getContext().fonts);
-    GUIConsole->setPosition(325.f, getContext().window->getSize().y - 375.f);
+    GUIConsole->setPosition(315.f, getContext().window->getSize().y - 390.f);
 
     mGUIContainer.pack(GUIConsole);
 }

@@ -10,22 +10,25 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
 
+#include <bitset>
+
 namespace GUI {
 class Input : public Component {
    public:
     typedef std::shared_ptr<Input> Ptr;
+    enum ValidationResult {
+        Success,
+        InvalidCharacter,
+        InvalidValue,
+        InvalidLength
+    };
 
    public:
     Input(const FontHolder& fonts, const TextureHolder& textures);
 
-    bool setValue(const int value);
-    void setRange(int minValue, int maxValue);
-    void randomizeValue();
-
-    std::pair<int, int> getRange() const;
-    std::string getStringRange() const;
-    int getValue() const;
-    bool valueInRange() const;
+    void setText(const std::string& text);
+    std::string getText() const;
+    bool validateCharacter() const;
 
     virtual bool isSelectable() const;
     virtual void select();
@@ -38,7 +41,18 @@ class Input : public Component {
     virtual void handleEvent(const sf::Event& event);
     virtual bool contains(sf::Vector2i point) const;
 
+    virtual ValidationResult validate() const;
+
+   protected:
+    void allowChar(const char& mChar);
+    bool isAllowed(const char& mChar) const;
+
+    void allowNumber();
+    void allowAlphabet();
+
    private:
+    void alignText();
+    
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
    private:
@@ -47,16 +61,14 @@ class Input : public Component {
     sf::Time cursorLife;
     sf::Time cursorCountdown;
 
-    int mValue;
-    int mMinValue;
-    int mMaxValue;
-
     const sf::Texture mNormalTexture;
     const sf::Texture mSelectedTexture;
     const sf::Texture mPressedTexture;
 
     sf::Sprite mSprite;
     sf::Text mText;
+
+    std::bitset<256> mAllowedCharacters;
 };
 }  // namespace GUI
 

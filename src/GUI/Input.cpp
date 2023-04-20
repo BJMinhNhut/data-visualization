@@ -19,57 +19,34 @@ Input::Input(const FontHolder& fonts, const TextureHolder& textures)
       mText("", fonts.get(Fonts::Main), 16),
       cursorDrawable(true),
       mCursor(getLineShape(sf::Vector2f(0.f, 16.f), 2.f)),
-      cursorCountdown(Constants::INPUT_CURSOR_LIFE),
-      mValue(0),
-      mMinValue(0),
-      mMaxValue(0) {
+      cursorCountdown(Constants::INPUT_CURSOR_LIFE) {
     mText.setFillColor(Constants::mBlack);
-    centerOrigin(mText);
+    alignText();
 
     mSprite.setTexture(mNormalTexture);
     centerOrigin(mSprite);
 
     mCursor.setFillColor(Constants::mBlack);
-    mCursor.setPosition(mText.getGlobalBounds().width / 2.f + 2.f, 0.f);
     centerOrigin(mCursor);
 }
 
-bool Input::setValue(const int value) {
-    if (value < mMinValue || mMaxValue < value)
-        return false;
+std::string Input::getText() const {
+    return mText.getString();
+}
 
-    mValue = value;
-    mText.setString(std::to_string(mValue));
-    centerOrigin(mText);
-
-    mCursor.setPosition(mText.getGlobalBounds().width / 2.f + 3.f, 0.f);
+bool Input::validateCharacter() const {
+    std::string text(getText());
+    for (char mChar : text)
+        if (!isAllowed(mChar))
+            return false;
     return true;
 }
 
-void Input::setRange(int minValue, int maxValue) {
-    mMinValue = minValue;
-    mMaxValue = maxValue;
-}
+void Input::setText(const std::string& text) {
+    mText.setString(text);
+    alignText();
 
-void Input::randomizeValue() {
-    setValue(Random::get(mMinValue, mMaxValue));
-}
-
-std::pair<int, int> Input::getRange() const {
-    return std::make_pair(mMinValue, mMaxValue);
-}
-
-std::string Input::getStringRange() const {
-    return "[" + std::to_string(mMinValue) + ", " + std::to_string(mMaxValue) +
-           "]";
-}
-
-int Input::getValue() const {
-    return mValue;
-}
-
-bool Input::valueInRange() const {
-    return mValue >= mMinValue && mValue <= mMaxValue;
+    assert(validate() == Success);
 }
 
 bool Input::isSelectable() const {
@@ -118,14 +95,14 @@ void Input::update(sf::Time dt) {
 void Input::handleEvent(const sf::Event& event) {
     if (event.type == sf::Event::KeyPressed ||
         event.type == sf::Event::TextEntered) {
-        std::string buffer(mText.getString());
+        std::string buffer(getText());
 
         if (event.type == sf::Event::TextEntered) {
             // handle text input
             std::cerr << "text hit!\n";
-            char digit = static_cast<char>(event.text.unicode);
-            if (std::isdigit(digit)) {
-                buffer.push_back(digit);
+            char mChar = static_cast<char>(event.text.unicode);
+            if (isAllowed(mChar)) {
+                buffer.push_back(mChar);
             }
 
             if (buffer.length() > Constants::INPUT_MAX_LENGTH) {
@@ -137,19 +114,10 @@ void Input::handleEvent(const sf::Event& event) {
                 // pop back buffer
                 if (!buffer.empty())
                     buffer.pop_back();
-            } else if (event.key.code == sf::Keyboard::Left) {
-                // move cursor to the left
-            } else if (event.key.code == sf::Keyboard::Right) {
-                // move cursor to the right
-            } else if (event.key.code == sf::Keyboard::Delete) {
-                // erase char at current index
             }
         }
-
-        mValue = atoi(buffer.c_str());
         mText.setString(buffer);
-        centerOrigin(mText);
-        mCursor.setPosition(mText.getGlobalBounds().width / 2.f + 3.f, 0.f);
+        alignText();
     }
 }
 
@@ -169,6 +137,38 @@ void Input::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
     if (cursorDrawable)
         target.draw(mCursor, states);
+}
+
+Input::ValidationResult Input::validate() const {
+    if (validateCharacter() == false)
+        return InvalidCharacter;
+    return Success;
+}
+
+void Input::allowChar(const char& mChar) {
+    mAllowedCharacters.set(static_cast<int>(mChar));
+}
+
+bool Input::isAllowed(const char& mChar) const {
+    return mAllowedCharacters.test(static_cast<int>(mChar));
+}
+
+void Input::allowNumber() {
+    for (char mChar = '0'; mChar <= '9'; ++mChar)
+        allowChar(mChar);
+}
+
+void Input::allowAlphabet() {
+    for (char mChar = 'a'; mChar <= 'b'; ++mChar)
+        allowChar(mChar);
+
+    for (char mChar = 'A'; mChar <= 'B'; ++mChar)
+        allowChar(mChar);
+}
+
+void Input::alignText() {
+    centerOrigin(mText);
+    mCursor.setPosition(mText.getGlobalBounds().width / 2.f + 2.f, 0.f);
 }
 
 }  // namespace GUI

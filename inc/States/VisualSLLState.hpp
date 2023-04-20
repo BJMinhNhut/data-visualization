@@ -3,7 +3,7 @@
 
 #include <GUI/Button.hpp>
 #include <GUI/Container.hpp>
-#include <GUI/Input.hpp>
+#include <GUI/InputNumber.hpp>
 #include <Graphics/Singly.hpp>
 #include <States/VisualState.hpp>
 
@@ -43,8 +43,8 @@ class VisualSLLState : public VisualState {
     virtual void validateCommand();
 
    private:
-    std::vector<GUI::Input::Ptr> GUIValueInput;
-    std::vector<GUI::Input::Ptr> GUIIndexInput;
+    std::vector<GUI::InputNumber::Ptr> GUIValueInput;
+    std::vector<GUI::InputNumber::Ptr> GUIIndexInput;
 
     SinglyLinkedList mSLL;
 };

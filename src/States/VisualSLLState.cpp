@@ -88,8 +88,8 @@ void VisualSLLState::loadAddGUI() {
     indexLabel->setPosition(555.f, getContext().window->getSize().y - 250.f);
     packOptionGUI(Add, indexLabel);
 
-    GUIIndexInput[Add] = std::make_shared<GUI::Input>(*getContext().fonts,
-                                                      *getContext().textures);
+    GUIIndexInput[Add] = std::make_shared<GUI::InputNumber>(
+        *getContext().fonts, *getContext().textures);
     GUIIndexInput[Add]->setPosition(650.f,
                                     getContext().window->getSize().y - 205.f);
     packOptionGUI(Add, GUIIndexInput[Add]);
@@ -99,8 +99,8 @@ void VisualSLLState::loadAddGUI() {
     valueLabel->setPosition(555.f, getContext().window->getSize().y - 170.f);
     packOptionGUI(Add, valueLabel);
 
-    GUIValueInput[Add] = std::make_shared<GUI::Input>(*getContext().fonts,
-                                                      *getContext().textures);
+    GUIValueInput[Add] = std::make_shared<GUI::InputNumber>(
+        *getContext().fonts, *getContext().textures);
     GUIValueInput[Add]->setPosition(650.f,
                                     getContext().window->getSize().y - 125.f);
     GUIValueInput[Add]->setRange(Constants::NODE_MINVALUE,
@@ -114,7 +114,7 @@ void VisualSLLState::loadDeleteGUI() {
     indexLabel->setPosition(555.f, getContext().window->getSize().y - 250.f);
     packOptionGUI(Delete, indexLabel);
 
-    GUIIndexInput[Delete] = std::make_shared<GUI::Input>(
+    GUIIndexInput[Delete] = std::make_shared<GUI::InputNumber>(
         *getContext().fonts, *getContext().textures);
     GUIIndexInput[Delete]->setPosition(
         650.f, getContext().window->getSize().y - 205.f);
@@ -126,7 +126,7 @@ void VisualSLLState::loadSearchGUI() {
                                                    *getContext().fonts);
     valueLabel->setPosition(555.f, getContext().window->getSize().y - 250.f);
 
-    GUIValueInput[Search] = std::make_shared<GUI::Input>(
+    GUIValueInput[Search] = std::make_shared<GUI::InputNumber>(
         *getContext().fonts, *getContext().textures);
     GUIValueInput[Search]->setPosition(
         650.f, getContext().window->getSize().y - 205.f);
@@ -143,7 +143,7 @@ void VisualSLLState::loadUpdateGUI() {
     indexLabel->setPosition(555.f, getContext().window->getSize().y - 250.f);
     packOptionGUI(Update, indexLabel);
 
-    GUIIndexInput[Update] = std::make_shared<GUI::Input>(
+    GUIIndexInput[Update] = std::make_shared<GUI::InputNumber>(
         *getContext().fonts, *getContext().textures);
     GUIIndexInput[Update]->setPosition(
         650.f, getContext().window->getSize().y - 205.f);
@@ -154,7 +154,7 @@ void VisualSLLState::loadUpdateGUI() {
     valueLabel->setPosition(555.f, getContext().window->getSize().y - 170.f);
     packOptionGUI(Update, valueLabel);
 
-    GUIValueInput[Update] = std::make_shared<GUI::Input>(
+    GUIValueInput[Update] = std::make_shared<GUI::InputNumber>(
         *getContext().fonts, *getContext().textures);
     GUIValueInput[Update]->setPosition(
         650.f, getContext().window->getSize().y - 125.f);
@@ -205,11 +205,11 @@ void VisualSLLState::validateCommand() {
         case Add: {
             if (mSLL.getSize() == Constants::LIST_MAXSIZE) {
                 callError("List size limit reached!");
-            } else if (!GUIIndexInput[Add]->valueInRange()) {
-                callError("Index must be in range " +
+            } else if (GUIIndexInput[Add]->validate() != GUI::Input::Success) {
+                callError("Index must be a number in range " +
                           GUIIndexInput[Add]->getStringRange());
-            } else if (!GUIValueInput[Add]->valueInRange()) {
-                callError("Value must be in range " +
+            } else if (GUIValueInput[Add]->validate() != GUI::Input::Success) {
+                callError("Value must be a number in range " +
                           GUIValueInput[Add]->getStringRange());
             } else {
                 callInfo("Insert " +
@@ -223,8 +223,9 @@ void VisualSLLState::validateCommand() {
         case Delete: {
             if (mSLL.getSize() == 0) {
                 callError("There is nothing left to delete!");
-            } else if (!GUIIndexInput[Delete]->valueInRange()) {
-                callError("Index must be in range " +
+            } else if (GUIIndexInput[Delete]->validate() !=
+                       GUI::Input::Success) {
+                callError("Index must be a number in range " +
                           GUIIndexInput[Delete]->getStringRange());
             } else {
                 callInfo("Delete node at index " +
@@ -236,11 +237,13 @@ void VisualSLLState::validateCommand() {
         case Update: {
             if (mSLL.getSize() == 0) {
                 callInfo("List Empty");
-            } else if (!GUIIndexInput[Update]->valueInRange()) {
-                callError("Index must be in range " +
+            } else if (GUIIndexInput[Update]->validate() !=
+                       GUI::Input::Success) {
+                callError("Index must be a number in range " +
                           GUIIndexInput[Update]->getStringRange());
-            } else if (!GUIValueInput[Update]->valueInRange()) {
-                callError("Value must be in range " +
+            } else if (GUIValueInput[Update]->validate() !=
+                       GUI::Input::Success) {
+                callError("Value must be a number in range " +
                           GUIValueInput[Update]->getStringRange());
             } else {
                 callInfo("Update node at index " +
@@ -254,7 +257,8 @@ void VisualSLLState::validateCommand() {
         case Search: {
             if (mSLL.getSize() == 0) {
                 callInfo("List Empty");
-            } else if (!GUIValueInput[Search]->valueInRange()) {
+            } else if (GUIValueInput[Search]->validate() !=
+                       GUI::Input::Success) {
                 callError("Value must be in range " +
                           GUIValueInput[Search]->getStringRange());
             } else {

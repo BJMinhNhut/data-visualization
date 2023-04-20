@@ -20,7 +20,7 @@ float const PI = 3.14159265;
 sf::Color const mBlack(66, 66, 66);
 
 // Input
-int const INPUT_MAX_LENGTH = 9;
+int const INPUT_MAX_LENGTH = 40;
 sf::Time const INPUT_CURSOR_LIFE(sf::milliseconds(400));
 
 }  // namespace Constants
