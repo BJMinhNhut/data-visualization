@@ -38,7 +38,6 @@ std::string InputNumber::getStringRange() const {
 int InputNumber::getValue() const {
     // prohibit call when haven't validated input stream
     assert(validate() == Input::Success);
-
     return atoi(getText().c_str());
 }
 
@@ -50,7 +49,7 @@ Input::ValidationResult InputNumber::validate() const {
     if (text.length() > 9)
         return Input::InvalidValue;
 
-    int value = atoi(text.c_str());
+    int value = atoi(getText().c_str());
     if (value < mMinValue || value > mMaxValue)
         return Input::InvalidValue;
 

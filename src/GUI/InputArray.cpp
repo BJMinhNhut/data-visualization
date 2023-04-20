@@ -11,7 +11,6 @@ namespace GUI {
 InputArray::InputArray(const FontHolder& fonts, const TextureHolder& textures)
     : Input(fonts, textures) {
     allowNumber();
-    allowChar(' ');
     allowChar(',');
 }
 

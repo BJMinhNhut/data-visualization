@@ -11,6 +11,8 @@
 #include <iostream>
 #include <string>
 
+#define DEBUG_INPUT 0
+
 namespace GUI {
 Input::Input(const FontHolder& fonts, const TextureHolder& textures)
     : mNormalTexture(textures.get(Textures::InputNormal)),
@@ -20,6 +22,9 @@ Input::Input(const FontHolder& fonts, const TextureHolder& textures)
       cursorDrawable(true),
       mCursor(getLineShape(sf::Vector2f(0.f, 16.f), 2.f)),
       cursorCountdown(Constants::INPUT_CURSOR_LIFE) {
+
+    allowChar('\n');
+
     mText.setFillColor(Constants::mBlack);
     alignText();
 
@@ -27,25 +32,29 @@ Input::Input(const FontHolder& fonts, const TextureHolder& textures)
     centerOrigin(mSprite);
 
     mCursor.setFillColor(Constants::mBlack);
-    centerOrigin(mCursor);
+    mCursor.setOrigin(-1.f, 12.f);
 }
 
 std::string Input::getText() const {
-    return mText.getString();
+    // return input text with '\n' removed
+    std::string text(mText.getString());
+    text.erase(std::remove(text.begin(), text.end(), '\n'), text.end());
+    return text;
 }
 
 bool Input::validateCharacter() const {
     std::string text(getText());
     for (char mChar : text)
-        if (!isAllowed(mChar))
+        if (!isAllowed(mChar)) {
+            std::cerr << int(mChar) << " is not allowed\n";
             return false;
+        }
     return true;
 }
 
 void Input::setText(const std::string& text) {
     mText.setString(text);
-    alignText();
-
+    wrapText();
     assert(validate() == Success);
 }
 
@@ -65,12 +74,14 @@ void Input::deselect() {
 
 void Input::activate() {
     Component::activate();
-    std::cerr << "Input activated\n";
+    if (DEBUG_INPUT)
+        std::cerr << "Input activated\n";
     mSprite.setTexture(mPressedTexture, true);
 }
 
 void Input::deactivate() {
-    std::cerr << "Input deactivated\n";
+    if (DEBUG_INPUT)
+        std::cerr << "Input deactivated\n";
     Component::deactivate();
 
     // Reset texture to right one depending on if we are selected or not.
@@ -99,7 +110,8 @@ void Input::handleEvent(const sf::Event& event) {
 
         if (event.type == sf::Event::TextEntered) {
             // handle text input
-            std::cerr << "text hit!\n";
+            if (DEBUG_INPUT)
+                std::cerr << "text hit!\n";
             char mChar = static_cast<char>(event.text.unicode);
             if (isAllowed(mChar)) {
                 buffer.push_back(mChar);
@@ -110,7 +122,8 @@ void Input::handleEvent(const sf::Event& event) {
             }
         } else if (event.type == sf::Event::KeyPressed) {
             if (event.key.code == sf::Keyboard::BackSpace) {
-                std::cerr << "backspace hit!\n";
+                if (DEBUG_INPUT)
+                    std::cerr << "backspace hit!\n";
                 // pop back buffer
                 if (!buffer.empty())
                     buffer.pop_back();
@@ -118,6 +131,7 @@ void Input::handleEvent(const sf::Event& event) {
         }
         mText.setString(buffer);
         alignText();
+        wrapText();
     }
 }
 
@@ -159,16 +173,42 @@ void Input::allowNumber() {
 }
 
 void Input::allowAlphabet() {
-    for (char mChar = 'a'; mChar <= 'b'; ++mChar)
+    for (char mChar = 'a'; mChar <= 'z'; ++mChar)
         allowChar(mChar);
 
-    for (char mChar = 'A'; mChar <= 'B'; ++mChar)
+    for (char mChar = 'A'; mChar <= 'Z'; ++mChar)
         allowChar(mChar);
 }
 
 void Input::alignText() {
     centerOrigin(mText);
-    mCursor.setPosition(mText.getGlobalBounds().width / 2.f + 2.f, 0.f);
+    int lastIndex = mText.getString().getSize();
+
+    if (mText.getString().isEmpty())
+        mCursor.setPosition(-10.f, -10.f);
+    else
+        mCursor.setPosition(mText.findCharacterPos(lastIndex - 1));
+}
+
+void Input::wrapText() {
+    std::string text(getText());
+
+    int index = 0, counter = 0;
+    while (index + 1 < text.length()) {
+        counter++;
+        if (counter == Constants::INPUT_WRAP_LENGTH) {
+            text.insert(text.begin() + index + 1, '\n');
+            counter = 0;
+            index++;
+        }
+        index++;
+    }
+
+    if (DEBUG_INPUT)
+        std::cerr << "Wrap text: " << text << '\n';
+
+    mText.setString(text);
+    alignText();
 }
 
 }  // namespace GUI
