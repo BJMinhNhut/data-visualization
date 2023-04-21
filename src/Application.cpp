@@ -20,11 +20,11 @@ Application::Application()
       mStatisticsText(),
       mStatisticsUpdateTime(),
       mStatisticsNumFrames(0) {
-    // mWindow.setKeyRepeatEnabled(false);
 
-    mFonts.load(Fonts::Bold, "data/fonts/Montserrat-Bold.ttf");
-    mFonts.load(Fonts::Main, "data/fonts/Montserrat-Medium.ttf");
-    mFonts.load(Fonts::Mono, "data/fonts/iosevka-etoile-medium.ttf");
+    mFonts.load(Fonts::Medium, "data/fonts/Ubuntu-Medium.ttf");
+    mFonts.load(Fonts::Bold, "data/fonts/Ubuntu-Bold.ttf");
+    mFonts.load(Fonts::Main, "data/fonts/Ubuntu-Regular.ttf");
+    mFonts.load(Fonts::Mono, "data/fonts/UbuntuMono-Regular.ttf");
     mTextures.load(Textures::TitleScreen, "data/images/background.png");
 
     mTextures.load(Textures::HomeNormal, "data/images/home-normal.png");
@@ -42,35 +42,34 @@ Application::Application()
     mTextures.load(Textures::InputNormal, "data/images/input-normal.png");
     mTextures.load(Textures::InputSelected, "data/images/input-selected.png");
 
-    mTextures.load(Textures::MenuSLLNormal, "data/images/menu-sll-normal.png");
-    mTextures.load(Textures::MenuSLLSelected,
-                   "data/images/menu-sll-selected.png");
+    mTextures.load(Textures::SmallButtonNormal,
+                   "data/images/button-small-normal.png");
+    mTextures.load(Textures::SmallButtonSelected,
+                   "data/images/button-small-selected.png");
     mTextures.load(Textures::SinglyNodeNormal,
                    "data/images/node-singly-normal.png");
 
+    mTextures.load(Textures::MenuSLLNormal, "data/images/menu-sll-normal.png");
+    mTextures.load(Textures::MenuSLLSelected,
+                   "data/images/menu-sll-selected.png");
     mTextures.load(Textures::MenuDLLNormal, "data/images/menu-dll-normal.png");
     mTextures.load(Textures::MenuDLLSelected,
                    "data/images/menu-dll-selected.png");
-
     mTextures.load(Textures::MenuCLLNormal, "data/images/menu-cll-normal.png");
     mTextures.load(Textures::MenuCLLSelected,
                    "data/images/menu-cll-selected.png");
-
     mTextures.load(Textures::MenuStackNormal,
                    "data/images/menu-stack-normal.png");
     mTextures.load(Textures::MenuStackSelected,
                    "data/images/menu-stack-selected.png");
-
     mTextures.load(Textures::MenuQueueNormal,
                    "data/images/menu-queue-normal.png");
     mTextures.load(Textures::MenuQueueSelected,
                    "data/images/menu-queue-selected.png");
-
     mTextures.load(Textures::MenuStaticNormal,
                    "data/images/menu-static-normal.png");
     mTextures.load(Textures::MenuStaticSelected,
                    "data/images/menu-static-selected.png");
-
     mTextures.load(Textures::MenuDynamicNormal,
                    "data/images/menu-dynamic-normal.png");
     mTextures.load(Textures::MenuDynamicSelected,

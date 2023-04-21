@@ -44,7 +44,10 @@ void VisualSLLState::centerSLL() {
 }
 
 void VisualSLLState::initGUIButtons() {
-    addOption(New, "New", [this]() { setCurrentOption(New); });
+    addOption(New, "New", [this]() {
+        setCurrentOption(New);
+        GUIArrayInput->loadArray(mSLL.getData());
+    });
 
     addOption(Add, "Add", [this]() {
         setCurrentOption(Add);
@@ -75,11 +78,32 @@ void VisualSLLState::initGUIButtons() {
 }
 
 void VisualSLLState::loadNewGUI() {
-    sf::Vector2f position(650.f, getContext().window->getSize().y - 225.f);
+    packOptionGUI(
+        New, createNewGUIButton(
+                 GUI::Button::Small,
+                 sf::Vector2f(600.f, getContext().window->getSize().y - 160.f),
+                 "Random", [this]() { GUIArrayInput->randomizeArray(); }));
 
     packOptionGUI(
-        New, createNewGUIButton(GUI::Button::Command, position, "Randomize",
-                                [this]() { mSLL.randomGen(); }));
+        New, createNewGUIButton(
+                 GUI::Button::Command,
+                 sf::Vector2f(650.f, getContext().window->getSize().y - 120.f),
+                 "Apply", [this]() {
+                     if (GUIArrayInput->validate() == GUI::Input::Success) {
+                         mSLL.loadData(GUIArrayInput->getArray());
+                         resetOption();
+                     }
+                 }));
+
+    auto dataLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "Data",
+                                                  *getContext().fonts);
+    dataLabel->setPosition(555.f, getContext().window->getSize().y - 250.f);
+    packOptionGUI(New, dataLabel);
+
+    GUIArrayInput = std::make_shared<GUI::InputArray>(*getContext().fonts,
+                                                      *getContext().textures);
+    GUIArrayInput->setPosition(650.f, getContext().window->getSize().y - 205.f);
+    packOptionGUI(New, GUIArrayInput);
 }
 
 void VisualSLLState::loadAddGUI() {
@@ -164,7 +188,8 @@ void VisualSLLState::loadUpdateGUI() {
 }
 
 void VisualSLLState::loadCallback() {
-    setExecuteCallback(New, [this]() {});
+    setExecuteCallback(New,
+                       [this]() { mSLL.loadData(GUIArrayInput->getArray()); });
 
     setExecuteCallback(Add, [this]() {
         {
@@ -198,7 +223,14 @@ void VisualSLLState::loadCallback() {
 void VisualSLLState::validateCommand() {
     switch (getCurrentOption()) {
         case New: {
-            callInfo("Init a new singly linked list");
+            if (GUIArrayInput->validate() == GUI::Input::InvalidValue) {
+                callError("Value must be a number in range " +
+                          GUIValueInput[Add]->getStringRange());
+            } else if (GUIArrayInput->validate() == GUI::Input::InvalidLength) {
+                callError("List size must be in range [1, 10]");
+            } else {
+                callInfo("Init a new singly linked list");
+            }
             break;
         }
 
@@ -284,20 +316,25 @@ bool VisualSLLState::update(sf::Time dt) {
 bool VisualSLLState::handleEvent(const sf::Event& event) {
     VisualState::handleEvent(event);
 
+    // deactivate input fields when click outside
     if (event.type == sf::Event::MouseButtonReleased) {
         if (event.mouseButton.button == sf::Mouse::Left) {
             if (GUIIndexInput[getCurrentOption()] != nullptr &&
                 !GUIIndexInput[getCurrentOption()]->contains(
                     sf::Vector2(event.mouseButton.x, event.mouseButton.y))) {
                 GUIIndexInput[getCurrentOption()]->deactivate();
-                GUIIndexInput[getCurrentOption()]->deselect();
             }
 
             if (GUIValueInput[getCurrentOption()] != nullptr &&
                 !GUIValueInput[getCurrentOption()]->contains(
                     sf::Vector2(event.mouseButton.x, event.mouseButton.y))) {
                 GUIValueInput[getCurrentOption()]->deactivate();
-                GUIValueInput[getCurrentOption()]->deselect();
+            }
+
+            if (getCurrentOption() == New &&
+                !GUIArrayInput->contains(
+                    sf::Vector2(event.mouseButton.x, event.mouseButton.y))) {
+                GUIArrayInput->deactivate();
             }
         }
     }

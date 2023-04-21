@@ -22,6 +22,7 @@ class Button : public Component {
         Command,
         Checkbox,
         Play,
+        Small,
         MenuSLL,
         MenuDLL,
         MenuCLL,
@@ -58,6 +59,7 @@ class Button : public Component {
     Textures::ID getNormalTextureID(Type type) const;
     Textures::ID getSelectedTextureID(Type type) const;
     Textures::ID getPressedTextureID(Type type) const;
+    void setFont(Type type, const FontHolder& fonts);
 
    private:
     Callback mCallback;

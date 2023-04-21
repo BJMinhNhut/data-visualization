@@ -26,6 +26,9 @@ enum ID {
     InputNormal,
     InputSelected,
 
+    SmallButtonNormal,
+    SmallButtonSelected,
+
     MenuSLLNormal,
     MenuSLLSelected,
     MenuDLLNormal,
@@ -47,6 +50,7 @@ namespace Fonts {
 enum ID {
     Main,
     Mono,
+    Medium,
     Bold,
 };
 }

@@ -13,12 +13,11 @@ namespace GUI {
 Button::Button(Type type, const FontHolder& fonts,
                const TextureHolder& textures)
     : mCallback(),
-      mText("", fonts.get(Fonts::Bold), 18),
       mIsToggle(false),
       mNormalTexture(textures.get(getNormalTextureID(type))),
       mSelectedTexture(textures.get(getSelectedTextureID(type))),
       mPressedTexture(textures.get(getPressedTextureID(type))) {
-    mText.setFillColor(Constants::mBlack);
+    setFont(type, fonts);
     mSprite.setTexture(mNormalTexture);
 
     centerOrigin(mSprite);
@@ -27,6 +26,8 @@ Button::Button(Type type, const FontHolder& fonts,
 
 Textures::ID Button::getNormalTextureID(Type type) const {
     switch (type) {
+        case Small:
+            return Textures::SmallButtonNormal;
         case Command:
             return Textures::CommandNormal;
         case Home:
@@ -48,12 +49,14 @@ Textures::ID Button::getNormalTextureID(Type type) const {
         case MenuDynamic:
             return Textures::MenuDynamicNormal;
         default:
-            return Textures::CommandNormal;
+            return Textures::SmallButtonNormal;
     }
 }
 
 Textures::ID Button::getSelectedTextureID(Type type) const {
     switch (type) {
+        case Small:
+            return Textures::SmallButtonSelected;
         case Command:
             return Textures::CommandSelected;
         case Home:
@@ -75,12 +78,14 @@ Textures::ID Button::getSelectedTextureID(Type type) const {
         case MenuDynamic:
             return Textures::MenuDynamicSelected;
         default:
-            return Textures::CommandSelected;
+            return Textures::SmallButtonSelected;
     }
 }
 
 Textures::ID Button::getPressedTextureID(Type type) const {
     switch (type) {
+        case Small:
+            return Textures::SmallButtonSelected;
         case Command:
             return Textures::CommandActivated;
         case Home:
@@ -102,7 +107,23 @@ Textures::ID Button::getPressedTextureID(Type type) const {
         case MenuDynamic:
             return Textures::MenuDynamicSelected;
         default:
-            return Textures::CommandActivated;
+            return Textures::SmallButtonSelected;
+    }
+}
+
+void Button::setFont(Type type, const FontHolder& fonts) {
+    switch (type) {
+        case Small:
+            mText.setFont(fonts.get(Fonts::Bold));
+            mText.setCharacterSize(16u);
+            mText.setFillColor(Constants::mBlue);
+            break;
+
+        default:
+            mText.setFont(fonts.get(Fonts::Bold));
+            mText.setCharacterSize(18u);
+            mText.setFillColor(Constants::mBlack);
+            break;
     }
 }
 

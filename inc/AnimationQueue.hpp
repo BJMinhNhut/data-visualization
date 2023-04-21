@@ -1,7 +1,7 @@
 #ifndef ANIMATIONQUEUE_HPP
 #define ANIMATIONQUEUE_HPP
 
-#include <Animation.hpp>
+#include "Animation.hpp"
 
 #include <vector>
 

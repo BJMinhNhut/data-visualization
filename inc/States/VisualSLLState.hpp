@@ -3,6 +3,7 @@
 
 #include <GUI/Button.hpp>
 #include <GUI/Container.hpp>
+#include <GUI/InputArray.hpp>
 #include <GUI/InputNumber.hpp>
 #include <Graphics/Singly.hpp>
 #include <States/VisualState.hpp>
@@ -45,6 +46,7 @@ class VisualSLLState : public VisualState {
    private:
     std::vector<GUI::InputNumber::Ptr> GUIValueInput;
     std::vector<GUI::InputNumber::Ptr> GUIIndexInput;
+    GUI::InputArray::Ptr GUIArrayInput;
 
     SinglyLinkedList mSLL;
 };

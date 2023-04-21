@@ -44,6 +44,20 @@ int SinglyLinkedList::getRandomNodeValue() const {
     return nodes[index]->getValue();
 }
 
+std::vector<int> SinglyLinkedList::getData() const {
+    std::vector<int> mData;
+    for (SinglyNode* node : nodes)
+        mData.push_back(node->getValue());
+    return mData;
+}
+
+void SinglyLinkedList::loadData(const std::vector<int>& data) {
+    resetNodes();
+    for (int index = 0; index < data.size(); ++index) {
+        insertNode(index, data[index]);
+    }
+}
+
 void SinglyLinkedList::insertNode(std::size_t index, int value) {
     SinglyNode* newNode = new SinglyNode(mFonts, mTextures);
     if (value != -1)

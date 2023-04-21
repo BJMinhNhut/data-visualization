@@ -28,7 +28,6 @@ class Input : public Component {
 
     void setText(const std::string& text);
     std::string getText() const;
-    bool validateCharacter() const;
 
     virtual bool isSelectable() const;
     virtual void select();
@@ -44,9 +43,9 @@ class Input : public Component {
     virtual ValidationResult validate() const;
 
    protected:
+    bool validateCharacter() const;
     void allowChar(const char& mChar);
     bool isAllowed(const char& mChar) const;
-
     void allowNumber();
     void allowAlphabet();
 

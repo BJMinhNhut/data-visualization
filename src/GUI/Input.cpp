@@ -18,7 +18,7 @@ Input::Input(const FontHolder& fonts, const TextureHolder& textures)
     : mNormalTexture(textures.get(Textures::InputNormal)),
       mSelectedTexture(textures.get(Textures::InputSelected)),
       mPressedTexture(textures.get(Textures::InputSelected)),
-      mText("", fonts.get(Fonts::Main), 16),
+      mText("", fonts.get(Fonts::Mono), 18),
       cursorDrawable(true),
       mCursor(getLineShape(sf::Vector2f(0.f, 16.f), 2.f)),
       cursorCountdown(Constants::INPUT_CURSOR_LIFE) {
@@ -32,7 +32,7 @@ Input::Input(const FontHolder& fonts, const TextureHolder& textures)
     centerOrigin(mSprite);
 
     mCursor.setFillColor(Constants::mBlack);
-    mCursor.setOrigin(-1.f, 12.f);
+    mCursor.setOrigin(-4.f, 0.f);
 }
 
 std::string Input::getText() const {
@@ -42,17 +42,8 @@ std::string Input::getText() const {
     return text;
 }
 
-bool Input::validateCharacter() const {
-    std::string text(getText());
-    for (char mChar : text)
-        if (!isAllowed(mChar)) {
-            std::cerr << int(mChar) << " is not allowed\n";
-            return false;
-        }
-    return true;
-}
-
 void Input::setText(const std::string& text) {
+    std::cerr << "Text set: " << text << '\n';
     mText.setString(text);
     wrapText();
     assert(validate() == Success);
@@ -159,6 +150,16 @@ Input::ValidationResult Input::validate() const {
     return Success;
 }
 
+bool Input::validateCharacter() const {
+    std::string text(getText());
+    for (char mChar : text)
+        if (!isAllowed(mChar)) {
+            std::cerr << int(mChar) << " is not allowed\n";
+            return false;
+        }
+    return true;
+}
+
 void Input::allowChar(const char& mChar) {
     mAllowedCharacters.set(static_cast<int>(mChar));
 }
@@ -185,9 +186,10 @@ void Input::alignText() {
     int lastIndex = mText.getString().getSize();
 
     if (mText.getString().isEmpty())
-        mCursor.setPosition(-10.f, -10.f);
+        mCursor.setPosition(0.f, -12.f);
     else
-        mCursor.setPosition(mText.findCharacterPos(lastIndex - 1));
+        mCursor.setPosition(mText.findCharacterPos(lastIndex - 1) +
+                            sf::Vector2f(10.f, 0.f));
 }
 
 void Input::wrapText() {

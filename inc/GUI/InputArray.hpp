@@ -14,9 +14,11 @@ class InputArray : public Input {
    public:
     InputArray(const FontHolder& fonts, const TextureHolder& textures);
 
-    void randomizeArray(const int& length);
+    void randomizeArray();
     ValidationResult validate() const;
     std::vector<int> getArray() const;
+
+    void loadArray(const std::vector<int>& array);
 };
 
 }  // namespace GUI

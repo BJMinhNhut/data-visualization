@@ -16,6 +16,8 @@ class SinglyLinkedList : public SceneNode {
     std::size_t getSize() const;
     int getValue(std::size_t index) const;
     int getRandomNodeValue() const;
+    std::vector<int> getData() const;
+    void loadData(const std::vector<int>& data);
 
     void randomGen();
 
