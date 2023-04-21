@@ -9,6 +9,13 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <iostream>
 
+sf::Vector2f const firstInputPosition(650.f, 675.f);
+sf::Vector2f const firstLabelPosition(firstInputPosition +
+                                      sf::Vector2f(-100.f, -45.f));
+sf::Vector2f const secondInputPosition(650.f, 800.f);
+sf::Vector2f const secondLabelPosition(secondInputPosition +
+                                       sf::Vector2f(-100.f, -45.f));
+
 VisualSLLState::VisualSLLState(StateStack& stack, Context context)
     : VisualState(stack, context),
       mSLL(*context.fonts, *context.textures),
@@ -81,7 +88,7 @@ void VisualSLLState::loadNewGUI() {
     packOptionGUI(
         New, createNewGUIButton(
                  GUI::Button::Small,
-                 sf::Vector2f(605.f, getContext().window->getSize().y - 160.f),
+                 sf::Vector2f(600.f, getContext().window->getSize().y - 180.f),
                  "Random", [this]() { GUIArrayInput->randomizeArray(); }));
 
     packOptionGUI(
@@ -97,36 +104,49 @@ void VisualSLLState::loadNewGUI() {
 
     auto dataLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "Data",
                                                   *getContext().fonts);
-    dataLabel->setPosition(555.f, getContext().window->getSize().y - 260.f);
+    dataLabel->setPosition(firstLabelPosition);
     packOptionGUI(New, dataLabel);
 
     GUIArrayInput = std::make_shared<GUI::InputArray>(*getContext().fonts,
                                                       *getContext().textures);
-    GUIArrayInput->setPosition(650.f, getContext().window->getSize().y - 210.f);
+    GUIArrayInput->setPosition(firstInputPosition);
     packOptionGUI(New, GUIArrayInput);
 }
 
 void VisualSLLState::loadAddGUI() {
     auto indexLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "Position",
                                                    *getContext().fonts);
-    indexLabel->setPosition(555.f, getContext().window->getSize().y - 250.f);
+    indexLabel->setPosition(firstLabelPosition);
     packOptionGUI(Add, indexLabel);
 
     GUIIndexInput[Add] = std::make_shared<GUI::InputNumber>(
         *getContext().fonts, *getContext().textures);
-    GUIIndexInput[Add]->setPosition(650.f,
-                                    getContext().window->getSize().y - 205.f);
+    GUIIndexInput[Add]->setPosition(firstInputPosition);
     packOptionGUI(Add, GUIIndexInput[Add]);
+
+    // front option
+    packOptionGUI(
+        Add, createNewGUIButton(
+                 GUI::Button::Small,
+                 sf::Vector2f(600.f, getContext().window->getSize().y - 180.f),
+                 "Front", [this]() { GUIIndexInput[Add]->setValue(0); }));
+
+    // back option
+    packOptionGUI(
+        Add, createNewGUIButton(
+                 GUI::Button::Small,
+                 sf::Vector2f(700.f, getContext().window->getSize().y - 180.f),
+                 "Back",
+                 [this]() { GUIIndexInput[Add]->setValue(mSLL.getSize()); }));
 
     auto valueLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "Value",
                                                    *getContext().fonts);
-    valueLabel->setPosition(555.f, getContext().window->getSize().y - 170.f);
+    valueLabel->setPosition(secondLabelPosition);
     packOptionGUI(Add, valueLabel);
 
     GUIValueInput[Add] = std::make_shared<GUI::InputNumber>(
         *getContext().fonts, *getContext().textures);
-    GUIValueInput[Add]->setPosition(650.f,
-                                    getContext().window->getSize().y - 125.f);
+    GUIValueInput[Add]->setPosition(secondInputPosition);
     GUIValueInput[Add]->setRange(Constants::NODE_MINVALUE,
                                  Constants::NODE_MAXVALUE);
     packOptionGUI(Add, GUIValueInput[Add]);
@@ -135,25 +155,40 @@ void VisualSLLState::loadAddGUI() {
 void VisualSLLState::loadDeleteGUI() {
     auto indexLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "Position",
                                                    *getContext().fonts);
-    indexLabel->setPosition(555.f, getContext().window->getSize().y - 250.f);
+    indexLabel->setPosition(firstLabelPosition);
     packOptionGUI(Delete, indexLabel);
 
     GUIIndexInput[Delete] = std::make_shared<GUI::InputNumber>(
         *getContext().fonts, *getContext().textures);
-    GUIIndexInput[Delete]->setPosition(
-        650.f, getContext().window->getSize().y - 205.f);
+    GUIIndexInput[Delete]->setPosition(firstInputPosition);
     packOptionGUI(Delete, GUIIndexInput[Delete]);
+
+    // front option
+    packOptionGUI(
+        Delete,
+        createNewGUIButton(
+            GUI::Button::Small,
+            sf::Vector2f(600.f, getContext().window->getSize().y - 180.f),
+            "Front", [this]() { GUIIndexInput[Delete]->setValue(0); }));
+
+    // back option
+    packOptionGUI(
+        Delete,
+        createNewGUIButton(
+            GUI::Button::Small,
+            sf::Vector2f(700.f, getContext().window->getSize().y - 180.f),
+            "Back",
+            [this]() { GUIIndexInput[Delete]->setValue(mSLL.getSize() - 1); }));
 }
 
 void VisualSLLState::loadSearchGUI() {
     auto valueLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "By value",
                                                    *getContext().fonts);
-    valueLabel->setPosition(555.f, getContext().window->getSize().y - 250.f);
+    valueLabel->setPosition(firstLabelPosition);
 
     GUIValueInput[Search] = std::make_shared<GUI::InputNumber>(
         *getContext().fonts, *getContext().textures);
-    GUIValueInput[Search]->setPosition(
-        650.f, getContext().window->getSize().y - 205.f);
+    GUIValueInput[Search]->setPosition(firstInputPosition);
     GUIValueInput[Search]->setRange(Constants::NODE_MINVALUE,
                                     Constants::NODE_MAXVALUE);
 
@@ -164,24 +199,39 @@ void VisualSLLState::loadSearchGUI() {
 void VisualSLLState::loadUpdateGUI() {
     auto indexLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "Position",
                                                    *getContext().fonts);
-    indexLabel->setPosition(555.f, getContext().window->getSize().y - 250.f);
+    indexLabel->setPosition(firstLabelPosition);
     packOptionGUI(Update, indexLabel);
 
     GUIIndexInput[Update] = std::make_shared<GUI::InputNumber>(
         *getContext().fonts, *getContext().textures);
-    GUIIndexInput[Update]->setPosition(
-        650.f, getContext().window->getSize().y - 205.f);
+    GUIIndexInput[Update]->setPosition(firstInputPosition);
     packOptionGUI(Update, GUIIndexInput[Update]);
+
+    // front option
+    packOptionGUI(
+        Update,
+        createNewGUIButton(
+            GUI::Button::Small,
+            sf::Vector2f(600.f, getContext().window->getSize().y - 180.f),
+            "Front", [this]() { GUIIndexInput[Update]->setValue(0); }));
+
+    // back option
+    packOptionGUI(
+        Update,
+        createNewGUIButton(
+            GUI::Button::Small,
+            sf::Vector2f(700.f, getContext().window->getSize().y - 180.f),
+            "Back",
+            [this]() { GUIIndexInput[Update]->setValue(mSLL.getSize() - 1); }));
 
     auto valueLabel = std::make_shared<GUI::Label>(
         GUI::Label::Main, "New value", *getContext().fonts);
-    valueLabel->setPosition(555.f, getContext().window->getSize().y - 170.f);
+    valueLabel->setPosition(secondLabelPosition);
     packOptionGUI(Update, valueLabel);
 
     GUIValueInput[Update] = std::make_shared<GUI::InputNumber>(
         *getContext().fonts, *getContext().textures);
-    GUIValueInput[Update]->setPosition(
-        650.f, getContext().window->getSize().y - 125.f);
+    GUIValueInput[Update]->setPosition(secondInputPosition);
     GUIValueInput[Update]->setRange(Constants::NODE_MINVALUE,
                                     Constants::NODE_MAXVALUE);
     packOptionGUI(Update, GUIValueInput[Update]);

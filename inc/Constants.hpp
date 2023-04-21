@@ -20,7 +20,7 @@ float const PI = 3.14159265;
 sf::Color const mBlack(66, 66, 66);
 sf::Color const mBlue(13, 71, 161);
 sf::Color const WhiteDisplay(sf::Color::White);
-sf::Color const WhiteUI(238, 238, 238);
+sf::Color const WhiteUI(245, 245, 245);
 sf::Color const GrayBorder(189, 189, 189);
 
 // Input

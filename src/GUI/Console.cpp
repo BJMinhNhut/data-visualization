@@ -1,6 +1,6 @@
+#include <Constants.hpp>
 #include <GUI/Console.hpp>
 #include <Graphics/ResourceHolder.hpp>
-
 namespace GUI {
 Console::Console(const FontHolder& fonts)
     : Label(Mono, "", fonts), currentType(Info) {}
@@ -26,11 +26,11 @@ Console::LogType Console::getLogType() const {
 sf::Color Console::getColorFromType(LogType type) const {
     switch (type) {
         case Info:
-            return sf::Color(13, 71, 161);
+            return Constants::mBlue;
         case Error:
             return sf::Color(183, 28, 28);
         default:
-            return sf::Color(13, 71, 161);
+            return Constants::mBlue;
     }
 }
 
