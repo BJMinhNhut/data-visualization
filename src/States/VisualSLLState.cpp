@@ -81,13 +81,13 @@ void VisualSLLState::loadNewGUI() {
     packOptionGUI(
         New, createNewGUIButton(
                  GUI::Button::Small,
-                 sf::Vector2f(600.f, getContext().window->getSize().y - 160.f),
+                 sf::Vector2f(605.f, getContext().window->getSize().y - 160.f),
                  "Random", [this]() { GUIArrayInput->randomizeArray(); }));
 
     packOptionGUI(
         New, createNewGUIButton(
-                 GUI::Button::Command,
-                 sf::Vector2f(650.f, getContext().window->getSize().y - 120.f),
+                 GUI::Button::Big,
+                 sf::Vector2f(650.f, getContext().window->getSize().y - 110.f),
                  "Apply", [this]() {
                      if (GUIArrayInput->validate() == GUI::Input::Success) {
                          mSLL.loadData(GUIArrayInput->getArray());
@@ -97,12 +97,12 @@ void VisualSLLState::loadNewGUI() {
 
     auto dataLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "Data",
                                                   *getContext().fonts);
-    dataLabel->setPosition(555.f, getContext().window->getSize().y - 250.f);
+    dataLabel->setPosition(555.f, getContext().window->getSize().y - 260.f);
     packOptionGUI(New, dataLabel);
 
     GUIArrayInput = std::make_shared<GUI::InputArray>(*getContext().fonts,
                                                       *getContext().textures);
-    GUIArrayInput->setPosition(650.f, getContext().window->getSize().y - 205.f);
+    GUIArrayInput->setPosition(650.f, getContext().window->getSize().y - 210.f);
     packOptionGUI(New, GUIArrayInput);
 }
 

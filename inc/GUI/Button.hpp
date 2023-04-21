@@ -23,6 +23,7 @@ class Button : public Component {
         Checkbox,
         Play,
         Small,
+        Big,
         MenuSLL,
         MenuDLL,
         MenuCLL,

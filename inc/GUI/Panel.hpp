@@ -9,7 +9,8 @@
 namespace GUI {
 class Panel : public Component {
    public:
-    Panel(float width, float height);
+    Panel(const float& width, const float& height, const sf::Color& fillColor,
+          const sf::Color& outlineColor);
     virtual bool isSelectable() const;
     void handleEvent(const sf::Event& event);
 

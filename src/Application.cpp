@@ -46,6 +46,10 @@ Application::Application()
                    "data/images/button-small-normal.png");
     mTextures.load(Textures::SmallButtonSelected,
                    "data/images/button-small-selected.png");
+    mTextures.load(Textures::BigButtonNormal,
+                   "data/images/button-big-normal.png");
+    mTextures.load(Textures::BigButtonSelected,
+                   "data/images/button-big-selected.png");
     mTextures.load(Textures::SinglyNodeNormal,
                    "data/images/node-singly-normal.png");
 

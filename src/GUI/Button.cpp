@@ -28,6 +28,8 @@ Textures::ID Button::getNormalTextureID(Type type) const {
     switch (type) {
         case Small:
             return Textures::SmallButtonNormal;
+        case Big:
+            return Textures::BigButtonNormal;
         case Command:
             return Textures::CommandNormal;
         case Home:
@@ -57,6 +59,8 @@ Textures::ID Button::getSelectedTextureID(Type type) const {
     switch (type) {
         case Small:
             return Textures::SmallButtonSelected;
+        case Big:
+            return Textures::BigButtonSelected;
         case Command:
             return Textures::CommandSelected;
         case Home:
@@ -86,6 +90,8 @@ Textures::ID Button::getPressedTextureID(Type type) const {
     switch (type) {
         case Small:
             return Textures::SmallButtonSelected;
+        case Big:
+            return Textures::BigButtonSelected;
         case Command:
             return Textures::CommandActivated;
         case Home:
@@ -114,9 +120,15 @@ Textures::ID Button::getPressedTextureID(Type type) const {
 void Button::setFont(Type type, const FontHolder& fonts) {
     switch (type) {
         case Small:
-            mText.setFont(fonts.get(Fonts::Bold));
+            mText.setFont(fonts.get(Fonts::Medium));
             mText.setCharacterSize(16u);
             mText.setFillColor(Constants::mBlue);
+            break;
+
+        case Big:
+            mText.setFont(fonts.get(Fonts::Bold));
+            mText.setCharacterSize(18u);
+            mText.setFillColor(sf::Color::White);
             break;
 
         default:

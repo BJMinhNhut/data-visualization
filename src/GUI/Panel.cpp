@@ -5,10 +5,12 @@
 
 namespace GUI {
 
-Panel::Panel(float width, float height) : mRect(sf::Vector2f(width, height)) {
+Panel::Panel(const float& width, const float& height,
+             const sf::Color& fillColor, const sf::Color& outlineColor)
+    : mRect(sf::Vector2f(width, height)) {
     mRect.setOutlineThickness(1u);
-    mRect.setFillColor(sf::Color(255, 255, 255));
-    mRect.setOutlineColor(sf::Color(189, 189, 189));
+    mRect.setFillColor(fillColor);
+    mRect.setOutlineColor(outlineColor);
 }
 
 bool Panel::isSelectable() const {

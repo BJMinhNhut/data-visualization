@@ -30,22 +30,28 @@ int VisualState::getCurrentOption() const {
 
 void VisualState::initGUIPanels() {
     auto topPanel =
-        std::make_shared<GUI::Panel>(getContext().window->getSize().x, 60.f);
+        std::make_shared<GUI::Panel>(getContext().window->getSize().x, 60.f,
+                                     Constants::WhiteUI, Constants::GrayBorder);
     topPanel->setPosition(0.f, 0.f);
 
-    auto codePanel = std::make_shared<GUI::Panel>(500.f, 250.f);
+    auto codePanel = std::make_shared<GUI::Panel>(
+        500.f, 250.f, Constants::WhiteDisplay, Constants::GrayBorder);
     codePanel->setPosition(800.f, getContext().window->getSize().y - 400.f);
 
-    auto progressPanel = std::make_shared<GUI::Panel>(500.f, 100.f);
+    auto progressPanel = std::make_shared<GUI::Panel>(
+        500.f, 100.f, Constants::WhiteUI, Constants::GrayBorder);
     progressPanel->setPosition(800.f, getContext().window->getSize().y - 150.f);
 
-    auto consolePanel = std::make_shared<GUI::Panel>(500.f, 100.f);
+    auto consolePanel = std::make_shared<GUI::Panel>(
+        500.f, 100.f, Constants::WhiteDisplay, Constants::GrayBorder);
     consolePanel->setPosition(300.f, getContext().window->getSize().y - 400.f);
 
-    auto commandPanel = std::make_shared<GUI::Panel>(200.f, 250.f);
+    auto commandPanel = std::make_shared<GUI::Panel>(
+        200.f, 250.f, Constants::WhiteUI, Constants::GrayBorder);
     commandPanel->setPosition(300.f, getContext().window->getSize().y - 300.f);
 
-    auto executePanel = std::make_shared<GUI::Panel>(300.f, 250.f);
+    auto executePanel = std::make_shared<GUI::Panel>(
+        300.f, 250.f, Constants::WhiteUI, Constants::GrayBorder);
     executePanel->setPosition(500.f, getContext().window->getSize().y - 300.f);
 
     mGUIContainer.pack(topPanel);

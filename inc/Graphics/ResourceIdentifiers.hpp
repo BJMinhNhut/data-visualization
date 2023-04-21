@@ -28,6 +28,8 @@ enum ID {
 
     SmallButtonNormal,
     SmallButtonSelected,
+    BigButtonNormal,
+    BigButtonSelected,
 
     MenuSLLNormal,
     MenuSLLSelected,
