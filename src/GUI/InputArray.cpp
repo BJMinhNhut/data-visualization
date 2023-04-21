@@ -39,6 +39,9 @@ Input::ValidationResult InputArray::validate() const {
     }
 
     std::string text(getText());
+    if (text.empty())
+        return Input::Success;
+
     text.push_back(',');
 
     int currentValue = 0;
@@ -72,6 +75,8 @@ std::vector<int> InputArray::getArray() const {
 
     std::vector<int> mArray;
     std::string text(getText());
+    if (text.empty())
+        return mArray;
 
     int currentValue = 0;
     text.push_back(',');

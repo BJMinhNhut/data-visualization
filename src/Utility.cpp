@@ -2,6 +2,7 @@
 #include <Utility.hpp>
 
 #include <cmath>
+#include <fstream>
 
 void centerOrigin(sf::Sprite& sprite) {
     sf::FloatRect bounds = sprite.getLocalBounds();
@@ -63,4 +64,40 @@ sf::ConvexShape getArrowTip(sf::Vector2f line, float thickness = 1.f) {
     float angle = atan2(line.y, line.x) / Constants::PI * 180.f;
     arrowTip.rotate(angle);
     return arrowTip;
+}
+
+std::vector<int> loadArrayFromString(std::string text) {
+    // TODO: validate and format text before loading array
+
+    std::vector<int> mArray(0);
+    if (text.empty())
+        return mArray;
+
+    int currentValue = 0;
+    int length = 0;
+    text.push_back(',');
+
+    for (char mChar : text) {
+        if (mChar == ',') {
+            mArray.push_back(currentValue);
+            length++;
+            currentValue = 0;
+        } else if (std::isdigit(mChar)) {
+            currentValue = currentValue * 10 + static_cast<int>(mChar - '0');
+        }
+    }
+    return mArray;
+}
+
+std::vector<int> loadArrayFromFile(const std::string& filename) {
+    std::ifstream mFile(filename);
+    std::vector<int> mArray(0);
+    while (!mFile.eof()) {
+        std::string line;
+        getline(mFile, line);
+        std::vector<int> currentArray(loadArrayFromString(line));
+        mArray.insert(mArray.end(), currentArray.begin(), currentArray.end());
+    }
+    mFile.close();
+    return mArray;
 }

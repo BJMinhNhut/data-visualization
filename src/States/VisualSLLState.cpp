@@ -1,3 +1,4 @@
+#include <portable-file-dialogs.h>
 #include <Constants.hpp>
 #include <GUI/Button.hpp>
 #include <GUI/Label.hpp>
@@ -90,6 +91,21 @@ void VisualSLLState::loadNewGUI() {
                  GUI::Button::Small,
                  sf::Vector2f(600.f, getContext().window->getSize().y - 180.f),
                  "Random", [this]() { GUIArrayInput->randomizeArray(); }));
+
+    packOptionGUI(
+        New, createNewGUIButton(
+                 GUI::Button::Small,
+                 sf::Vector2f(700.f, getContext().window->getSize().y - 180.f),
+                 "Load file", [this]() {
+                     auto selection =
+                         pfd::open_file("Select a text file to load", "..",
+                                        {"Text files", "*.txt"})
+                             .result();
+                     if (!selection.empty()) {
+                         mSLL.loadData(loadArrayFromFile(selection[0]));
+                         GUIArrayInput->loadArray(mSLL.getData());
+                     }
+                 }));
 
     packOptionGUI(
         New, createNewGUIButton(

@@ -18,4 +18,7 @@ sf::RectangleShape getLineShape(sf::Vector2f line, float thickness);
 sf::ConvexShape getArrowTip(sf::Vector2f line, float thickness);
 sf::ConvexShape getArrow(sf::Vector2f line, float thickness);
 
+std::vector<int> loadArrayFromString(std::string text);
+std::vector<int> loadArrayFromFile(const std::string& filename);
+
 #endif  // UTILITY_HPP
