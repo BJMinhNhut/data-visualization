@@ -67,24 +67,27 @@ sf::ConvexShape getArrowTip(sf::Vector2f line, float thickness = 1.f) {
 }
 
 std::vector<int> loadArrayFromString(std::string text) {
-    // TODO: validate and format text before loading array
-
     std::vector<int> mArray(0);
     if (text.empty())
         return mArray;
 
     int currentValue = 0;
-    int length = 0;
     text.push_back(',');
 
     for (char mChar : text) {
         if (mChar == ',') {
             mArray.push_back(currentValue);
-            length++;
             currentValue = 0;
         } else if (std::isdigit(mChar)) {
             currentValue = currentValue * 10 + static_cast<int>(mChar - '0');
+            if (currentValue > Constants::NODE_MAXVALUE) {
+                mArray.push_back(currentValue / 10);
+                currentValue %= 10;
+            }
         }
+
+        if (mArray.size() == Constants::LIST_MAXSIZE)
+            break;
     }
     return mArray;
 }
