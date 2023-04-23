@@ -167,6 +167,34 @@ void VisualSLLState::loadAddGUI() {
     packOptionGUI(Add, GUIValueInput[Add]);
 }
 
+void VisualSLLState::loadAddAnimation() {
+    clearAnimation();
+    std::cerr << "load add animation\n";
+    int index = GUIIndexInput[Add]->getValue();
+    int value = GUIValueInput[Add]->getValue();
+    addAnimation(Animation([=]() {
+        mSLL.setHighlight(0);
+        callInfo("Set cur = head");
+    }));
+    for (int i = 0; i + 1 < index; ++i) {
+        addAnimation(Animation([=]() {
+            callInfo("k = " + std::to_string(i) +
+                     ",\nindex specified has not been reached\n");
+        }));
+        addAnimation(Animation([=]() {
+            mSLL.setHighlight(i + 1);
+            callInfo("Set cur to the next node, increase k");
+        }));
+    }
+
+    addAnimation(Animation([=]() {
+        callInfo(
+            "We have found the insertion point.\n"
+            "We continue the next insertion step.");
+    }));
+    addAnimation(Animation([=]() { mSLL.insertNode(index, value); }));
+}
+
 void VisualSLLState::loadDeleteGUI() {
     auto indexLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "Position",
                                                    *getContext().fonts);
@@ -253,26 +281,21 @@ void VisualSLLState::loadUpdateGUI() {
 }
 
 void VisualSLLState::loadCallback() {
-    setExecuteCallback(New,
-                       [this]() { mSLL.loadData(GUIArrayInput->getArray()); });
+    setLoadAnimationCallback(
+        New, [this]() { mSLL.loadData(GUIArrayInput->getArray()); });
 
-    setExecuteCallback(Add, [this]() {
-        {
-            mSLL.insertNode(GUIIndexInput[Add]->getValue(),
-                            GUIValueInput[Add]->getValue());
-        }
-    });
+    setLoadAnimationCallback(Add, [this]() { loadAddAnimation(); });
 
-    setExecuteCallback(Delete, [this]() {
+    setLoadAnimationCallback(Delete, [this]() {
         mSLL.eraseNode(GUIIndexInput[Delete]->getValue());
     });
 
-    setExecuteCallback(Update, [this]() {
+    setLoadAnimationCallback(Update, [this]() {
         mSLL.updateNode(GUIIndexInput[Update]->getValue(),
                         GUIValueInput[Update]->getValue());
     });
 
-    setExecuteCallback(Search, [this]() {
+    setLoadAnimationCallback(Search, [this]() {
         int findIndex = mSLL.searchNode(GUIValueInput[Search]->getValue());
         if (findIndex > -1) {
             callInfo("Value " +

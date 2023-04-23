@@ -1,6 +1,7 @@
 #ifndef VISUALSTATE_HPP
 #define VISUALSTATE_HPP
 
+#include <AnimationList.hpp>
 #include <GUI/Button.hpp>
 #include <GUI/Console.hpp>
 #include <GUI/Container.hpp>
@@ -28,11 +29,14 @@ class VisualState : public State {
     void setCurrentOption(int option);
     void resetOption();
 
-    void setExecuteCallback(int option, GUI::Button::Callback callback);
+    void setLoadAnimationCallback(int option, GUI::Button::Callback callback);
 
     void callError(const std::string& text);
     void callInfo(const std::string& text);
     void cleanLog();
+
+    void addAnimation(const Animation& animation);
+    void clearAnimation();
 
     virtual void validateCommand() = 0;
 
@@ -51,12 +55,15 @@ class VisualState : public State {
     GUI::Container mGUIContainer;
     GUI::Container GUIOptionContainer;
     std::map<int, GUI::Container> GUICommandContainer;
-    std::map<int, std::function<void()>> GUICallback;
+    std::map<int, std::function<void()>> loadAnimationCallback;
     GUI::Button::Ptr GUIExecuteButton;
     GUI::Console::Ptr GUIConsole;
 
     // Graphics
     sf::Sprite mBackgroundSprite;
+
+    // Animation
+    AnimationList mAnimationList;
 };
 
 #endif  // VISUALSTATE_HPP

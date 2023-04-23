@@ -14,14 +14,15 @@ VisualState::VisualState(StateStack& stack, Context context)
       mGUIContainer(),
       GUIOptionContainer(),
       GUICommandContainer(),
-      currentOption(0) {
+      currentOption(0),
+      mAnimationList() {
 
     mBackgroundSprite.setTexture(context.textures->get(Textures::TitleScreen));
 
     initGUIPanels();
     initGUIButtons();
     initConsole();
-    setExecuteCallback(0, [this]() {});
+    setLoadAnimationCallback(0, [this]() {});
 }
 
 int VisualState::getCurrentOption() const {
@@ -106,9 +107,9 @@ void VisualState::resetOption() {
     currentOption = 0;
 }
 
-void VisualState::setExecuteCallback(int option,
-                                     GUI::Button::Callback callback) {
-    GUICallback[option] = callback;
+void VisualState::setLoadAnimationCallback(int option,
+                                           GUI::Button::Callback callback) {
+    loadAnimationCallback[option] = callback;
 }
 
 void VisualState::callError(const std::string& text) {
@@ -121,6 +122,14 @@ void VisualState::callInfo(const std::string& text) {
 
 void VisualState::cleanLog() {
     GUIConsole->clean();
+}
+
+void VisualState::addAnimation(const Animation& animation) {
+    mAnimationList.push(animation);
+}
+
+void VisualState::clearAnimation() {
+    mAnimationList.clear();
 }
 
 std::shared_ptr<GUI::Button> VisualState::createNewGUIButton(
@@ -138,7 +147,8 @@ std::shared_ptr<GUI::Button> VisualState::createNewGUIButton(
 
 void VisualState::execute() {
     if (GUIConsole->getLogType() != GUI::Console::Error) {
-        GUICallback[currentOption]();
+        loadAnimationCallback[currentOption]();
+        mAnimationList.play();
         resetOption();
     }
 }
@@ -158,6 +168,7 @@ bool VisualState::update(sf::Time dt) {
     mGUIContainer.update(dt);
     GUIOptionContainer.update(dt);
     GUICommandContainer[currentOption].update(dt);
+    mAnimationList.update(dt);
 
     return true;
 }

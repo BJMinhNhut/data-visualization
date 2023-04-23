@@ -4,12 +4,17 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Time.hpp>
 
+#include <functional>
+
 class Animation {
-    enum Type { Highlight, Move, TypeCount };
-    sf::Time duration;
-    sf::Vector2f moveVector;
-    unsigned int codeID;
-    unsigned int lineID;
+   public:
+    Animation(const std::function<void()>& callback);
+
+    void play();
+    void reverse();
+
+   private:
+    std::function<void()> mCallback;
 };
 
-#endif  // ANIMATION_HPP    
+#endif  // ANIMATION_HPP

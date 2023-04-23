@@ -11,6 +11,7 @@ Label::Label(Type type, const std::string& text, const FontHolder& fonts)
     : mText(text, fonts.get(getFontID(type)), 18) {
     mText.setFillColor(Constants::mBlack);
     mText.setOrigin(0.f, mText.getGlobalBounds().height / 2.f);
+    mText.setLineSpacing(1.5f);
 }
 
 bool Label::isSelectable() const {

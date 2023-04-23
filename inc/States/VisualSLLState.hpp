@@ -35,7 +35,10 @@ class VisualSLLState : public VisualState {
     void initGUIButtons();
 
     void loadNewGUI();
+
     void loadAddGUI();
+    void loadAddAnimation();
+
     void loadDeleteGUI();
     void loadUpdateGUI();
     void loadSearchGUI();
