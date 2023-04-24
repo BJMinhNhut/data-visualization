@@ -15,11 +15,12 @@ class SinglyNode : public SceneNode {
    public:
     explicit SinglyNode(const FontHolder& fonts, const TextureHolder& textures);
 
-    SinglyNode* getNextNode();
-    int getValue();
+    int getValue() const;
+    virtual sf::Vector2f getLeftBound() const;
 
     void setValue(int value);
     void setNextNode(SinglyNode* node);
+    void refreshPointerTarget();
 
    private:
     virtual void updateCurrent(sf::Time dt);
@@ -31,7 +32,6 @@ class SinglyNode : public SceneNode {
     sf::Sprite mSprite;
     NodeData* mData;
     Pointer* mPointer;
-    SinglyNode* mNextNode;
 };
 
 #endif  // SINGLYNODE_HPP

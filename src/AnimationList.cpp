@@ -91,7 +91,7 @@ void AnimationList::update(sf::Time dt) {
             if (mCooldown < dt)
                 mList[currentAnimation].play();
             mCooldown += dt;
-            if (mCooldown > sf::seconds(mSpeed * 1.f)) {
+            if (mCooldown > sf::seconds(mSpeed * 1.5f)) {
                 currentAnimation++;
                 resetCooldown();
             }

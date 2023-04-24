@@ -29,13 +29,17 @@ class SceneNode : public sf::Transformable,
     void update(sf::Time dt);
 
     void moveToWorldPosition(Transition transition);
-    void setTargetPosition(sf::Vector2f position, Transition transition);
-    void setTargetPosition(float pX, float pY, Transition transition);
-    void setTargetScale(sf::Vector2f scale, Transition transition);
-    void setTargetScale(float pX, float pY, Transition transition);
+    virtual void setTargetPosition(sf::Vector2f position,
+                                   Transition transition);
+    virtual void setTargetPosition(float pX, float pY, Transition transition);
+    virtual void setTargetScale(sf::Vector2f scale, Transition transition);
+    virtual void setTargetScale(float pX, float pY, Transition transition);
 
     sf::Vector2f getWorldPosition() const;
     sf::Transform getWorldTransform() const;
+    sf::Vector2f getTargetPosition() const;
+
+    virtual sf::Vector2f getLeftBound() const;
 
    private:
     virtual void updateCurrent(sf::Time dt);

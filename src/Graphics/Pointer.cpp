@@ -17,17 +17,8 @@ Pointer::Pointer(const FontHolder& fonts)
     : mColor(Constants::mBlack),
       mLabel("", fonts.get(Fonts::Main), 16u),
       TextNULL("null", fonts.get(Fonts::Main), 16u),
-      mRect(sf::Vector2f(Constants::NODE_SIZE / 2.f, Constants::NODE_SIZE)),
       mCircle(4.f, 20),
-      mIsNULL(true),
-      mDestination(0.f, 0.f),
-      mSlash(getLineShape(sf::Vector2f(mRect.getSize().x, mRect.getSize().y),
-                          2.f)) {
-    centerOrigin(mRect);
-    mRect.setOutlineThickness(2);
-    mRect.setFillColor(sf::Color::White);
-    mRect.setOutlineColor(mColor);
-
+      mTarget(nullptr) {
     centerOrigin(mLabel);
     mLabel.setPosition(0.f, mCircle.getRadius() + 10.f);
     mLabel.setFillColor(Constants::mBlack);
@@ -49,14 +40,20 @@ void Pointer::setLabel(const std::string label) {
 }
 
 void Pointer::setNull() {
-    mDestination =
-        getWorldPosition() + sf::Vector2f(Constants::NODE_DISTANCE, 0.f);
-    mIsNULL = true;
+    mTarget = nullptr;
 }
 
-void Pointer::setDestination(sf::Vector2f destination) {
-    mDestination = destination;
-    mIsNULL = false;
+void Pointer::resetDestination() {
+    mDestination = getWorldPosition();
+}
+
+void Pointer::setTarget(SceneNode* node) {
+    mTarget = node;
+}
+
+void Pointer::setTargetPosition(sf::Vector2f position, Transition transition) {
+    SceneNode::setTargetPosition(position, transition);
+    resetDestination();
 }
 
 sf::Vector2f Pointer::getDestination() const {
@@ -64,13 +61,23 @@ sf::Vector2f Pointer::getDestination() const {
 }
 
 bool Pointer::isNULL() const {
-    return mIsNULL;
+    return mTarget == nullptr;
 }
 
 void Pointer::updateCurrent(sf::Time dt) {
+    if (mTarget)
+        mTargetDestination = mTarget->getLeftBound();
+    else
+        mTargetDestination = getWorldPosition() +
+                             sf::Vector2f(Constants::NODE_DISTANCE - 10.f, 0.f);
+
+    if (mDestination != mTargetDestination) {
+        sf::Vector2f delta = (mTargetDestination - mDestination) * 0.2f;
+        mDestination += delta;
+    }
+
     // std::cerr << mDestination.x << ' ' << mDestination.y << '\n';
     sf::Vector2f Delta = mDestination - getWorldPosition();
-    Delta.x -= (Constants::NODE_SIZE) / 2.f;
     mArrowTip = getArrowTip(Delta, 2.f);
     mArrowTip.setFillColor(mColor);
 
@@ -89,7 +96,7 @@ void Pointer::drawCurrent(sf::RenderTarget& target,
         target.draw(mLabel, states);
     }
 
-    if (mIsNULL) {
+    if (mTarget == nullptr) {
         target.draw(TextNULL, states);
     }
     // std::cerr << "draw ptr\n";

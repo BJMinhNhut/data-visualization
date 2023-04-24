@@ -31,7 +31,7 @@ class VisualSLLState : public VisualState {
     virtual bool handleEvent(const sf::Event& event);
 
    private:
-    void centerSLL();
+    void centerSLL(const SceneNode::Transition& transition);
     void initGUIButtons();
 
     void loadNewGUI();

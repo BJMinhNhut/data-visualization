@@ -87,9 +87,7 @@ void SceneNode::setTargetPosition(sf::Vector2f position,
 }
 
 void SceneNode::setTargetPosition(float pX, float pY, Transition transition) {
-    targetPosition = sf::Vector2f(pX, pY);
-    if (transition == None)
-        setPosition(targetPosition);
+    setTargetPosition(sf::Vector2f(pX, pY), transition);
 }
 
 void SceneNode::setTargetScale(sf::Vector2f scale, Transition transition) {
@@ -121,4 +119,12 @@ sf::Transform SceneNode::getWorldTransform() const {
     }
 
     return transform;
+}
+
+sf::Vector2f SceneNode::getTargetPosition() const {
+    return targetPosition;
+}
+
+sf::Vector2f SceneNode::getLeftBound() const {
+    return getWorldPosition();
 }

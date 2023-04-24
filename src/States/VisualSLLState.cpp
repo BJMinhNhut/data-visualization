@@ -23,7 +23,8 @@ VisualSLLState::VisualSLLState(StateStack& stack, Context context)
       GUIValueInput(OptionCount),
       GUIIndexInput(OptionCount) {
 
-    centerSLL();
+    centerSLL(SceneNode::None);
+    mSLL.refreshPointerTarget();
 
     initGUIButtons();
 
@@ -36,11 +37,11 @@ VisualSLLState::VisualSLLState(StateStack& stack, Context context)
     loadCallback();
 }
 
-void VisualSLLState::centerSLL() {
+void VisualSLLState::centerSLL(const SceneNode::Transition& transition) {
     sf::Vector2u windowSize = getContext().window->getSize();
     if (mSLL.getSize() == 0)
         mSLL.setTargetPosition(windowSize.x / 2.f, windowSize.y / 4.f,
-                               SceneNode::Smooth);
+                               transition);
     else
         mSLL.setTargetPosition(
             windowSize.x / 2.f -
@@ -48,7 +49,7 @@ void VisualSLLState::centerSLL() {
                      mSLL.getSize() -
                  Constants::NODE_SIZE / 2.f) /
                     2.f,
-            windowSize.y / 4.f, SceneNode::Smooth);
+            windowSize.y / 4.f, transition);
 }
 
 void VisualSLLState::initGUIButtons() {
@@ -174,16 +175,16 @@ void VisualSLLState::loadAddAnimation() {
     int value = GUIValueInput[Add]->getValue();
     addAnimation(Animation([=]() {
         mSLL.setHighlight(0);
-        callInfo("Set cur = head");
+        callInfo("Set cur = head.");
     }));
     for (int i = 0; i + 1 < index; ++i) {
         addAnimation(Animation([=]() {
             callInfo("k = " + std::to_string(i) +
-                     ",\nindex specified has not been reached\n");
+                     ",\nindex specified has not been reached.");
         }));
         addAnimation(Animation([=]() {
             mSLL.setHighlight(i + 1);
-            callInfo("Set cur to the next node, increase k");
+            callInfo("Set cur to the next node, increase k.");
         }));
     }
 
@@ -192,7 +193,31 @@ void VisualSLLState::loadAddAnimation() {
             "We have found the insertion point.\n"
             "We continue the next insertion step.");
     }));
-    addAnimation(Animation([=]() { mSLL.insertNode(index, value); }));
+    addAnimation(Animation([=]() {
+        callInfo("Create new node to store value " + std::to_string(value) +
+                 ".");
+        mSLL.pureInsert(index, value);
+        mSLL.popUpNode(index);
+    }));
+
+    if (index < mSLL.getSize())
+        addAnimation(Animation([=]() {
+            callInfo("Set node->next to cur->next.");
+            mSLL.setPointer(index, index + 1);
+        }));
+
+    if (index > 0)
+        addAnimation(Animation([=]() {
+            callInfo("Set cur->next to node.");
+            mSLL.setPointer(index - 1, index);
+        }));
+
+    addAnimation(Animation([=]() {
+        callInfo(
+            "Re-layout the Linked List for visualization\n(not in the actual "
+            "Linked List).\nThe whole process complexity is O(N).");
+        mSLL.alignNodes();
+    }));
 }
 
 void VisualSLLState::loadDeleteGUI() {
@@ -397,7 +422,7 @@ void VisualSLLState::draw() {
 
 bool VisualSLLState::update(sf::Time dt) {
     mSLL.update(dt);
-    centerSLL();
+    centerSLL(SceneNode::Smooth);
     return VisualState::update(dt);
 }
 

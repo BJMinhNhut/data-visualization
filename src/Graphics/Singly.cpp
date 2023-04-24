@@ -34,8 +34,7 @@ std::size_t SinglyLinkedList::getSize() const {
 }
 
 int SinglyLinkedList::getValue(std::size_t index) const {
-    if (index >= nodes.size())
-        return -1;
+    assert(isInList(index));
     return nodes[index]->getValue();
 }
 
@@ -51,6 +50,10 @@ std::vector<int> SinglyLinkedList::getData() const {
     return mData;
 }
 
+bool SinglyLinkedList::isInList(std::size_t index) const {
+    return index >= 0 && index < nodes.size();
+}
+
 void SinglyLinkedList::loadData(const std::vector<int>& data) {
     resetNodes();
     for (int index = 0; index < data.size(); ++index) {
@@ -58,7 +61,28 @@ void SinglyLinkedList::loadData(const std::vector<int>& data) {
     }
 }
 
+void SinglyLinkedList::pureInsert(std::size_t index, int value) {
+    assert(isInList(index) || index == nodes.size());
+    SinglyNode* newNode = new SinglyNode(mFonts, mTextures);
+    if (value != -1)
+        newNode->setValue(value);
+
+    pureInsert(index, newNode);
+    alignNodes();
+}
+
+void SinglyLinkedList::pureInsert(std::size_t index, SinglyNode* node) {
+    assert(isInList(index) ||
+           index == nodes.size() && nodes.size() < Constants::LIST_MAXSIZE);
+    setHighlight(-1);
+
+    nodes.insert(nodes.begin() + index, node);
+    std::unique_ptr<SinglyNode> nodePtr(node);
+    attachChild(std::move(nodePtr));
+}
+
 void SinglyLinkedList::insertNode(std::size_t index, int value) {
+    assert(isInList(index) || index == nodes.size());
     SinglyNode* newNode = new SinglyNode(mFonts, mTextures);
     if (value != -1)
         newNode->setValue(value);
@@ -67,16 +91,7 @@ void SinglyLinkedList::insertNode(std::size_t index, int value) {
 }
 
 void SinglyLinkedList::insertNode(std::size_t index, SinglyNode* node) {
-    setHighlight(-1);
-
-    if (nodes.size() == Constants::LIST_MAXSIZE) {
-        std::cerr << "Maximum size reached!";
-        return;
-    }
-
-    nodes.insert(nodes.begin() + index, node);
-    std::unique_ptr<SinglyNode> nodePtr(node);
-    attachChild(std::move(nodePtr));
+    pureInsert(index, node);
 
     if (index > 0) {
         nodes[index - 1]->setNextNode(node);
@@ -87,6 +102,12 @@ void SinglyLinkedList::insertNode(std::size_t index, SinglyNode* node) {
         node->setNextNode(nodes[index + 1]);
 
     std::cerr << "Insert " << node->getValue() << " at " << index << '\n';
+    alignNodes();
+    if (!nodes.empty()) {
+        mHead->setTarget(nodes[0]);
+    } else {
+        mHead->setNull();
+    }
 }
 
 void SinglyLinkedList::resetNodes() {
@@ -100,6 +121,21 @@ void SinglyLinkedList::resetNodes() {
     std::vector<SinglyNode*>().swap(nodes);
 }
 
+void SinglyLinkedList::alignNodes() {
+    for (std::size_t index = 0; index < nodes.size(); ++index) {
+        if (index == 0)
+            nodes[index]->setTargetPosition(
+                sf::Vector2f(Constants::NODE_DISTANCE, 0.f), Smooth);
+        else
+            nodes[index]->setTargetPosition(
+                sf::Vector2f((Constants::NODE_DISTANCE + Constants::NODE_SIZE -
+                              6.f) * (index) +
+                                 Constants::NODE_DISTANCE,
+                             0.f),
+                Smooth);
+    }
+}
+
 void SinglyLinkedList::randomGen() {
     resetNodes();
 
@@ -111,6 +147,8 @@ void SinglyLinkedList::randomGen() {
 }
 
 void SinglyLinkedList::eraseNode(std::size_t index) {
+    assert(isInList(index));
+
     setHighlight(-1);
 
     if (index >= nodes.size())
@@ -123,7 +161,7 @@ void SinglyLinkedList::eraseNode(std::size_t index) {
             nodes[index - 1]->setNextNode(nullptr);
     } else {
         if (index + 1 < nodes.size()) {
-            mHead->setDestination(nodes[1]->getWorldPosition());
+            mHead->setTarget(nodes[1]);
         } else {
             mHead->setNull();
         }
@@ -136,10 +174,15 @@ void SinglyLinkedList::eraseNode(std::size_t index) {
     erasedNode->setTargetPosition(
         erasedNode->getPosition() + sf::Vector2f(0.f, Constants::NODE_SIZE),
         Smooth);
-
     nodes.erase(nodes.begin() + index);
-
     tempNode = erasedNode;
+
+    alignNodes();
+    if (!nodes.empty()) {
+        mHead->setTarget(nodes[0]);
+    } else {
+        mHead->setNull();
+    }
 
     std::cerr << "Delete " << erasedNode->getValue() << " at " << index << '\n';
 }
@@ -156,8 +199,7 @@ int SinglyLinkedList::searchNode(int value) {
 }
 
 void SinglyLinkedList::setHighlight(int index) {
-    if (index >= (int)nodes.size())
-        return;
+    assert(isInList(index) || index == -1);
 
     if (index == -1) {
         // Remove highlight
@@ -170,10 +212,19 @@ void SinglyLinkedList::setHighlight(int index) {
     } else if (index < (int)nodes.size()) {  // Set highlight
         if (highlightIndex == -1) {
             mHighlight = new Pointer(mFonts);
-            mHighlight->setLabel("cur");
             std::unique_ptr<Pointer> highlightPtr(mHighlight);
             attachChild(std::move(highlightPtr));
+
+            mHighlight->setLabel("cur");
+            mHighlight->resetDestination();
         }
+
+        mHighlight->setTarget(nodes[index]);
+        mHighlight->setTargetPosition(
+            nodes[index]->getPosition() +
+                sf::Vector2f(-Constants::NODE_DISTANCE, 50.f),
+            Smooth);
+
         std::cerr << "Change highlight index " << index << '\n';
     }
 
@@ -181,42 +232,36 @@ void SinglyLinkedList::setHighlight(int index) {
 }
 
 void SinglyLinkedList::updateCurrent(sf::Time dt) {
-    for (std::size_t index = 0; index < nodes.size(); ++index) {
-        if (index == 0)
-            nodes[index]->setTargetPosition(Constants::NODE_DISTANCE, 0.f,
-                                            Smooth);
-        else
-            nodes[index]->setTargetPosition(
-                (Constants::NODE_DISTANCE + Constants::NODE_SIZE - 6.f) *
-                        (index) +
-                    Constants::NODE_DISTANCE,
-                0.f, Smooth);
-    }
-    if (!nodes.empty()) {
-        mHead->setDestination(nodes[0]->getWorldPosition());
-    } else {
-        mHead->setNull();
-    }
-
-    if (highlightIndex > -1) {
-        assert(mHighlight);
-        mHighlight->setDestination(nodes[highlightIndex]->getWorldPosition());
-        mHighlight->setTargetPosition(
-            nodes[highlightIndex]->getPosition() +
-                sf::Vector2f(-Constants::NODE_DISTANCE, 50.f),
-            Smooth);
-    }
-
     if (tempNode != nullptr && tempNode->getScale().x == 0.f) {
         detachChild(tempNode);
         tempNode = nullptr;
     }
 }
 
-void SinglyLinkedList::updateNode(std::size_t index, int newValue) {
-    if (index < nodes.size()) {
-        std::cerr << "Update node " << index << " to " << newValue << '\n';
-        nodes[index]->setValue(newValue);
-        setHighlight(index);
+void SinglyLinkedList::refreshPointerTarget() {
+    mHead->resetDestination();
+    if (mHighlight)
+        mHighlight->resetDestination();
+    for (auto& node : nodes) {
+        node->refreshPointerTarget();
     }
+}
+
+void SinglyLinkedList::popUpNode(std::size_t index) {
+    assert(isInList(index));
+    nodes[index]->setTargetPosition(
+        nodes[index]->getTargetPosition() + sf::Vector2f(0.f, 50.f), Smooth);
+}
+
+void SinglyLinkedList::updateNode(std::size_t index, int newValue) {
+    assert(isInList(index));
+    std::cerr << "Update node " << index << " to " << newValue << '\n';
+    nodes[index]->setValue(newValue);
+    setHighlight(index);
+}
+
+void SinglyLinkedList::setPointer(std::size_t source, std::size_t target) {
+    assert(isInList(source));
+    if (isInList(target))
+        nodes[source]->setNextNode(nodes[target]);
 }

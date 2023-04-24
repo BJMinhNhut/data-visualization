@@ -17,8 +17,11 @@ class Pointer : public SceneNode {
     explicit Pointer(const FontHolder& fonts);
 
     void setLabel(const std::string label);
-    void setDestination(sf::Vector2f destination);
+    void setTarget(SceneNode* node);
     void setNull();
+    void resetDestination();
+    virtual void setTargetPosition(sf::Vector2f position,
+                                   Transition transition);
 
     sf::Vector2f getDestination() const;
     bool isNULL() const;
@@ -29,21 +32,18 @@ class Pointer : public SceneNode {
                              sf::RenderStates states) const;
 
    private:
-    bool mIsNULL;
-
     sf::Vector2f mDestination;
+    sf::Vector2f mTargetDestination;
 
     sf::Color mColor;
-    sf::RectangleShape mRect;
     sf::CircleShape mCircle;
+    sf::ConvexShape mArrow;
+    sf::ConvexShape mArrowTip;
 
     sf::Text mLabel;
     sf::Text TextNULL;
 
-    sf::ConvexShape mArrow;
-    sf::ConvexShape mArrowTip;
-
-    sf::RectangleShape mSlash;
+    SceneNode* mTarget;
 };
 
 #endif  // POINTER_HPP

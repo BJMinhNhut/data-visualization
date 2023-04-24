@@ -18,8 +18,7 @@ SinglyNode::SinglyNode(const FontHolder& fonts, const TextureHolder& textures)
           Random::get(Constants::NODE_MINVALUE, Constants::NODE_MAXVALUE),
           fonts)),
       mPointer(new Pointer(fonts)),
-      mTextures(textures),
-      mNextNode(nullptr) {
+      mTextures(textures) {
     std::unique_ptr<NodeData> dataPtr(mData);
     std::unique_ptr<Pointer> nextNodePtr(mPointer);
 
@@ -29,31 +28,32 @@ SinglyNode::SinglyNode(const FontHolder& fonts, const TextureHolder& textures)
     setScale(0.f, 0.f);
     setTargetScale(1.f, 1.f, Smooth);
 
-    mPointer->setTargetPosition(28.f, 0.f, None);
+    mPointer->setTargetPosition(sf::Vector2f(28.f, 0.f), None);
+    mPointer->resetDestination();
     mPointer->setNull();
 
     mSprite.setOrigin(Constants::NODE_SIZE / 2.f, Constants::NODE_SIZE / 2.f);
     mSprite.setTexture(mTextures.get(Textures::SinglyNodeNormal), true);
 }
 
-void SinglyNode::updateCurrent(sf::Time dt) {
-    if (mNextNode != nullptr) {
-        mPointer->setDestination(mNextNode->getWorldPosition());
-    } else
-        mPointer->setNull();
-}
+void SinglyNode::updateCurrent(sf::Time dt) {}
 
 void SinglyNode::drawCurrent(sf::RenderTarget& target,
                              sf::RenderStates states) const {
     target.draw(mSprite, states);
 }
 
-SinglyNode* SinglyNode::getNextNode() {
-    return mNextNode;
+int SinglyNode::getValue() const {
+    return mData->getValue();
 }
 
-int SinglyNode::getValue() {
-    return mData->getValue();
+sf::Vector2f SinglyNode::getLeftBound() const {
+    return sf::Vector2f(mSprite.getGlobalBounds().left, 0.f) +
+           getWorldPosition();
+}
+
+void SinglyNode::refreshPointerTarget() {
+    mPointer->resetDestination();
 }
 
 void SinglyNode::setValue(int value) {
@@ -61,9 +61,8 @@ void SinglyNode::setValue(int value) {
 }
 
 void SinglyNode::setNextNode(SinglyNode* node) {
-    mNextNode = node;
     if (node != nullptr)
-        mPointer->setDestination(node->getWorldPosition());
+        mPointer->setTarget(node);
     else
         mPointer->setNull();
 }
