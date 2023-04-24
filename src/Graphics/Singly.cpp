@@ -74,7 +74,6 @@ void SinglyLinkedList::pureInsert(std::size_t index, int value) {
 void SinglyLinkedList::pureInsert(std::size_t index, SinglyNode* node) {
     assert(isInList(index) ||
            index == nodes.size() && nodes.size() < Constants::LIST_MAXSIZE);
-    setHighlight(-1);
 
     nodes.insert(nodes.begin() + index, node);
     std::unique_ptr<SinglyNode> nodePtr(node);
@@ -221,9 +220,7 @@ void SinglyLinkedList::setHighlight(int index) {
 
         mHighlight->setTarget(nodes[index]);
         mHighlight->setTargetPosition(
-            nodes[index]->getPosition() +
-                sf::Vector2f(-Constants::NODE_DISTANCE, 50.f),
-            Smooth);
+            nodes[index]->getPosition() + sf::Vector2f(-60.f, 40.f), Smooth);
 
         std::cerr << "Change highlight index " << index << '\n';
     }
@@ -242,6 +239,7 @@ void SinglyLinkedList::refreshPointerTarget() {
     mHead->resetDestination();
     if (mHighlight)
         mHighlight->resetDestination();
+
     for (auto& node : nodes) {
         node->refreshPointerTarget();
     }
@@ -258,6 +256,11 @@ void SinglyLinkedList::updateNode(std::size_t index, int newValue) {
     std::cerr << "Update node " << index << " to " << newValue << '\n';
     nodes[index]->setValue(newValue);
     setHighlight(index);
+}
+
+void SinglyLinkedList::setHeadTarget(std::size_t target) {
+    assert(isInList(target));
+    mHead->setTarget(nodes[target]);
 }
 
 void SinglyLinkedList::setPointer(std::size_t source, std::size_t target) {

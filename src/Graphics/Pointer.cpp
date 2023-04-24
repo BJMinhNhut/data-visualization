@@ -76,7 +76,6 @@ void Pointer::updateCurrent(sf::Time dt) {
         mDestination += delta;
     }
 
-    // std::cerr << mDestination.x << ' ' << mDestination.y << '\n';
     sf::Vector2f Delta = mDestination - getWorldPosition();
     mArrowTip = getArrowTip(Delta, 2.f);
     mArrowTip.setFillColor(mColor);

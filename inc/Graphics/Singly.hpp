@@ -33,6 +33,7 @@ class SinglyLinkedList : public SceneNode {
     void popUpNode(std::size_t index);
     void alignNodes();
 
+    void setHeadTarget(std::size_t target);
     void setPointer(std::size_t source, std::size_t target);
     // void removePointer(std::size_t index);
 

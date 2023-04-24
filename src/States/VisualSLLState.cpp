@@ -99,6 +99,7 @@ void VisualSLLState::loadNewGUI() {
             GUI::Button::Small,
             sf::Vector2f(700.f, getContext().window->getSize().y - 180.f),
             "Load file", [this]() {
+                std::cerr << "Load file\n";
                 auto selection = pfd::open_file("Select a text file to load",
                                                 "..", {"Text files", "*.txt"})
                                      .result();
@@ -114,6 +115,7 @@ void VisualSLLState::loadNewGUI() {
                  "Apply", [this]() {
                      if (GUIArrayInput->validate() == GUI::Input::Success) {
                          mSLL.loadData(GUIArrayInput->getArray());
+                         mSLL.refreshPointerTarget();
                          resetOption();
                      }
                  }));
@@ -169,53 +171,90 @@ void VisualSLLState::loadAddGUI() {
 }
 
 void VisualSLLState::loadAddAnimation() {
+
     clearAnimation();
     std::cerr << "load add animation\n";
+
     int index = GUIIndexInput[Add]->getValue();
     int value = GUIValueInput[Add]->getValue();
-    addAnimation(Animation([=]() {
-        mSLL.setHighlight(0);
-        callInfo("Set cur = head.");
-    }));
-    for (int i = 0; i + 1 < index; ++i) {
-        addAnimation(Animation([=]() {
-            callInfo("k = " + std::to_string(i) +
-                     ",\nindex specified has not been reached.");
-        }));
-        addAnimation(Animation([=]() {
-            mSLL.setHighlight(i + 1);
-            callInfo("Set cur to the next node, increase k.");
-        }));
-    }
+    std::string complexity;
 
-    addAnimation(Animation([=]() {
-        callInfo(
-            "We have found the insertion point.\n"
-            "We continue the next insertion step.");
-    }));
-    addAnimation(Animation([=]() {
-        callInfo("Create new node to store value " + std::to_string(value) +
-                 ".");
-        mSLL.pureInsert(index, value);
-        mSLL.popUpNode(index);
-    }));
+    if (index == 0) {
+        complexity = "O(1)";
 
-    if (index < mSLL.getSize())
         addAnimation(Animation([=]() {
-            callInfo("Set node->next to cur->next.");
-            mSLL.setPointer(index, index + 1);
+            callInfo("Create new node to store value " + std::to_string(value) +
+                     ".");
+            mSLL.pureInsert(0, value);
+            mSLL.popUpNode(0);
         }));
 
-    if (index > 0)
         addAnimation(Animation([=]() {
-            callInfo("Set cur->next to node.");
+            if (mSLL.isInList(index + 1)) {
+                callInfo("Set node->next = head.");
+                mSLL.setPointer(0, 1);
+            } else {
+                callInfo("Set node->next = head. Head is currently null.");
+            }
+        }));
+
+        addAnimation(Animation([=]() {
+            callInfo("Set head points to node");
+            mSLL.setHeadTarget(0);
+        }));
+    } else {
+        complexity = "O(N)";
+        addAnimation(Animation([=]() {
+            mSLL.setHighlight(0);
+            callInfo("Set cur = head.");
+        }));
+        for (int i = 0; i + 1 < index; ++i) {
+            addAnimation(Animation([=]() {
+                callInfo("k = " + std::to_string(i) +
+                         ",\nindex specified has not been reached.");
+            }));
+            addAnimation(Animation([=]() {
+                mSLL.setHighlight(i + 1);
+                callInfo("Set cur to the next node, increase k.");
+            }));
+        }
+
+        addAnimation(Animation([=]() {
+            callInfo(
+                "We have found the insertion point.\n"
+                "We continue the next insertion step.");
+        }));
+        addAnimation(Animation([=]() {
+            callInfo("Create new node to store value " + std::to_string(value) +
+                     ".");
+            mSLL.pureInsert(index, value);
+            mSLL.popUpNode(index);
+        }));
+
+        addAnimation(Animation([=]() {
+            if (index + 1 < mSLL.getSize()) {
+                callInfo("Set node->next points to cur->next.");
+                mSLL.setPointer(index, index + 1);
+            } else {
+                callInfo(
+                    "Set node->next points to cur->next.\n cur->next is "
+                    "currently null.");
+            }
+        }));
+
+        addAnimation(Animation([=]() {
+            callInfo("Set cur->next points to node.");
             mSLL.setPointer(index - 1, index);
         }));
-
+    }
     addAnimation(Animation([=]() {
         callInfo(
-            "Re-layout the Linked List for visualization\n(not in the actual "
-            "Linked List).\nThe whole process complexity is O(N).");
+            "Re-layout the Linked List for visualization\n(not in "
+            "the "
+            "actual "
+            "Linked List).\nThe whole process complexity is " +
+            complexity + ".");
+        mSLL.setHighlight(-1);
         mSLL.alignNodes();
     }));
 }
@@ -357,10 +396,16 @@ void VisualSLLState::validateCommand() {
                 callError("Value must be a number in range " +
                           GUIValueInput[Add]->getStringRange());
             } else {
-                callInfo("Insert " +
-                         std::to_string(GUIValueInput[Add]->getValue()) +
-                         " to index " +
-                         std::to_string(GUIIndexInput[Add]->getValue()));
+                int value = GUIValueInput[Add]->getValue(),
+                    index = GUIIndexInput[Add]->getValue();
+                std::string info = "Insert " + std::to_string(value) + " to ";
+                if (index == 0)
+                    info += "front";
+                else if (index == mSLL.getSize())
+                    info += "back";
+                else
+                    info += "index " + std::to_string(index);
+                callInfo(info);
             }
             break;
         }
