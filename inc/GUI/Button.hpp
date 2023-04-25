@@ -22,6 +22,7 @@ class Button : public Component {
         Command,
         Checkbox,
         Play,
+        Pause,
         Small,
         Big,
         MenuSLL,

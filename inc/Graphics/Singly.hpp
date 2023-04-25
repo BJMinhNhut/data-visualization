@@ -29,7 +29,8 @@ class SinglyLinkedList : public SceneNode {
     int searchNode(int value);
 
     void refreshPointerTarget();
-    void setHighlight(int index);
+    void clearHighlight();
+    void setHighlight(const std::string& label, int index);
     void popUpNode(std::size_t index);
     void alignNodes();
 
@@ -48,7 +49,7 @@ class SinglyLinkedList : public SceneNode {
     const TextureHolder& mTextures;
 
     Pointer* mHead;
-    Pointer* mHighlight;
+    std::map<std::string, Pointer*> mHighlight;
 
     int highlightIndex;
 

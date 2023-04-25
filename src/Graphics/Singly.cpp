@@ -16,7 +16,7 @@
 SinglyLinkedList::SinglyLinkedList(const FontHolder& fonts,
                                    const TextureHolder& textures)
     : mHead(new Pointer(fonts)),
-      mHighlight(nullptr),
+      mHighlight(),
       mFonts(fonts),
       mTextures(textures),
       tempNode(nullptr),
@@ -111,8 +111,7 @@ void SinglyLinkedList::insertNode(std::size_t index, SinglyNode* node) {
 
 void SinglyLinkedList::resetNodes() {
     mHead->setNull();
-    if (mHighlight != nullptr)
-        mHighlight->setNull();
+    clearHighlight();
 
     for (SinglyNode* nodePtr : nodes)
         detachChild(nodePtr);
@@ -148,7 +147,7 @@ void SinglyLinkedList::randomGen() {
 void SinglyLinkedList::eraseNode(std::size_t index) {
     assert(isInList(index));
 
-    setHighlight(-1);
+    clearHighlight();
 
     if (index >= nodes.size())
         return;
@@ -187,40 +186,49 @@ void SinglyLinkedList::eraseNode(std::size_t index) {
 }
 
 int SinglyLinkedList::searchNode(int value) {
+    clearHighlight();
     for (int index = 0; index < nodes.size(); ++index) {
         if (value == nodes[index]->getValue()) {
-            setHighlight(index);
+            setHighlight("cur", index);
             return index;
         }
     }
-    setHighlight(-1);
     return -1;
 }
 
-void SinglyLinkedList::setHighlight(int index) {
+void SinglyLinkedList::clearHighlight() {
+    for (auto& [label, ptr] : mHighlight) {
+        detachChild(ptr);
+    }
+    mHighlight.clear();
+}
+
+void SinglyLinkedList::setHighlight(const std::string& label, int index) {
     assert(isInList(index) || index == -1);
 
     if (index == -1) {
         // Remove highlight
-        if (highlightIndex > -1) {
+        if (mHighlight.find(label) != mHighlight.end() &&
+            !mHighlight[label]->isNULL()) {
             std::cerr << "Remove highlight index " << highlightIndex << '\n';
-            detachChild(mHighlight);
-            mHighlight = nullptr;
+            detachChild(mHighlight[label]);
+            mHighlight[label] = nullptr;
         }
-
     } else if (index < (int)nodes.size()) {  // Set highlight
-        if (highlightIndex == -1) {
-            mHighlight = new Pointer(mFonts);
-            std::unique_ptr<Pointer> highlightPtr(mHighlight);
+        if (mHighlight.find(label) == mHighlight.end() ||
+            mHighlight[label]->isNULL()) {
+            mHighlight[label] = new Pointer(mFonts);
+            std::unique_ptr<Pointer> highlightPtr(mHighlight[label]);
             attachChild(std::move(highlightPtr));
 
-            mHighlight->setLabel("cur");
-            mHighlight->resetDestination();
+            mHighlight[label]->setLabel(label);
+            mHighlight[label]->resetDestination();
         }
 
-        mHighlight->setTarget(nodes[index]);
-        mHighlight->setTargetPosition(
-            nodes[index]->getPosition() + sf::Vector2f(-60.f, 40.f), Smooth);
+        mHighlight[label]->setTarget(nodes[index]);
+        mHighlight[label]->setTargetPosition(
+            nodes[index]->getTargetPosition() + sf::Vector2f(-60.f, 40.f),
+            Smooth);
 
         std::cerr << "Change highlight index " << index << '\n';
     }
@@ -237,8 +245,9 @@ void SinglyLinkedList::updateCurrent(sf::Time dt) {
 
 void SinglyLinkedList::refreshPointerTarget() {
     mHead->resetDestination();
-    if (mHighlight)
-        mHighlight->resetDestination();
+    for (auto& [label, ptr] : mHighlight) {
+        ptr->resetDestination();
+    }
 
     for (auto& node : nodes) {
         node->refreshPointerTarget();
@@ -255,7 +264,7 @@ void SinglyLinkedList::updateNode(std::size_t index, int newValue) {
     assert(isInList(index));
     std::cerr << "Update node " << index << " to " << newValue << '\n';
     nodes[index]->setValue(newValue);
-    setHighlight(index);
+    setHighlight("cur", index);
 }
 
 void SinglyLinkedList::setHeadTarget(std::size_t target) {

@@ -56,7 +56,7 @@ class VisualState : public State {
     GUI::Container GUIOptionContainer;
     std::map<int, GUI::Container> GUICommandContainer;
     std::map<int, std::function<void()>> loadAnimationCallback;
-    GUI::Button::Ptr GUIExecuteButton;
+    GUI::Container GUIPlayPause[2];
     GUI::Console::Ptr GUIConsole;
 
     // Graphics

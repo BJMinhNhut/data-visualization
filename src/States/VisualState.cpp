@@ -73,11 +73,15 @@ void VisualState::initGUIButtons() {
     });
     mGUIContainer.pack(homeButton);
 
-    GUIExecuteButton = createNewGUIButton(
+    GUIPlayPause[0].pack(createNewGUIButton(
         GUI::Button::Play,
         sf::Vector2f(1050.f, getContext().window->getSize().y - 100.f), "",
-        [this]() { execute(); });
-    mGUIContainer.pack(GUIExecuteButton);
+        [this]() { execute(); }));
+
+    GUIPlayPause[1].pack(createNewGUIButton(
+        GUI::Button::Pause,
+        sf::Vector2f(1050.f, getContext().window->getSize().y - 100.f), "",
+        [this]() { mAnimationList.pause(); }));
 }
 void VisualState::addOption(int option, std::string title,
                             GUI::Button::Callback callback) {
@@ -146,8 +150,7 @@ std::shared_ptr<GUI::Button> VisualState::createNewGUIButton(
 }
 
 void VisualState::execute() {
-    if (GUIConsole->getLogType() != GUI::Console::Error) {
-        loadAnimationCallback[currentOption]();
+    if (!mAnimationList.isEmpty()) {
         mAnimationList.play();
         resetOption();
     }
@@ -161,6 +164,7 @@ void VisualState::draw() {
     window.draw(mGUIContainer);
     window.draw(GUIOptionContainer);
     window.draw(GUICommandContainer[currentOption]);
+    window.draw(GUIPlayPause[mAnimationList.isPlaying()]);
 }
 
 bool VisualState::update(sf::Time dt) {
@@ -168,6 +172,7 @@ bool VisualState::update(sf::Time dt) {
     mGUIContainer.update(dt);
     GUIOptionContainer.update(dt);
     GUICommandContainer[currentOption].update(dt);
+    GUIPlayPause[mAnimationList.isPlaying()].update(dt);
     mAnimationList.update(dt);
 
     return true;
@@ -177,6 +182,7 @@ bool VisualState::handleEvent(const sf::Event& event) {
     mGUIContainer.handleEvent(event);
     GUIOptionContainer.handleEvent(event);
     GUICommandContainer[currentOption].handleEvent(event);
+    GUIPlayPause[mAnimationList.isPlaying()].handleEvent(event);
 
     if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::Return)
@@ -190,5 +196,6 @@ bool VisualState::handleRealtime(const sf::Vector2i mousePosition) {
     mGUIContainer.updateSelect(mousePosition);
     GUIOptionContainer.updateSelect(mousePosition);
     GUICommandContainer[currentOption].updateSelect(mousePosition);
+    GUIPlayPause[mAnimationList.isPlaying()].updateSelect(mousePosition);
     return false;
 }

@@ -187,6 +187,7 @@ void VisualSLLState::loadAddAnimation() {
                      ".");
             mSLL.pureInsert(0, value);
             mSLL.popUpNode(0);
+            mSLL.setHighlight("node", 0);
         }));
 
         addAnimation(Animation([=]() {
@@ -199,13 +200,13 @@ void VisualSLLState::loadAddAnimation() {
         }));
 
         addAnimation(Animation([=]() {
-            callInfo("Set head points to node");
+            callInfo("Set head = node");
             mSLL.setHeadTarget(0);
         }));
     } else {
         complexity = "O(N)";
         addAnimation(Animation([=]() {
-            mSLL.setHighlight(0);
+            mSLL.setHighlight("cur", 0);
             callInfo("Set cur = head.");
         }));
         for (int i = 0; i + 1 < index; ++i) {
@@ -214,7 +215,7 @@ void VisualSLLState::loadAddAnimation() {
                          ",\nindex specified has not been reached.");
             }));
             addAnimation(Animation([=]() {
-                mSLL.setHighlight(i + 1);
+                mSLL.setHighlight("cur", i + 1);
                 callInfo("Set cur to the next node, increase k.");
             }));
         }
@@ -229,21 +230,22 @@ void VisualSLLState::loadAddAnimation() {
                      ".");
             mSLL.pureInsert(index, value);
             mSLL.popUpNode(index);
+            mSLL.setHighlight("node", index);
         }));
 
         addAnimation(Animation([=]() {
             if (index + 1 < mSLL.getSize()) {
-                callInfo("Set node->next points to cur->next.");
+                callInfo("Set node->next = cur->next.");
                 mSLL.setPointer(index, index + 1);
             } else {
                 callInfo(
-                    "Set node->next points to cur->next.\n cur->next is "
+                    "Set node->next = cur->next.\n cur->next is "
                     "currently null.");
             }
         }));
 
         addAnimation(Animation([=]() {
-            callInfo("Set cur->next points to node.");
+            callInfo("Set cur->next = node.");
             mSLL.setPointer(index - 1, index);
         }));
     }
@@ -254,7 +256,7 @@ void VisualSLLState::loadAddAnimation() {
             "actual "
             "Linked List).\nThe whole process complexity is " +
             complexity + ".");
-        mSLL.setHighlight(-1);
+        mSLL.clearHighlight();
         mSLL.alignNodes();
     }));
 }
@@ -406,6 +408,7 @@ void VisualSLLState::validateCommand() {
                 else
                     info += "index " + std::to_string(index);
                 callInfo(info);
+                loadAddAnimation();
             }
             break;
         }
