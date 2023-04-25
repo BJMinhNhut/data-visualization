@@ -6,6 +6,7 @@
 #include <GUI/Console.hpp>
 #include <GUI/Container.hpp>
 #include <GUI/Input.hpp>
+#include <GUI/ProgressBar.hpp>
 #include <States/State.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
@@ -58,6 +59,7 @@ class VisualState : public State {
     std::map<int, std::function<void()>> loadAnimationCallback;
     GUI::Container GUIPlayPause[2];
     GUI::Console::Ptr GUIConsole;
+    GUI::ProgressBar::Ptr GUIProgressBar;
 
     // Graphics
     sf::Sprite mBackgroundSprite;

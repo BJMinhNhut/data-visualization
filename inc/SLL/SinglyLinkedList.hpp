@@ -3,7 +3,7 @@
 
 #include <Graphics/Pointer.hpp>
 #include <Graphics/SceneNode.hpp>
-#include <Graphics/SinglyNode.hpp>
+#include <SLL/SinglyNode.hpp>
 
 #include <memory>
 #include <vector>

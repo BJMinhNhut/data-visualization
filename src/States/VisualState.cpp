@@ -93,8 +93,13 @@ void VisualState::addOption(int option, std::string title,
 void VisualState::initConsole() {
     GUIConsole = std::make_shared<GUI::Console>(*getContext().fonts);
     GUIConsole->setPosition(315.f, getContext().window->getSize().y - 390.f);
-
     mGUIContainer.pack(GUIConsole);
+
+    GUIProgressBar =
+        std::make_shared<GUI::ProgressBar>(sf::Vector2f(500.f, 5.f));
+    GUIProgressBar->setPosition(800.f,
+                                getContext().window->getSize().y - 155.f);
+    mGUIContainer.pack(GUIProgressBar);
 }
 
 void VisualState::packOptionGUI(int option, GUI::Component::Ptr component) {
@@ -174,6 +179,11 @@ bool VisualState::update(sf::Time dt) {
     GUICommandContainer[currentOption].update(dt);
     GUIPlayPause[mAnimationList.isPlaying()].update(dt);
     mAnimationList.update(dt);
+
+    if (mAnimationList.isPlaying()) {
+        GUIProgressBar->setLength(mAnimationList.getSize());
+        GUIProgressBar->setProgress(mAnimationList.getProgress());
+    }
 
     return true;
 }

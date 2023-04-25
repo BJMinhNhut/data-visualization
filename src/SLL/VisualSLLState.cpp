@@ -4,7 +4,7 @@
 #include <GUI/Label.hpp>
 #include <GUI/Panel.hpp>
 #include <Graphics/ResourceHolder.hpp>
-#include <States/VisualSLLState.hpp>
+#include <SLL/VisualSLLState.hpp>
 #include <Utility.hpp>
 
 #include <SFML/Graphics/RenderWindow.hpp>

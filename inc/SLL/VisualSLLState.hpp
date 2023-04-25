@@ -5,7 +5,7 @@
 #include <GUI/Container.hpp>
 #include <GUI/InputArray.hpp>
 #include <GUI/InputNumber.hpp>
-#include <Graphics/Singly.hpp>
+#include <SLL/SinglyLinkedList.hpp>
 #include <States/VisualState.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>

@@ -1,10 +1,10 @@
 #include <Application.hpp>
+#include <SLL/VisualSLLState.hpp>
 #include <States/MenuDataState.hpp>
 #include <States/MenuState.hpp>
 #include <States/State.hpp>
 #include <States/StateIdentifiers.hpp>
 #include <States/VisualDLLState.hpp>
-#include <States/VisualSLLState.hpp>
 
 #include <iostream>
 #include <string>

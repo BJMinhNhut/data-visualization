@@ -2,8 +2,8 @@
 #include <Graphics/Pointer.hpp>
 #include <Graphics/ResourceHolder.hpp>
 #include <Graphics/SceneNode.hpp>
-#include <Graphics/SinglyNode.hpp>
 #include <Random.hpp>
+#include <SLL/SinglyNode.hpp>
 #include <Utility.hpp>
 
 #include <SFML/Graphics/RenderStates.hpp>
