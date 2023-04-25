@@ -51,6 +51,8 @@ class VisualState : public State {
         GUI::Button::Type type, sf::Vector2f position, std::string label,
         GUI::Button::Callback callback, bool toggle = false);
 
+    virtual void loadSnapShot() = 0;
+
    private:
     void initGUIButtons();
     void initGUIPanels();

@@ -68,9 +68,7 @@ void AnimationList::playPrevious() {
 }
 
 void AnimationList::goToFront() {
-    while (currentAnimation > 0) {
-        playPrevious();
-    }
+    currentAnimation = 0;
 }
 
 void AnimationList::goToBack() {

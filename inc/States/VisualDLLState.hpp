@@ -39,6 +39,7 @@ class VisualDLLState : public VisualState {
     void loadCallback();
 
     virtual void validateCommand();
+    virtual void loadSnapShot();
 
    private:
     std::vector<GUI::Input::Ptr> GUIValueInput;

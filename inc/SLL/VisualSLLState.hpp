@@ -45,12 +45,13 @@ class VisualSLLState : public VisualState {
     void loadCallback();
 
     virtual void validateCommand();
+    virtual void loadSnapShot();
 
    private:
     std::vector<GUI::InputNumber::Ptr> GUIValueInput;
     std::vector<GUI::InputNumber::Ptr> GUIIndexInput;
     GUI::InputArray::Ptr GUIArrayInput;
 
-    SinglyLinkedList mSLL;
+    SinglyLinkedList mSLL, mSnapShot;
 };
 #endif  // VISUALSLLSTATE_HPP

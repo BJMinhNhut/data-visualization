@@ -21,6 +21,7 @@ sf::Vector2f const secondLabelPosition(secondInputPosition +
 VisualSLLState::VisualSLLState(StateStack& stack, Context context)
     : VisualState(stack, context),
       mSLL(*context.fonts, *context.textures),
+      mSnapShot(*context.fonts, *context.textures),
       GUIValueInput(OptionCount),
       GUIIndexInput(OptionCount) {
 
@@ -176,6 +177,8 @@ void VisualSLLState::loadAddAnimation() {
     clearAnimation();
     mSLL.clearHighlight();
     std::cerr << "load add animation\n";
+
+    mSnapShot.loadData(mSLL.getData());
 
     int index = GUIIndexInput[Add]->getValue();
     int value = GUIValueInput[Add]->getValue();
@@ -461,6 +464,12 @@ void VisualSLLState::validateCommand() {
             break;
         }
     };
+}
+
+void VisualSLLState::loadSnapShot() {
+    mSLL.clearHighlight();
+    mSLL.loadData(mSnapShot.getData());
+    mSLL.refreshPointerTarget();
 }
 
 void VisualSLLState::draw() {
