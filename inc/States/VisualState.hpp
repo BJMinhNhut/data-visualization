@@ -55,7 +55,11 @@ class VisualState : public State {
     void initGUIButtons();
     void initGUIPanels();
     void initConsole();
+    void initSpeed();
     void execute();
+
+    void increaseSpeed();
+    void decreaseSpeed();
 
    private:
     int currentOption;
@@ -69,12 +73,17 @@ class VisualState : public State {
     GUI::Console::Ptr GUIConsole;
     GUI::ProgressBar::Ptr GUIProgressBar;
     GUI::CodeBlock::Ptr GUICodeBlock;
+    GUI::Label::Ptr GUISpeed;
 
     // Graphics
     sf::Sprite mBackgroundSprite;
 
     // Animation
     AnimationList mAnimationList;
+
+    // Speed
+    const std::vector<std::pair<std::string, float>> mSpeedMap;
+    int mSpeedID;
 };
 
 #endif  // VISUALSTATE_HPP

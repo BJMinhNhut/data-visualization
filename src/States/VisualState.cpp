@@ -15,13 +15,16 @@ VisualState::VisualState(StateStack& stack, Context context)
       GUIOptionContainer(),
       GUICommandContainer(),
       currentOption(0),
-      mAnimationList() {
+      mAnimationList(),
+      mSpeedMap({{"x0.5", 0.5f}, {" x1", 1.f}, {" x2", 2.f}}),
+      mSpeedID(1) {
 
     mBackgroundSprite.setTexture(context.textures->get(Textures::TitleScreen));
 
     initGUIPanels();
     initGUIButtons();
     initConsole();
+    initSpeed();
     setLoadAnimationCallback(0, [this]() {});
 }
 
@@ -111,6 +114,30 @@ void VisualState::initConsole() {
     mGUIContainer.pack(GUICodeBlock);
 }
 
+void VisualState::initSpeed() {
+    auto speedLabel = std::make_shared<GUI::Label>(
+        GUI::Label::Main, "Play speed", *getContext().fonts);
+    speedLabel->setPosition(820.f, getContext().window->getSize().y - 125.f);
+    mGUIContainer.pack(speedLabel);
+
+    GUISpeed = std::make_shared<GUI::Label>(
+        GUI::Label::Mono, mSpeedMap[mSpeedID].first, *getContext().fonts);
+    GUISpeed->setPosition(835.f, getContext().window->getSize().y - 95.f);
+    mGUIContainer.pack(GUISpeed);
+
+    auto increaseButton = createNewGUIButton(
+        GUI::Button::Arrow,
+        sf::Vector2f(885.f, getContext().window->getSize().y - 100.f), "",
+        [this]() { increaseSpeed(); });
+    increaseButton->rotate(180);
+    mGUIContainer.pack(increaseButton);
+
+    mGUIContainer.pack(createNewGUIButton(
+        GUI::Button::Arrow,
+        sf::Vector2f(885.f, getContext().window->getSize().y - 80.f), "",
+        [this]() { decreaseSpeed(); }));
+}
+
 void VisualState::packOptionGUI(int option, GUI::Component::Ptr component) {
     GUICommandContainer[option].pack(component);
 }
@@ -181,8 +208,25 @@ std::shared_ptr<GUI::Button> VisualState::createNewGUIButton(
 
 void VisualState::execute() {
     if (GUIConsole->getLogType() == GUI::Console::Info) {
+        mAnimationList.setSpeed(mSpeedMap[mSpeedID].second);
         mAnimationList.play();
         resetOption();
+    }
+}
+
+void VisualState::increaseSpeed() {
+    if (mSpeedID + 1 < mSpeedMap.size()) {
+        mSpeedID++;
+        GUISpeed->setText(mSpeedMap[mSpeedID].first);
+        mAnimationList.setSpeed(mSpeedMap[mSpeedID].second);
+    }
+}
+
+void VisualState::decreaseSpeed() {
+    if (mSpeedID > 0) {
+        mSpeedID--;
+        GUISpeed->setText(mSpeedMap[mSpeedID].first);
+        mAnimationList.setSpeed(mSpeedMap[mSpeedID].second);
     }
 }
 

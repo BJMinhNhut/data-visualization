@@ -24,6 +24,7 @@ class Button : public Component {
         Play,
         Pause,
         Replay,
+        Arrow,
         Small,
         Big,
         MenuSLL,

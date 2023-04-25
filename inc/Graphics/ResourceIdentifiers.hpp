@@ -27,6 +27,9 @@ enum ID {
     ReplayNormal,
     ReplaySelected,
 
+    ArrowDownNormal,
+    ArrowDownSelected,
+
     InputNormal,
     InputSelected,
 
