@@ -22,6 +22,7 @@ sf::Color const mBlue(13, 71, 161);
 sf::Color const WhiteDisplay(sf::Color::White);
 sf::Color const WhiteUI(245, 245, 245);
 sf::Color const GrayBorder(189, 189, 189);
+sf::Color const YellowLight(255, 245, 157);
 
 // Input
 int const INPUT_MAX_LENGTH = 34;

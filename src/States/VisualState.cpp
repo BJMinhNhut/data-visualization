@@ -56,11 +56,11 @@ void VisualState::initGUIPanels() {
     executePanel->setPosition(500.f, getContext().window->getSize().y - 300.f);
 
     mGUIContainer.pack(topPanel);
-    mGUIContainer.pack(codePanel);
-    mGUIContainer.pack(progressPanel);
     mGUIContainer.pack(consolePanel);
     mGUIContainer.pack(executePanel);
     mGUIContainer.pack(commandPanel);
+    mGUIContainer.pack(codePanel);
+    mGUIContainer.pack(progressPanel);
 }
 
 void VisualState::initGUIButtons() {
@@ -100,6 +100,10 @@ void VisualState::initConsole() {
     GUIProgressBar->setPosition(800.f,
                                 getContext().window->getSize().y - 155.f);
     mGUIContainer.pack(GUIProgressBar);
+
+    GUICodeBlock = std::make_shared<GUI::CodeBlock>(*getContext().fonts);
+    GUICodeBlock->setPosition(800.f, getContext().window->getSize().y - 400.f);
+    mGUIContainer.pack(GUICodeBlock);
 }
 
 void VisualState::packOptionGUI(int option, GUI::Component::Ptr component) {
@@ -133,12 +137,26 @@ void VisualState::cleanLog() {
     GUIConsole->clean();
 }
 
-void VisualState::addAnimation(const Animation& animation) {
-    mAnimationList.push(animation);
+// void VisualState::addAnimation(const Animation& animation) {
+//     mAnimationList.push(animation);
+// }
+
+void VisualState::addAnimation(const std::string& description,
+                               std::function<void()> callback,
+                               const std::vector<int> highlightLineID) {
+    mAnimationList.push(Animation([=]() {
+        callInfo(description);
+        callback();
+        GUICodeBlock->setHighlight(highlightLineID);
+    }));
 }
 
 void VisualState::clearAnimation() {
     mAnimationList.clear();
+}
+
+void VisualState::loadCode(const std::string& code) {
+    GUICodeBlock->loadCode(code);
 }
 
 std::shared_ptr<GUI::Button> VisualState::createNewGUIButton(

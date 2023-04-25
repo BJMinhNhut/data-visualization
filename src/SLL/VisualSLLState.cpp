@@ -4,6 +4,7 @@
 #include <GUI/Label.hpp>
 #include <GUI/Panel.hpp>
 #include <Graphics/ResourceHolder.hpp>
+#include <SLL/SLLCode.hpp>
 #include <SLL/VisualSLLState.hpp>
 #include <Utility.hpp>
 
@@ -173,6 +174,7 @@ void VisualSLLState::loadAddGUI() {
 void VisualSLLState::loadAddAnimation() {
 
     clearAnimation();
+    mSLL.clearHighlight();
     std::cerr << "load add animation\n";
 
     int index = GUIIndexInput[Add]->getValue();
@@ -182,83 +184,76 @@ void VisualSLLState::loadAddAnimation() {
     if (index == 0) {
         complexity = "O(1)";
 
-        addAnimation(Animation([=]() {
-            callInfo("Create new node to store value " + std::to_string(value) +
-                     ".");
-            mSLL.pureInsert(0, value);
-            mSLL.popUpNode(0);
-            mSLL.setHighlight("node", 0);
-        }));
+        addAnimation(
+            "Create new node to store value " + std::to_string(value) + ".",
+            [=]() {
+                mSLL.pureInsert(0, value);
+                mSLL.popUpNode(0);
+                mSLL.setHighlight("myNode", 0);
+            },
+            {0});
 
-        addAnimation(Animation([=]() {
-            if (mSLL.isInList(index + 1)) {
-                callInfo("Set node->next = head.");
-                mSLL.setPointer(0, 1);
-            } else {
-                callInfo("Set node->next = head. Head is currently null.");
-            }
-        }));
+        if (mSLL.isInList(index + 1))
+            addAnimation("Set myNode.next = head.",
+                         [=]() { mSLL.setPointer(0, 1); }, {1});
+        else
+            addAnimation("Set myNode.next = head. Head is currently null.",
+                         [=]() {}, {1});
 
-        addAnimation(Animation([=]() {
-            callInfo("Set head = node");
-            mSLL.setHeadTarget(0);
-        }));
+        addAnimation("Set head = myNode", [=]() { mSLL.setHeadTarget(0); },
+                     {2});
     } else {
         complexity = "O(N)";
-        addAnimation(Animation([=]() {
-            mSLL.setHighlight("cur", 0);
-            callInfo("Set cur = head.");
-        }));
+
+        addAnimation("Set cur = head.", [=]() { mSLL.setHighlight("cur", 0); },
+                     {0});
+
         for (int i = 0; i + 1 < index; ++i) {
-            addAnimation(Animation([=]() {
-                callInfo("k = " + std::to_string(i) +
-                         ",\nindex specified has not been reached.");
-            }));
-            addAnimation(Animation([=]() {
-                mSLL.setHighlight("cur", i + 1);
-                callInfo("Set cur to the next node, increase k.");
-            }));
+            addAnimation("k = " + std::to_string(i) +
+                             ", index specified has not\nbeen reached.",
+                         [=]() {}, {1});
+            addAnimation("Set cur to the next node, increase k.",
+                         [=]() { mSLL.setHighlight("cur", i + 1); }, {2});
         }
 
-        addAnimation(Animation([=]() {
-            callInfo(
-                "We have found the insertion point.\n"
-                "We continue the next insertion step.");
-        }));
-        addAnimation(Animation([=]() {
-            callInfo("Create new node to store value " + std::to_string(value) +
-                     ".");
-            mSLL.pureInsert(index, value);
-            mSLL.popUpNode(index);
-            mSLL.setHighlight("node", index);
-        }));
+        addAnimation(
+            "We have found the insertion point.\n"
+            "We continue the next insertion step.",
+            [=]() {}, {1});
 
-        addAnimation(Animation([=]() {
-            if (index + 1 < mSLL.getSize()) {
-                callInfo("Set node->next = cur->next.");
-                mSLL.setPointer(index, index + 1);
-            } else {
-                callInfo(
-                    "Set node->next = cur->next.\n cur->next is "
-                    "currently null.");
-            }
-        }));
+        addAnimation(
+            "Create new node to store value " + std::to_string(value) + ".",
+            [=]() {
+                mSLL.pureInsert(index, value);
+                mSLL.popUpNode(index);
+                mSLL.setHighlight("myNode", index);
+            },
+            {3});
 
-        addAnimation(Animation([=]() {
-            callInfo("Set cur->next = node.");
-            mSLL.setPointer(index - 1, index);
-        }));
+        if (mSLL.isInList(index + 1))
+            addAnimation("Set myNode.next = cur.next.",
+                         [=]() { mSLL.setPointer(index, index + 1); }, {4});
+        else
+            addAnimation(
+                "Set myNode.next = cur.next.\n cur.next is "
+                "currently null.",
+                [=]() {}, {4});
+
+        addAnimation("Set cur.next = myNode.",
+                     [=]() { mSLL.setPointer(index - 1, index); }, {5});
     }
-    addAnimation(Animation([=]() {
-        callInfo(
-            "Re-layout the Linked List for visualization\n(not in "
-            "the "
-            "actual "
-            "Linked List).\nThe whole process complexity is " +
-            complexity + ".");
-        mSLL.clearHighlight();
-        mSLL.alignNodes();
-    }));
+
+    addAnimation(
+        "Re-layout the Linked List for visualization\n(not in "
+        "the "
+        "actual "
+        "Linked List).\nThe whole process complexity is " +
+            complexity + ".",
+        [=]() {
+            mSLL.clearHighlight();
+            mSLL.alignNodes();
+        },
+        {});
 }
 
 void VisualSLLState::loadDeleteGUI() {
@@ -409,6 +404,11 @@ void VisualSLLState::validateCommand() {
                     info += "index " + std::to_string(index);
                 callInfo(info);
                 loadAddAnimation();
+
+                if (index == 0)
+                    loadCode(SLLCode::insertFront);
+                else
+                    loadCode(SLLCode::insertMiddle);
             }
             break;
         }
