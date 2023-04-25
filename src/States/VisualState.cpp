@@ -185,8 +185,12 @@ bool VisualState::handleEvent(const sf::Event& event) {
     GUIPlayPause[mAnimationList.isPlaying()].handleEvent(event);
 
     if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::Return)
-            execute();
+        if (event.key.code == sf::Keyboard::Return) {
+            if (mAnimationList.isPlaying())
+                mAnimationList.pause();
+            else
+                execute();
+        }
     }
 
     return false;
