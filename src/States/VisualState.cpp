@@ -82,6 +82,11 @@ void VisualState::initGUIButtons() {
         GUI::Button::Pause,
         sf::Vector2f(1050.f, getContext().window->getSize().y - 100.f), "",
         [this]() { mAnimationList.pause(); }));
+
+    GUIReplay.pack(createNewGUIButton(
+        GUI::Button::Replay,
+        sf::Vector2f(1050.f, getContext().window->getSize().y - 100.f), "",
+        [this]() {}));
 }
 void VisualState::addOption(int option, std::string title,
                             GUI::Button::Callback callback) {
@@ -137,10 +142,6 @@ void VisualState::cleanLog() {
     GUIConsole->clean();
 }
 
-// void VisualState::addAnimation(const Animation& animation) {
-//     mAnimationList.push(animation);
-// }
-
 void VisualState::addAnimation(const std::string& description,
                                std::function<void()> callback,
                                const std::vector<int> highlightLineID) {
@@ -194,6 +195,8 @@ void VisualState::draw() {
 
     if (mAnimationList.isPlaying())
         window.draw(GUIPause);
+    else if (mAnimationList.isFinished())
+        window.draw(GUIReplay);
     else
         window.draw(GUIPlay);
 }
@@ -211,6 +214,8 @@ bool VisualState::update(sf::Time dt) {
 
     if (mAnimationList.isPlaying())
         GUIPause.update(dt);
+    else if (mAnimationList.isFinished())
+        GUIReplay.update(dt);
     else
         GUIPlay.update(dt);
 
@@ -230,6 +235,8 @@ bool VisualState::handleEvent(const sf::Event& event) {
     GUICommandContainer[currentOption].handleEvent(event);
     if (mAnimationList.isPlaying())
         GUIPause.handleEvent(event);
+    else if (mAnimationList.isFinished())
+        GUIReplay.handleEvent(event);
     else
         GUIPlay.handleEvent(event);
 
@@ -237,7 +244,8 @@ bool VisualState::handleEvent(const sf::Event& event) {
         if (event.key.code == sf::Keyboard::Return) {
             if (mAnimationList.isPlaying())
                 mAnimationList.pause();
-            else
+            else if (mAnimationList.isFinished()) {
+            } else
                 execute();
         }
     }
@@ -253,7 +261,11 @@ bool VisualState::handleRealtime(const sf::Vector2i mousePosition) {
     } else {
         GUIOptionContainer.updateSelect(mousePosition);
         GUICommandContainer[currentOption].updateSelect(mousePosition);
-        GUIPlay.updateSelect(mousePosition);
+
+        if (mAnimationList.isFinished())
+            GUIReplay.updateSelect(mousePosition);
+        else
+            GUIPlay.updateSelect(mousePosition);
     }
     return false;
 }
