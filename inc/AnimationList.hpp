@@ -11,6 +11,7 @@ class AnimationList {
    public:
     AnimationList();
 
+    bool isFinished() const;
     unsigned int getProgress() const;
     unsigned int getSize() const;
     float getSpeed() const;

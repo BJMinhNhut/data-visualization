@@ -7,6 +7,10 @@ AnimationList::AnimationList()
       mSpeed(1.f),
       mList() {}
 
+bool AnimationList::isFinished() const {
+    return mList.size() > 0 && currentAnimation + 1 == mList.size();
+}
+
 unsigned int AnimationList::getProgress() const {
     return currentAnimation + 1;
 }

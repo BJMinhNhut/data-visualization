@@ -24,6 +24,8 @@ enum ID {
     PlaySelected,
     PauseNormal,
     PauseSelected,
+    ReplayNormal,
+    ReplaySelected,
 
     InputNormal,
     InputSelected,

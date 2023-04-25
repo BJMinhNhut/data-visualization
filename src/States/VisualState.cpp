@@ -73,12 +73,12 @@ void VisualState::initGUIButtons() {
     });
     mGUIContainer.pack(homeButton);
 
-    GUIPlayPause[0].pack(createNewGUIButton(
+    GUIPlay.pack(createNewGUIButton(
         GUI::Button::Play,
         sf::Vector2f(1050.f, getContext().window->getSize().y - 100.f), "",
         [this]() { execute(); }));
 
-    GUIPlayPause[1].pack(createNewGUIButton(
+    GUIPause.pack(createNewGUIButton(
         GUI::Button::Pause,
         sf::Vector2f(1050.f, getContext().window->getSize().y - 100.f), "",
         [this]() { mAnimationList.pause(); }));
@@ -159,6 +159,10 @@ void VisualState::loadCode(const std::string& code) {
     GUICodeBlock->loadCode(code);
 }
 
+void VisualState::clearCode() {
+    GUICodeBlock->loadCode("");
+}
+
 std::shared_ptr<GUI::Button> VisualState::createNewGUIButton(
     GUI::Button::Type type, sf::Vector2f position, std::string label,
     GUI::Button::Callback callback, bool toggle) {
@@ -173,7 +177,7 @@ std::shared_ptr<GUI::Button> VisualState::createNewGUIButton(
 }
 
 void VisualState::execute() {
-    if (!mAnimationList.isEmpty()) {
+    if (GUIConsole->getLogType() == GUI::Console::Info) {
         mAnimationList.play();
         resetOption();
     }
@@ -187,15 +191,29 @@ void VisualState::draw() {
     window.draw(mGUIContainer);
     window.draw(GUIOptionContainer);
     window.draw(GUICommandContainer[currentOption]);
-    window.draw(GUIPlayPause[mAnimationList.isPlaying()]);
+
+    if (mAnimationList.isPlaying())
+        window.draw(GUIPause);
+    else
+        window.draw(GUIPlay);
 }
 
 bool VisualState::update(sf::Time dt) {
     validateCommand();
+
+    if (GUIConsole->getLogType() == GUI::Console::Error) {
+        clearCode();
+    }
+
     mGUIContainer.update(dt);
     GUIOptionContainer.update(dt);
     GUICommandContainer[currentOption].update(dt);
-    GUIPlayPause[mAnimationList.isPlaying()].update(dt);
+
+    if (mAnimationList.isPlaying())
+        GUIPause.update(dt);
+    else
+        GUIPlay.update(dt);
+
     mAnimationList.update(dt);
 
     if (mAnimationList.isPlaying()) {
@@ -210,7 +228,10 @@ bool VisualState::handleEvent(const sf::Event& event) {
     mGUIContainer.handleEvent(event);
     GUIOptionContainer.handleEvent(event);
     GUICommandContainer[currentOption].handleEvent(event);
-    GUIPlayPause[mAnimationList.isPlaying()].handleEvent(event);
+    if (mAnimationList.isPlaying())
+        GUIPause.handleEvent(event);
+    else
+        GUIPlay.handleEvent(event);
 
     if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::Return) {
@@ -226,8 +247,13 @@ bool VisualState::handleEvent(const sf::Event& event) {
 
 bool VisualState::handleRealtime(const sf::Vector2i mousePosition) {
     mGUIContainer.updateSelect(mousePosition);
-    GUIOptionContainer.updateSelect(mousePosition);
-    GUICommandContainer[currentOption].updateSelect(mousePosition);
-    GUIPlayPause[mAnimationList.isPlaying()].updateSelect(mousePosition);
+
+    if (mAnimationList.isPlaying()) {
+        GUIPause.updateSelect(mousePosition);
+    } else {
+        GUIOptionContainer.updateSelect(mousePosition);
+        GUICommandContainer[currentOption].updateSelect(mousePosition);
+        GUIPlay.updateSelect(mousePosition);
+    }
     return false;
 }

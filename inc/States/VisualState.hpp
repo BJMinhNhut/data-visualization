@@ -43,6 +43,7 @@ class VisualState : public State {
     void clearAnimation();
 
     void loadCode(const std::string& code);
+    void clearCode();
 
     virtual void validateCommand() = 0;
 
@@ -62,7 +63,9 @@ class VisualState : public State {
     GUI::Container GUIOptionContainer;
     std::map<int, GUI::Container> GUICommandContainer;
     std::map<int, std::function<void()>> loadAnimationCallback;
-    GUI::Container GUIPlayPause[2];
+    GUI::Container GUIPlay;
+    GUI::Container GUIPause;
+    GUI::Container GUIReplay;
     GUI::Console::Ptr GUIConsole;
     GUI::ProgressBar::Ptr GUIProgressBar;
     GUI::CodeBlock::Ptr GUICodeBlock;

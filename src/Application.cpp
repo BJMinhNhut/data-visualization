@@ -40,6 +40,8 @@ Application::Application()
     mTextures.load(Textures::PlaySelected, "data/images/play-selected.png");
     mTextures.load(Textures::PauseNormal, "data/images/pause-normal.png");
     mTextures.load(Textures::PauseSelected, "data/images/pause-selected.png");
+    mTextures.load(Textures::ReplayNormal, "data/images/replay-normal.png");
+    mTextures.load(Textures::ReplaySelected, "data/images/replay-selected.png");
 
     mTextures.load(Textures::InputNormal, "data/images/input-normal.png");
     mTextures.load(Textures::InputSelected, "data/images/input-selected.png");
