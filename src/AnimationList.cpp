@@ -8,11 +8,11 @@ AnimationList::AnimationList()
       mList() {}
 
 bool AnimationList::isFinished() const {
-    return mList.size() > 0 && currentAnimation + 1 == mList.size();
+    return mList.size() > 0 && currentAnimation == mList.size();
 }
 
 unsigned int AnimationList::getProgress() const {
-    return currentAnimation + 1;
+    return currentAnimation;
 }
 
 unsigned int AnimationList::getSize() const {
@@ -69,6 +69,7 @@ void AnimationList::playPrevious() {
 
 void AnimationList::goToFront() {
     currentAnimation = 0;
+    resetCooldown();
 }
 
 void AnimationList::goToBack() {
@@ -87,14 +88,12 @@ void AnimationList::setSpeed(const float& speed) {
 
 void AnimationList::update(sf::Time dt) {
     if (isPlaying()) {
-        if (mCooldown < dt)
-            mList[currentAnimation].play();
-
-        if (currentAnimation + 1 == mList.size())
+        if (currentAnimation == mList.size())
             pause();
         else {
             mCooldown += dt;
             if (mCooldown > sf::seconds(1.f / mSpeed)) {
+                mList[currentAnimation].play();
                 currentAnimation++;
                 resetCooldown();
             }
