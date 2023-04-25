@@ -8,7 +8,7 @@ AnimationList::AnimationList()
       mList() {}
 
 unsigned int AnimationList::getProgress() const {
-    return currentAnimation;
+    return currentAnimation + 1;
 }
 
 unsigned int AnimationList::getSize() const {
@@ -85,11 +85,12 @@ void AnimationList::setSpeed(const float& speed) {
 
 void AnimationList::update(sf::Time dt) {
     if (isPlaying()) {
-        if (currentAnimation == mList.size()) {
+        if (mCooldown < dt)
+            mList[currentAnimation].play();
+
+        if (currentAnimation + 1 == mList.size())
             pause();
-        } else {
-            if (mCooldown < dt)
-                mList[currentAnimation].play();
+        else {
             mCooldown += dt;
             if (mCooldown > sf::seconds(mSpeed * 1.f)) {
                 currentAnimation++;
