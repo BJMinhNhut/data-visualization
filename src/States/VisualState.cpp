@@ -154,6 +154,8 @@ void VisualState::addAnimation(const std::string& description,
 
 void VisualState::clearAnimation() {
     mAnimationList.clear();
+    GUIProgressBar->setLength(1);
+    GUIProgressBar->setProgress(0);
 }
 
 void VisualState::loadCode(const std::string& code) {

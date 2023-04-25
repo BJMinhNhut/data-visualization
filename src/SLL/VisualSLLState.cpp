@@ -230,7 +230,7 @@ void VisualSLLState::loadAddAnimation() {
             },
             {3});
 
-        if (mSLL.isInList(index + 1))
+        if (index + 1 <= mSLL.getSize())
             addAnimation("Set myNode.next = cur.next.",
                          [=]() { mSLL.setPointer(index, index + 1); }, {4});
         else
