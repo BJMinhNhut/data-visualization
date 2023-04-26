@@ -91,7 +91,6 @@ void VisualState::initGUIButtons() {
         sf::Vector2f(1050.f, getContext().window->getSize().y - 100.f), "",
         [this]() {
             resetOption();
-            loadSnapShot();
             mAnimationList.goToFront();
             mAnimationList.play();
         }));
@@ -99,10 +98,14 @@ void VisualState::initGUIButtons() {
     mGUIContainer.pack(createNewGUIButton(
         GUI::Button::DoubleArrow,
         sf::Vector2f(950.f, getContext().window->getSize().y - 100.f), "",
-        [this]() {
-            loadSnapShot();
-            mAnimationList.goToFront();
-        }));
+        [this]() { mAnimationList.goToFront(); }));
+
+    auto goPreviousButton = createNewGUIButton(
+        GUI::Button::Arrow,
+        sf::Vector2f(990.f, getContext().window->getSize().y - 100.f), "",
+        [this]() { mAnimationList.playPrevious(); });
+    goPreviousButton->setRotation(180);
+    mGUIContainer.pack(goPreviousButton);
 
     mGUIContainer.pack(createNewGUIButton(
         GUI::Button::Arrow,
@@ -196,16 +199,24 @@ void VisualState::cleanLog() {
 }
 
 void VisualState::addAnimation(const std::string& description,
-                               std::function<void()> callback,
-                               const std::vector<int> highlightLineID) {
-    mAnimationList.push(Animation([=]() {
-        callInfo(description);
-        callback();
-        GUICodeBlock->setHighlight(highlightLineID);
-    }));
+                               const std::vector<int>& highlightLineID,
+                               const std::function<void()>& forward,
+                               const std::function<void()>& backward) {
+    mAnimationList.push(Animation(
+        [=]() {
+            callInfo(description);
+            forward();
+            GUICodeBlock->setHighlight(highlightLineID);
+        },
+        [=]() {
+            callInfo(description);
+            backward();
+            GUICodeBlock->setHighlight(highlightLineID);
+        }));
 }
 
 void VisualState::clearAnimation() {
+    mAnimationList.goToBack();
     mAnimationList.clear();
     GUIProgressBar->setLength(1);
     GUIProgressBar->setProgress(0);
@@ -235,12 +246,14 @@ std::shared_ptr<GUI::Button> VisualState::createNewGUIButton(
 void VisualState::execute() {
     if (GUIConsole->getLogType() == GUI::Console::Info) {
         if (!mAnimationList.isEmpty())
-            mAnimationList.goToBack();
-        mAnimationList.setSpeed(mSpeedMap[mSpeedID].second);
-        clearAnimation();
-        loadAnimationCallback[currentOption]();
-        mAnimationList.play();
-        resetOption();
+            mAnimationList.play();
+        else {
+            mAnimationList.setSpeed(mSpeedMap[mSpeedID].second);
+            clearAnimation();
+            loadAnimationCallback[currentOption]();
+            mAnimationList.play();
+            resetOption();
+        }
     }
 }
 

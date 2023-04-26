@@ -21,13 +21,11 @@ sf::Vector2f const secondLabelPosition(secondInputPosition +
 VisualSLLState::VisualSLLState(StateStack& stack, Context context)
     : VisualState(stack, context),
       mSLL(*context.fonts, *context.textures),
-      mSnapShot(*context.fonts, *context.textures),
       GUIValueInput(OptionCount),
       GUIIndexInput(OptionCount) {
 
     centerSLL(SceneNode::None);
     mSLL.refreshPointerTarget();
-    mSnapShot.loadData(mSLL.getData());
 
     initGUIButtons();
 
@@ -176,85 +174,114 @@ void VisualSLLState::loadAddGUI() {
 void VisualSLLState::loadAddAnimation() {
     mSLL.clearHighlight();
 
-    mSnapShot.loadData(mSLL.getData());
-
     int index = GUIIndexInput[Add]->getValue();
     int value = GUIValueInput[Add]->getValue();
-    std::string complexity;
 
     if (index == 0) {
-        complexity = "O(1)";
 
         addAnimation(
             "Create new node to store value " + std::to_string(value) + ".",
+            {0},
             [=]() {
                 mSLL.pureInsert(0, value);
                 mSLL.popUpNode(0);
                 mSLL.setHighlight("myNode", 0);
             },
-            {0});
+            [=]() {
+                mSLL.clearHighlight();
+                mSLL.eraseNode(0);
+            });
 
-        if (mSLL.isInList(index + 1))
-            addAnimation("Set myNode.next = head.",
-                         [=]() { mSLL.setPointer(0, 1); }, {1});
+        if (mSLL.isInList(1))
+            addAnimation(
+                "Set myNode.next = head.", {1},
+                [=]() { mSLL.setPointer(0, 1); },
+                [=]() { mSLL.setPointer(0, -1); });
         else
             addAnimation("Set myNode.next = head. Head is currently null.",
-                         [=]() {}, {1});
+                         {1});
 
-        addAnimation("Set head = myNode", [=]() { mSLL.setHeadTarget(0); },
-                     {2});
+        addAnimation(
+            "Set head = myNode", {2}, [=]() { mSLL.setHeadTarget(0); },
+            [=]() { mSLL.setHeadTarget(1); });
+
+        addAnimation(
+            "Re-layout the Linked List for visualization\n(not in "
+            "the "
+            "actual "
+            "Linked List).\nThe whole process complexity is O(1).",
+            {},
+            [=]() {
+                mSLL.clearHighlight();
+                mSLL.alignNodes();
+            },
+            [=]() {
+                mSLL.popUpNode(0);
+                mSLL.setHighlight("myNode", 0);
+            });
     } else {
-        complexity = "O(N)";
-
-        addAnimation("Set cur = head.", [=]() { mSLL.setHighlight("cur", 0); },
-                     {0});
+        addAnimation(
+            "Set cur = head.", {0}, [=]() { mSLL.setHighlight("cur", 0); },
+            [=]() { mSLL.setHighlight("cur", -1); });
 
         for (int i = 0; i + 1 < index; ++i) {
             addAnimation("k = " + std::to_string(i) +
                              ", index specified has not\nbeen reached.",
-                         [=]() {}, {1});
-            addAnimation("Set cur to the next node, increase k.",
-                         [=]() { mSLL.setHighlight("cur", i + 1); }, {2});
+                         {1});
+            addAnimation("Set cur to the next node, increase k.", {2},
+                         [=]() { mSLL.setHighlight("cur", i + 1); });
         }
 
         addAnimation(
             "We have found the insertion point.\n"
             "We continue the next insertion step.",
-            [=]() {}, {1});
+            {1});
 
         addAnimation(
             "Create new node to store value " + std::to_string(value) + ".",
+            {3},
             [=]() {
                 mSLL.pureInsert(index, value);
                 mSLL.popUpNode(index);
                 mSLL.setHighlight("myNode", index);
             },
-            {3});
+            [=]() {
+                mSLL.setHighlight("myNode", -1);
+                mSLL.eraseNode(index);
+            });
 
         if (index + 1 <= mSLL.getSize())
-            addAnimation("Set myNode.next = cur.next.",
-                         [=]() { mSLL.setPointer(index, index + 1); }, {4});
+            addAnimation(
+                "Set myNode.next = cur.next.", {4},
+                [=]() { mSLL.setPointer(index, index + 1); },
+                [=]() { mSLL.setPointer(index, -1); });
         else
             addAnimation(
                 "Set myNode.next = cur.next.\n cur.next is "
                 "currently null.",
-                [=]() {}, {4});
+                {4});
 
-        addAnimation("Set cur.next = myNode.",
-                     [=]() { mSLL.setPointer(index - 1, index); }, {5});
+        addAnimation(
+            "Set cur.next = myNode.", {5},
+            [=]() { mSLL.setPointer(index - 1, index); },
+            [=]() { mSLL.setPointer(index - 1, index + 1); });
+
+        addAnimation(
+            "Re-layout the Linked List for visualization\n(not in "
+            "the "
+            "actual "
+            "Linked List).\nThe whole process complexity is O(N)",
+            {},
+            [=]() {
+                mSLL.clearHighlight();
+                mSLL.alignNodes();
+            },
+            [=]() {
+                mSLL.popUpNode(index);
+                mSLL.setHighlight("cur", index - 1);
+                mSLL.setHighlight("myNode", index);
+            });
     }
-
-    addAnimation(
-        "Re-layout the Linked List for visualization\n(not in "
-        "the "
-        "actual "
-        "Linked List).\nThe whole process complexity is " +
-            complexity + ".",
-        [=]() {
-            mSLL.clearHighlight();
-            mSLL.alignNodes();
-        },
-        {});
 }
 
 void VisualSLLState::loadDeleteGUI() {
@@ -461,12 +488,6 @@ void VisualSLLState::validateCommand() {
             break;
         }
     };
-}
-
-void VisualSLLState::loadSnapShot() {
-    mSLL.clearHighlight();
-    mSLL.loadData(mSnapShot.getData());
-    mSLL.refreshPointerTarget();
 }
 
 void VisualSLLState::draw() {

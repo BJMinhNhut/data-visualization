@@ -66,21 +66,25 @@ void AnimationList::playNext() {
 void AnimationList::playPrevious() {
     if (currentAnimation == 0)
         return;
-    mList[currentAnimation].reverse();
     currentAnimation--;
-    mList[currentAnimation].play();
+    mList[currentAnimation].reverse();
+
+    if (currentAnimation >= 1) {
+        mList[currentAnimation - 1].reverse();
+        mList[currentAnimation - 1].play();
+    }
     resetCooldown();
 }
 
 void AnimationList::goToFront() {
-    currentAnimation = 0;
+    while (currentAnimation > 0)
+        playPrevious();
     resetCooldown();
 }
 
 void AnimationList::goToBack() {
-    while (currentAnimation < mList.size()) {
+    while (currentAnimation < mList.size())
         playNext();
-    }
     resetCooldown();
 }
 

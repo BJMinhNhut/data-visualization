@@ -37,9 +37,11 @@ class VisualState : public State {
     void callInfo(const std::string& text);
     void cleanLog();
 
-    void addAnimation(const std::string& description,
-                      std::function<void()> callback,
-                      const std::vector<int> highlightLineID);
+    void addAnimation(
+        const std::string& description, const std::vector<int>& highlightLineID,
+        const std::function<void()>& forward = []() {},
+        const std::function<void()>& backward = []() {});
+
     void clearAnimation();
 
     void loadCode(const std::string& code);
@@ -50,8 +52,6 @@ class VisualState : public State {
     std::shared_ptr<GUI::Button> createNewGUIButton(
         GUI::Button::Type type, sf::Vector2f position, std::string label,
         GUI::Button::Callback callback, bool toggle = false);
-
-    virtual void loadSnapShot() = 0;
 
    private:
     void initGUIButtons();

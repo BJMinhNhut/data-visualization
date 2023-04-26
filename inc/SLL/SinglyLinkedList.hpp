@@ -13,35 +13,38 @@ class SinglyLinkedList : public SceneNode {
     explicit SinglyLinkedList(const FontHolder& fonts,
                               const TextureHolder& textures);
 
-    std::size_t getSize() const;
-    int getValue(std::size_t index) const;
+    int getSize() const;
+    int getValue(const int& index) const;
     int getRandomNodeValue() const;
     std::vector<int> getData() const;
-    bool isInList(std::size_t index) const;
+    bool isInList(const int& index) const;
     void loadData(const std::vector<int>& data);
 
     void randomGen();
 
-    void pureInsert(std::size_t index, int value = -1);
-    void insertNode(std::size_t index, int value = -1);
-    void eraseNode(std::size_t index);
-    void updateNode(std::size_t index, int newValue);
+    void pureInsert(const int& index, int value = -1);
+    void insertNode(const int& index, int value = -1);
+
+    void eraseNode(const int& index);
+
+    void updateNode(const int& index, int newValue);
+
     int searchNode(int value);
 
     void refreshPointerTarget();
     void clearHighlight();
     void setHighlight(const std::string& label, int index);
-    void popUpNode(std::size_t index);
+    void popUpNode(const int& index);
     void alignNodes();
 
-    void setHeadTarget(std::size_t target);
-    void setPointer(std::size_t source, std::size_t target);
-    // void removePointer(std::size_t index);
+    void setHeadTarget(const int& target);
+    void setPointer(const int& source, const int& target);
+    // void removePointer(const int& index);
 
    private:
     virtual void updateCurrent(sf::Time dt);
-    void insertNode(std::size_t index, SinglyNode* node);
-    void pureInsert(std::size_t index, SinglyNode* node);
+    void insertNode(const int& index, SinglyNode* node);
+    void pureInsert(const int& index, SinglyNode* node);
     void resetNodes();
     sf::Vector2f getNodePosition(const int& index) const;
 

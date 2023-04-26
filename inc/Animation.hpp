@@ -8,13 +8,16 @@
 
 class Animation {
    public:
-    Animation(const std::function<void()>& callback);
+    Animation(const std::function<void()>& forward);
+    Animation(const std::function<void()>& forward,
+              const std::function<void()>& backward);
 
     void play();
     void reverse();
 
    private:
-    std::function<void()> mCallback;
+    std::function<void()> mForward;
+    std::function<void()> mBackward;
 };
 
 #endif  // ANIMATION_HPP
