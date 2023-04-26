@@ -30,6 +30,22 @@ const std::string eraseMiddle = {
     "cur.next = myNode.next\n"
     "delete myNode"};
 
+const std::string update = {
+    "Node cur = head\n"
+    "for(k = 0; k < index; ++k)\n"
+    "	cur = cur.next\n"
+    "cur.data = value"};
+
+const std::string search = {
+    "if empty, return NOT_FOUND\n"
+    "Node cur = head\n"
+    "int index = 0\n"
+    "while (cur.data != value)\n"
+    "   index++, cur = cur.next\n"
+    "   if cur == null,\n"
+    "       return NOT_FOUND\n"
+    "return index"};
+
 }  // namespace SLLCode
 
 #endif  // SLLCODE_HPP

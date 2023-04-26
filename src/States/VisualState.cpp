@@ -174,6 +174,7 @@ void VisualState::setCurrentOption(int option) {
     currentOption = option;
     GUICommandContainer[currentOption].reset();
     clearAnimation();
+    loadCode("");
 }
 
 void VisualState::resetOption() {
@@ -248,8 +249,8 @@ void VisualState::execute() {
         if (!mAnimationList.isEmpty())
             mAnimationList.play();
         else {
+            resetDataStructure();
             mAnimationList.setSpeed(mSpeedMap[mSpeedID].second);
-            clearAnimation();
             loadAnimationCallback[currentOption]();
             mAnimationList.play();
             resetOption();

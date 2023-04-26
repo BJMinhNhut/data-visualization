@@ -273,7 +273,6 @@ void SinglyLinkedList::updateNode(const int& index, int newValue) {
     if (DEBUG_SLL)
         std::cerr << "Update node " << index << " to " << newValue << '\n';
     nodes[index]->setValue(newValue);
-    setHighlight("cur", index);
 }
 
 void SinglyLinkedList::setHeadTarget(const int& target) {

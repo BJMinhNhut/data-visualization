@@ -421,6 +421,67 @@ void VisualSLLState::loadSearchGUI() {
     packOptionGUI(Search, GUIValueInput[Search]);
 }
 
+void VisualSLLState::loadSearchAnimation() {
+    int index = 0;
+    int value = GUIValueInput[Search]->getValue();
+
+    if (mSLL.getSize() == 0) {
+        addAnimation("List is empty. Therefore the value " +
+                         std::to_string(value) + "\nis NOT_FOUND.",
+                     {0});
+    } else {
+        addAnimation("List is not empty.", {0});
+
+        addAnimation(
+            "Init cur = head to iterate the list and\nindex = 0 to maintain "
+            "the position.",
+            {1, 2}, [=]() { mSLL.setHighlight("cur", 0); },
+            [=]() { mSLL.clearHighlight(); });
+
+        while (mSLL.getValue(index) != value) {
+            addAnimation(
+                "Current node value (" + std::to_string(mSLL.getValue(index)) +
+                    ") != searching value (" + std::to_string(value) +
+                    ")\n"
+                    "Continue searching.",
+                {3}, []() {}, [=]() { mSLL.setHighlight("cur", index); });
+            index++;
+            if (mSLL.isInList(index))
+                addAnimation(
+                    "Set cur to its next node.\ncur is not null, continue "
+                    "searching.",
+                    {4, 5}, [=]() { mSLL.setHighlight("cur", index); });
+            else {
+                addAnimation("Set cur to its next node...", {4},
+                             [=]() { mSLL.setHighlight("cur", index); });
+
+                addAnimation(
+                    "cur is null (we have gone past the end\n"
+                    "of SLL after O(N) step(s)). So the value " +
+                        std::to_string(value) + " is NOT_FOUND in the SLL.",
+                    {6});
+
+                return;
+            }
+        }
+
+        addAnimation(
+            "Found value " + std::to_string(value) +
+                " at this highlighted node so"
+                "\nwe return index " +
+                std::to_string(index) + ". The whole operation is O(N).",
+            {7},
+            [=]() {
+                mSLL.popUpNode(index);
+                mSLL.setHighlight("cur", index);
+            },
+            [=]() {
+                mSLL.alignNodes();
+                mSLL.setHighlight("cur", index);
+            });
+    }
+}
+
 void VisualSLLState::loadUpdateGUI() {
     auto indexLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "Position",
                                                    *getContext().fonts);
@@ -462,6 +523,61 @@ void VisualSLLState::loadUpdateGUI() {
     packOptionGUI(Update, GUIValueInput[Update]);
 }
 
+void VisualSLLState::loadUpdateAnimation() {
+    int index = GUIIndexInput[Update]->getValue();
+    int value = GUIValueInput[Update]->getValue();
+    int old_value = mSLL.getValue(index);
+
+    assert(mSLL.isInList(index));
+
+    addAnimation(
+        "Set cur = head.", {0}, [=]() { mSLL.setHighlight("cur", 0); },
+        [=]() { mSLL.clearHighlight(); });
+
+    for (int i = 0; i < index; ++i) {
+        addAnimation("k = " + std::to_string(i) +
+                         ", index specified has not\nbeen reached.",
+                     {1});
+        addAnimation("Set cur to the next node, increase k.", {2},
+                     [=]() { mSLL.setHighlight("cur", i + 1); });
+    }
+
+    addAnimation(
+        "k = " + std::to_string(index - 1) +
+            ", cur now points to the node\nto-be-updated.We "
+            "stop searching and\ncontinue with the update.",
+        {1},
+        [=]() {
+            mSLL.popUpNode(index);
+            mSLL.setHighlight("cur", index);
+        },
+        [=]() {
+            mSLL.alignNodes();
+            mSLL.setHighlight("cur", index);
+        });
+
+    addAnimation(
+        "Set the new value to node data.", {3},
+        [=]() {
+            mSLL.updateNode(index, value);
+            mSLL.setHighlight("cur", index);
+        },
+        [=]() { mSLL.updateNode(index, old_value); });
+
+    addAnimation(
+        "Re-layout the SLL for visualization (not in\nthe "
+        "actual SLL). The whole process complexity\nis O(N).",
+        {},
+        [=]() {
+            mSLL.clearHighlight();
+            mSLL.alignNodes();
+        },
+        [=]() {
+            mSLL.popUpNode(index);
+            mSLL.setHighlight("cur", index);
+        });
+}
+
 void VisualSLLState::loadCallback() {
     setLoadAnimationCallback(
         New, [this]() { mSLL.loadData(GUIArrayInput->getArray()); });
@@ -470,22 +586,9 @@ void VisualSLLState::loadCallback() {
 
     setLoadAnimationCallback(Delete, [this]() { loadDeleteAnimation(); });
 
-    setLoadAnimationCallback(Update, [this]() {
-        mSLL.updateNode(GUIIndexInput[Update]->getValue(),
-                        GUIValueInput[Update]->getValue());
-    });
+    setLoadAnimationCallback(Update, [this]() { loadUpdateAnimation(); });
 
-    setLoadAnimationCallback(Search, [this]() {
-        int findIndex = mSLL.searchNode(GUIValueInput[Search]->getValue());
-        if (findIndex > -1) {
-            callInfo("Value " +
-                     std::to_string(GUIValueInput[Search]->getValue()) +
-                     " is at index " + std::to_string(findIndex));
-        } else {
-            callInfo("Not found value " +
-                     std::to_string(GUIValueInput[Search]->getValue()));
-        }
-    });
+    setLoadAnimationCallback(Search, [this]() { loadSearchAnimation(); });
 }
 
 void VisualSLLState::validateCommand() {
@@ -559,7 +662,7 @@ void VisualSLLState::validateCommand() {
 
         case Update: {
             if (mSLL.getSize() == 0) {
-                callInfo("List Empty");
+                callError("List Empty");
             } else if (GUIIndexInput[Update]->validate() !=
                        GUI::Input::Success) {
                 callError("Index must be a number in range " +
@@ -573,24 +676,28 @@ void VisualSLLState::validateCommand() {
                          std::to_string(GUIIndexInput[Update]->getValue()) +
                          " to " +
                          std::to_string(GUIValueInput[Update]->getValue()));
+                loadCode(SLLCode::update);
             }
             break;
         }
 
         case Search: {
-            if (mSLL.getSize() == 0) {
-                callInfo("List Empty");
-            } else if (GUIValueInput[Search]->validate() !=
-                       GUI::Input::Success) {
+            if (GUIValueInput[Search]->validate() != GUI::Input::Success) {
                 callError("Value must be in range " +
                           GUIValueInput[Search]->getStringRange());
             } else {
                 callInfo("Search for a node having value " +
                          std::to_string(GUIValueInput[Search]->getValue()));
+                loadCode(SLLCode::search);
             }
             break;
         }
     };
+}
+
+void VisualSLLState::resetDataStructure() {
+    mSLL.clearHighlight();
+    mSLL.alignNodes();
 }
 
 void VisualSLLState::draw() {

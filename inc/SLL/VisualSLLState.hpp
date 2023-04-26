@@ -43,10 +43,15 @@ class VisualSLLState : public VisualState {
     void loadDeleteAnimation();
 
     void loadUpdateGUI();
+    void loadUpdateAnimation();
+
     void loadSearchGUI();
+    void loadSearchAnimation();
+
     void loadCallback();
 
     virtual void validateCommand();
+    virtual void resetDataStructure();
 
    private:
     std::vector<GUI::InputNumber::Ptr> GUIValueInput;
