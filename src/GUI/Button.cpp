@@ -40,8 +40,12 @@ Textures::ID Button::getNormalTextureID(Type type) const {
             return Textures::PauseNormal;
         case Replay:
             return Textures::ReplayNormal;
-        case Arrow:
+        case SmallArrow:
             return Textures::ArrowDownNormal;
+        case Arrow:
+            return Textures::ArrowNormal;
+        case DoubleArrow:
+            return Textures::DoubleArrowNormal;
         case MenuSLL:
             return Textures::MenuSLLNormal;
         case MenuDLL:
@@ -77,8 +81,12 @@ Textures::ID Button::getSelectedTextureID(Type type) const {
             return Textures::PauseSelected;
         case Replay:
             return Textures::ReplaySelected;
-        case Arrow:
+        case SmallArrow:
             return Textures::ArrowDownSelected;
+        case Arrow:
+            return Textures::ArrowSelected;
+        case DoubleArrow:
+            return Textures::DoubleArrowSelected;
         case MenuSLL:
             return Textures::MenuSLLSelected;
         case MenuDLL:
@@ -114,8 +122,12 @@ Textures::ID Button::getPressedTextureID(Type type) const {
             return Textures::PauseSelected;
         case Replay:
             return Textures::ReplaySelected;
-        case Arrow:
+        case SmallArrow:
             return Textures::ArrowDownSelected;
+        case Arrow:
+            return Textures::ArrowSelected;
+        case DoubleArrow:
+            return Textures::DoubleArrowSelected;
         case MenuSLL:
             return Textures::MenuSLLSelected;
         case MenuDLL:

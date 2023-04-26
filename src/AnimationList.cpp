@@ -1,5 +1,7 @@
 #include <AnimationList.hpp>
 
+#include <iostream>
+
 AnimationList::AnimationList()
     : currentAnimation(0),
       mIsPlaying(false),
@@ -36,6 +38,7 @@ void AnimationList::push(const Animation& animation) {
 }
 
 void AnimationList::play() {
+    std::cerr << "playing animation\n";
     mIsPlaying = true;
 }
 
@@ -44,6 +47,7 @@ void AnimationList::pause() {
 }
 
 void AnimationList::clear() {
+    std::cerr << "clear call\n";
     std::vector<Animation>().swap(mList);
     currentAnimation = 0;
     mIsPlaying = false;
@@ -51,10 +55,11 @@ void AnimationList::clear() {
 }
 
 void AnimationList::playNext() {
-    if (currentAnimation + 1 == mList.size())
+    if (currentAnimation == mList.size())
         return;
-    currentAnimation++;
+    std::cerr << "step: " << currentAnimation << '\n';
     mList[currentAnimation].play();
+    currentAnimation++;
     resetCooldown();
 }
 
@@ -73,9 +78,10 @@ void AnimationList::goToFront() {
 }
 
 void AnimationList::goToBack() {
-    while (currentAnimation + 1 < mList.size()) {
+    while (currentAnimation < mList.size()) {
         playNext();
     }
+    resetCooldown();
 }
 
 void AnimationList::resetCooldown() {
@@ -92,11 +98,8 @@ void AnimationList::update(sf::Time dt) {
             pause();
         else {
             mCooldown += dt;
-            if (mCooldown > sf::seconds(1.f / mSpeed)) {
-                mList[currentAnimation].play();
-                currentAnimation++;
-                resetCooldown();
-            }
+            if (mCooldown > sf::seconds(1.f / mSpeed))
+                playNext();
         }
     }
 }

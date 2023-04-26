@@ -27,6 +27,7 @@ VisualSLLState::VisualSLLState(StateStack& stack, Context context)
 
     centerSLL(SceneNode::None);
     mSLL.refreshPointerTarget();
+    mSnapShot.loadData(mSLL.getData());
 
     initGUIButtons();
 
@@ -173,10 +174,7 @@ void VisualSLLState::loadAddGUI() {
 }
 
 void VisualSLLState::loadAddAnimation() {
-
-    clearAnimation();
     mSLL.clearHighlight();
-    std::cerr << "load add animation\n";
 
     mSnapShot.loadData(mSLL.getData());
 
@@ -406,7 +404,6 @@ void VisualSLLState::validateCommand() {
                 else
                     info += "index " + std::to_string(index);
                 callInfo(info);
-                loadAddAnimation();
 
                 if (index == 0)
                     loadCode(SLLCode::insertFront);

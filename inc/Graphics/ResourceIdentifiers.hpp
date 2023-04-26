@@ -29,6 +29,10 @@ enum ID {
 
     ArrowDownNormal,
     ArrowDownSelected,
+    ArrowNormal,
+    ArrowSelected,
+    DoubleArrowNormal,
+    DoubleArrowSelected,
 
     InputNormal,
     InputSelected,

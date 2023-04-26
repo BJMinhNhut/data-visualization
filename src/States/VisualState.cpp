@@ -90,10 +90,31 @@ void VisualState::initGUIButtons() {
         GUI::Button::Replay,
         sf::Vector2f(1050.f, getContext().window->getSize().y - 100.f), "",
         [this]() {
+            resetOption();
             loadSnapShot();
             mAnimationList.goToFront();
-            execute();
+            mAnimationList.play();
         }));
+
+    mGUIContainer.pack(createNewGUIButton(
+        GUI::Button::DoubleArrow,
+        sf::Vector2f(950.f, getContext().window->getSize().y - 100.f), "",
+        [this]() {
+            loadSnapShot();
+            mAnimationList.goToFront();
+        }));
+
+    mGUIContainer.pack(createNewGUIButton(
+        GUI::Button::Arrow,
+        sf::Vector2f(1102.f, getContext().window->getSize().y - 100.f), "",
+        [this]() { mAnimationList.playNext(); }));
+
+    auto goBackButton = createNewGUIButton(
+        GUI::Button::DoubleArrow,
+        sf::Vector2f(1140.f, getContext().window->getSize().y - 100.f), "",
+        [this]() { mAnimationList.goToBack(); });
+    goBackButton->setRotation(180);
+    mGUIContainer.pack(goBackButton);
 }
 void VisualState::addOption(int option, std::string title,
                             GUI::Button::Callback callback) {
@@ -130,14 +151,14 @@ void VisualState::initSpeed() {
     mGUIContainer.pack(GUISpeed);
 
     auto increaseButton = createNewGUIButton(
-        GUI::Button::Arrow,
+        GUI::Button::SmallArrow,
         sf::Vector2f(870.f, getContext().window->getSize().y - 100.f), "",
         [this]() { increaseSpeed(); });
     increaseButton->rotate(180);
     mGUIContainer.pack(increaseButton);
 
     mGUIContainer.pack(createNewGUIButton(
-        GUI::Button::Arrow,
+        GUI::Button::SmallArrow,
         sf::Vector2f(870.f, getContext().window->getSize().y - 80.f), "",
         [this]() { decreaseSpeed(); }));
 }
@@ -149,6 +170,7 @@ void VisualState::packOptionGUI(int option, GUI::Component::Ptr component) {
 void VisualState::setCurrentOption(int option) {
     currentOption = option;
     GUICommandContainer[currentOption].reset();
+    clearAnimation();
 }
 
 void VisualState::resetOption() {
@@ -212,7 +234,11 @@ std::shared_ptr<GUI::Button> VisualState::createNewGUIButton(
 
 void VisualState::execute() {
     if (GUIConsole->getLogType() == GUI::Console::Info) {
+        if (!mAnimationList.isEmpty())
+            mAnimationList.goToBack();
         mAnimationList.setSpeed(mSpeedMap[mSpeedID].second);
+        clearAnimation();
+        loadAnimationCallback[currentOption]();
         mAnimationList.play();
         resetOption();
     }
@@ -271,10 +297,8 @@ bool VisualState::update(sf::Time dt) {
 
     mAnimationList.update(dt);
 
-    if (mAnimationList.isPlaying()) {
-        GUIProgressBar->setLength(mAnimationList.getSize());
-        GUIProgressBar->setProgress(mAnimationList.getProgress());
-    }
+    GUIProgressBar->setLength(mAnimationList.getSize());
+    GUIProgressBar->setProgress(mAnimationList.getProgress());
 
     return true;
 }

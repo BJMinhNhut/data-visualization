@@ -43,6 +43,7 @@ class SinglyLinkedList : public SceneNode {
     void insertNode(std::size_t index, SinglyNode* node);
     void pureInsert(std::size_t index, SinglyNode* node);
     void resetNodes();
+    sf::Vector2f getNodePosition(const int& index) const;
 
    private:
     const FontHolder& mFonts;

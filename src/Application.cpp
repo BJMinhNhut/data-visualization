@@ -43,9 +43,16 @@ Application::Application()
     mTextures.load(Textures::ReplayNormal, "data/images/replay-normal.png");
     mTextures.load(Textures::ReplaySelected, "data/images/replay-selected.png");
 
-    mTextures.load(Textures::ArrowDownNormal, "data/images/arrow-normal.png");
+    mTextures.load(Textures::ArrowDownNormal,
+                   "data/images/small-arrow-normal.png");
     mTextures.load(Textures::ArrowDownSelected,
-                   "data/images/arrow-selected.png");
+                   "data/images/small-arrow-selected.png");
+    mTextures.load(Textures::ArrowNormal, "data/images/arrow-normal.png");
+    mTextures.load(Textures::ArrowSelected, "data/images/arrow-selected.png");
+    mTextures.load(Textures::DoubleArrowNormal,
+                   "data/images/double-arrow-normal.png");
+    mTextures.load(Textures::DoubleArrowSelected,
+                   "data/images/double-arrow-selected.png");
 
     mTextures.load(Textures::InputNormal, "data/images/input-normal.png");
     mTextures.load(Textures::InputSelected, "data/images/input-selected.png");

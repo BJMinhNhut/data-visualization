@@ -13,6 +13,8 @@
 #include <memory>
 #include <string>
 
+#define DEBUG_SLL 0
+
 SinglyLinkedList::SinglyLinkedList(const FontHolder& fonts,
                                    const TextureHolder& textures)
     : mHead(new Pointer(fonts)),
@@ -78,6 +80,8 @@ void SinglyLinkedList::pureInsert(std::size_t index, SinglyNode* node) {
     nodes.insert(nodes.begin() + index, node);
     std::unique_ptr<SinglyNode> nodePtr(node);
     attachChild(std::move(nodePtr));
+    node->setTargetPosition(getNodePosition(index), None);
+    node->refreshPointerTarget();
 }
 
 void SinglyLinkedList::insertNode(std::size_t index, int value) {
@@ -100,7 +104,8 @@ void SinglyLinkedList::insertNode(std::size_t index, SinglyNode* node) {
     if (index + 1 < nodes.size())
         node->setNextNode(nodes[index + 1]);
 
-    std::cerr << "Insert " << node->getValue() << " at " << index << '\n';
+    if (DEBUG_SLL)
+        std::cerr << "Insert " << node->getValue() << " at " << index << '\n';
     alignNodes();
     if (!nodes.empty()) {
         mHead->setTarget(nodes[0]);
@@ -119,18 +124,19 @@ void SinglyLinkedList::resetNodes() {
     std::vector<SinglyNode*>().swap(nodes);
 }
 
+sf::Vector2f SinglyLinkedList::getNodePosition(const int& index) const {
+    if (index == 0)
+        return sf::Vector2f(Constants::NODE_DISTANCE, 0.f);
+    else
+        return sf::Vector2f(
+            (Constants::NODE_DISTANCE + Constants::NODE_SIZE - 6.f) * (index) +
+                Constants::NODE_DISTANCE,
+            0.f);
+}
+
 void SinglyLinkedList::alignNodes() {
     for (std::size_t index = 0; index < nodes.size(); ++index) {
-        if (index == 0)
-            nodes[index]->setTargetPosition(
-                sf::Vector2f(Constants::NODE_DISTANCE, 0.f), Smooth);
-        else
-            nodes[index]->setTargetPosition(
-                sf::Vector2f((Constants::NODE_DISTANCE + Constants::NODE_SIZE -
-                              6.f) * (index) +
-                                 Constants::NODE_DISTANCE,
-                             0.f),
-                Smooth);
+        nodes[index]->setTargetPosition(getNodePosition(index), Smooth);
     }
 }
 
@@ -138,7 +144,8 @@ void SinglyLinkedList::randomGen() {
     resetNodes();
 
     std::size_t mSize = Random::get(1 + 3, Constants::LIST_MAXSIZE - 3);
-    std::cerr << "Random size: " << mSize << '\n';
+    if (DEBUG_SLL)
+        std::cerr << "Random size: " << mSize << '\n';
 
     for (int index = 0; index < mSize; ++index)
         insertNode(index);
@@ -182,7 +189,9 @@ void SinglyLinkedList::eraseNode(std::size_t index) {
         mHead->setNull();
     }
 
-    std::cerr << "Delete " << erasedNode->getValue() << " at " << index << '\n';
+    if (DEBUG_SLL)
+        std::cerr << "Delete " << erasedNode->getValue() << " at " << index
+                  << '\n';
 }
 
 int SinglyLinkedList::searchNode(int value) {
@@ -210,7 +219,9 @@ void SinglyLinkedList::setHighlight(const std::string& label, int index) {
         // Remove highlight
         if (mHighlight.find(label) != mHighlight.end() &&
             !mHighlight[label]->isNULL()) {
-            std::cerr << "Remove highlight index " << highlightIndex << '\n';
+            if (DEBUG_SLL)
+                std::cerr << "Remove highlight index " << highlightIndex
+                          << '\n';
             detachChild(mHighlight[label]);
             mHighlight[label] = nullptr;
         }
@@ -223,14 +234,20 @@ void SinglyLinkedList::setHighlight(const std::string& label, int index) {
 
             mHighlight[label]->setLabel(label);
             mHighlight[label]->resetDestination();
+
+            mHighlight[label]->setTargetPosition(
+                nodes[index]->getTargetPosition() + sf::Vector2f(-60.f, 40.f),
+                None);
+        } else {
+            mHighlight[label]->setTargetPosition(
+                nodes[index]->getTargetPosition() + sf::Vector2f(-60.f, 40.f),
+                Smooth);
         }
 
         mHighlight[label]->setTarget(nodes[index]);
-        mHighlight[label]->setTargetPosition(
-            nodes[index]->getTargetPosition() + sf::Vector2f(-60.f, 40.f),
-            Smooth);
 
-        std::cerr << "Change highlight index " << index << '\n';
+        if (DEBUG_SLL)
+            std::cerr << "Change highlight index " << index << '\n';
     }
 
     highlightIndex = index;
@@ -262,7 +279,8 @@ void SinglyLinkedList::popUpNode(std::size_t index) {
 
 void SinglyLinkedList::updateNode(std::size_t index, int newValue) {
     assert(isInList(index));
-    std::cerr << "Update node " << index << " to " << newValue << '\n';
+    if (DEBUG_SLL)
+        std::cerr << "Update node " << index << " to " << newValue << '\n';
     nodes[index]->setValue(newValue);
     setHighlight("cur", index);
 }
