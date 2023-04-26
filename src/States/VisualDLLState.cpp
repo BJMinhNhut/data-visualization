@@ -166,7 +166,7 @@ void VisualDLLState::loadCallback() {
 
 void VisualDLLState::validateCommand() {}
 
-void VisualDLLState::loadSnapShot() {}
+void VisualDLLState::resetDataStructure() {}
 
 void VisualDLLState::draw() {
     VisualState::draw();
