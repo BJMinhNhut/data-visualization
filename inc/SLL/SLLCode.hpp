@@ -17,6 +17,19 @@ const std::string insertMiddle = {
     "myNode.next = cur.next\n"
     "cur.next = myNode"};
 
+const std::string eraseFront = {
+    "Node myNode = head\n"
+    "head = head.next\n"
+    "delete myNode"};
+
+const std::string eraseMiddle = {
+    "Node cur = head\n"
+    "for(k = 0; k+1 < index; ++k)\n"
+    "	cur = cur.next\n"
+    "Node myNode = cur.next\n"
+    "cur.next = myNode.next\n"
+    "delete myNode"};
+
 }  // namespace SLLCode
 
 #endif  // SLLCODE_HPP

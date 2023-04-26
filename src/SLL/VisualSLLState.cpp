@@ -172,8 +172,6 @@ void VisualSLLState::loadAddGUI() {
 }
 
 void VisualSLLState::loadAddAnimation() {
-    mSLL.clearHighlight();
-
     int index = GUIIndexInput[Add]->getValue();
     int value = GUIValueInput[Add]->getValue();
 
@@ -206,10 +204,8 @@ void VisualSLLState::loadAddAnimation() {
             [=]() { mSLL.setHeadTarget(1); });
 
         addAnimation(
-            "Re-layout the Linked List for visualization\n(not in "
-            "the "
-            "actual "
-            "Linked List).\nThe whole process complexity is O(1).",
+            "Re-layout the SLL for visualization (not in\nthe "
+            "actual SLL). The whole process complexity\nis O(1).",
             {},
             [=]() {
                 mSLL.clearHighlight();
@@ -232,10 +228,10 @@ void VisualSLLState::loadAddAnimation() {
                          [=]() { mSLL.setHighlight("cur", i + 1); });
         }
 
-        addAnimation(
-            "We have found the insertion point.\n"
-            "We continue the next insertion step.",
-            {1});
+        addAnimation("k = " + std::to_string(index - 1) +
+                         ", we have found the insertion point.\n"
+                         "We continue the next insertion step.",
+                     {1});
 
         addAnimation(
             "Create new node to store value " + std::to_string(value) + ".",
@@ -267,10 +263,8 @@ void VisualSLLState::loadAddAnimation() {
             [=]() { mSLL.setPointer(index - 1, index + 1); });
 
         addAnimation(
-            "Re-layout the Linked List for visualization\n(not in "
-            "the "
-            "actual "
-            "Linked List).\nThe whole process complexity is O(N)",
+            "Re-layout the SLL for visualization (not in\nthe "
+            "actual SLL). The whole process complexity\nis O(N).",
             {},
             [=]() {
                 mSLL.clearHighlight();
@@ -311,6 +305,105 @@ void VisualSLLState::loadDeleteGUI() {
             sf::Vector2f(700.f, getContext().window->getSize().y - 180.f),
             "Back",
             [this]() { GUIIndexInput[Delete]->setValue(mSLL.getSize() - 1); }));
+}
+
+void VisualSLLState::loadDeleteAnimation() {
+    assert(mSLL.getSize() > 0);
+
+    int index = GUIIndexInput[Delete]->getValue();
+    int value = mSLL.getValue(index);
+
+    if (index == 0) {
+        addAnimation(
+            "Set myNode = head.", {0},
+            [=]() {
+                mSLL.popUpNode(0);
+                mSLL.setHighlight("myNode", 0);
+            },
+            [=]() {
+                mSLL.clearHighlight();
+                mSLL.alignNodes();
+            });
+
+        addAnimation(
+            "Set head to its next node.", {1}, [=]() { mSLL.setHeadTarget(1); },
+            [=]() { mSLL.setHeadTarget(0); });
+
+        addAnimation(
+            "Delete myNode (which is previous head).\nThe whole process is "
+            "O(1).",
+            {2},
+            [=]() {
+                mSLL.clearHighlight();
+                mSLL.eraseNode(0);
+            },
+            [=]() {
+                mSLL.insertNode(0, value);
+                mSLL.popUpNode(0);
+                mSLL.setHighlight("myNode", 0);
+            });
+
+    } else {
+        addAnimation(
+            "Set cur = head.", {0}, [=]() { mSLL.setHighlight("cur", 0); },
+            [=]() { mSLL.clearHighlight(); });
+
+        for (int i = 0; i + 1 < index; ++i) {
+            addAnimation("k = " + std::to_string(i) +
+                             ", index specified has not\nbeen reached.",
+                         {1});
+            addAnimation("Set cur to the next node, increase k.", {2},
+                         [=]() { mSLL.setHighlight("cur", i + 1); });
+        }
+
+        addAnimation("k = " + std::to_string(index - 1) +
+                         ", cur now points to the node behind\nthe node "
+                         "to-be-deleted. We "
+                         "stop searching and\ncontinue with the removal.",
+                     {1});
+
+        addAnimation(
+            "The node to-be-deleted (myNode) is cur.next", {1},
+            [=]() {
+                mSLL.popUpNode(index);
+                mSLL.setHighlight("myNode", index);
+            },
+            [=]() {
+                mSLL.setHighlight("myNode", -1);
+                mSLL.alignNodes();
+            });
+
+        if (index + 1 == mSLL.getSize()) {
+            addAnimation(
+                "Connect the previous node of myNode\nto the next node of "
+                "myNode (which is currently null).",
+                {4}, [=]() { mSLL.setPointer(index - 1, -1); },
+                [=]() { mSLL.setPointer(index - 1, index); });
+        } else
+            addAnimation(
+                "Connect the previous node of myNode\nto the next node of "
+                "myNode.",
+                {4}, [=]() { mSLL.setPointer(index - 1, index + 1); },
+                [=]() { mSLL.setPointer(index - 1, index); });
+
+        addAnimation(
+            "Delete myNode.", {5},
+            [=]() {
+                mSLL.setHighlight("myNode", -1);
+                mSLL.eraseNode(index);
+            },
+            [=]() {
+                mSLL.insertNode(index, value);
+                mSLL.popUpNode(index);
+                mSLL.setHighlight("myNode", index);
+            });
+
+        addAnimation(
+            "Re-layout the SLL for visualization (not in\nthe "
+            "actual SLL). The whole process complexity\nis O(N).",
+            {}, [=]() { mSLL.clearHighlight(); },
+            [=]() { mSLL.setHighlight("cur", index - 1); });
+    }
 }
 
 void VisualSLLState::loadSearchGUI() {
@@ -375,9 +468,7 @@ void VisualSLLState::loadCallback() {
 
     setLoadAnimationCallback(Add, [this]() { loadAddAnimation(); });
 
-    setLoadAnimationCallback(Delete, [this]() {
-        mSLL.eraseNode(GUIIndexInput[Delete]->getValue());
-    });
+    setLoadAnimationCallback(Delete, [this]() { loadDeleteAnimation(); });
 
     setLoadAnimationCallback(Update, [this]() {
         mSLL.updateNode(GUIIndexInput[Update]->getValue(),
@@ -448,8 +539,20 @@ void VisualSLLState::validateCommand() {
                 callError("Index must be a number in range " +
                           GUIIndexInput[Delete]->getStringRange());
             } else {
-                callInfo("Delete node at index " +
-                         std::to_string(GUIIndexInput[Delete]->getValue()));
+                int index = GUIIndexInput[Delete]->getValue();
+                std::string info = "Delete node at ";
+                if (index == 0)
+                    info += "front";
+                else if (index == mSLL.getSize())
+                    info += "back";
+                else
+                    info += "index " + std::to_string(index);
+                callInfo(info);
+
+                if (index == 0)
+                    loadCode(SLLCode::eraseFront);
+                else
+                    loadCode(SLLCode::eraseMiddle);
             }
             break;
         }

@@ -40,6 +40,8 @@ class VisualSLLState : public VisualState {
     void loadAddAnimation();
 
     void loadDeleteGUI();
+    void loadDeleteAnimation();
+
     void loadUpdateGUI();
     void loadSearchGUI();
     void loadCallback();
