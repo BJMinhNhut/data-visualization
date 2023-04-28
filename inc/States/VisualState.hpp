@@ -12,6 +12,12 @@
 
 #include <SFML/Graphics/Sprite.hpp>
 
+sf::Vector2f const firstInputPosition(650.f, 675.f);
+sf::Vector2f const firstLabelPosition(firstInputPosition +
+                                      sf::Vector2f(-100.f, -45.f));
+sf::Vector2f const secondInputPosition(650.f, 800.f);
+sf::Vector2f const secondLabelPosition(secondInputPosition +
+                                       sf::Vector2f(-100.f, -45.f));
 class VisualState : public State {
 
    public:

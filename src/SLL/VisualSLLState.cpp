@@ -11,13 +11,6 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <iostream>
 
-sf::Vector2f const firstInputPosition(650.f, 675.f);
-sf::Vector2f const firstLabelPosition(firstInputPosition +
-                                      sf::Vector2f(-100.f, -45.f));
-sf::Vector2f const secondInputPosition(650.f, 800.f);
-sf::Vector2f const secondLabelPosition(secondInputPosition +
-                                       sf::Vector2f(-100.f, -45.f));
-
 VisualSLLState::VisualSLLState(StateStack& stack, Context context)
     : VisualState(stack, context),
       mSLL(*context.fonts, *context.textures),
@@ -54,7 +47,7 @@ void VisualSLLState::centerSLL(const SceneNode::Transition& transition) {
 }
 
 void VisualSLLState::initGUIButtons() {
-    addOption(New, "New", [this]() {
+    addOption(New, "Create", [this]() {
         setCurrentOption(New);
         GUIArrayInput->loadArray(mSLL.getData());
     });
@@ -190,7 +183,7 @@ void VisualSLLState::loadAddAnimation() {
                 mSLL.eraseNode(0);
             });
 
-        if (mSLL.isInList(1))
+        if (mSLL.getSize() > 0)
             addAnimation(
                 "Set myNode.next = head.", {1},
                 [=]() { mSLL.setPointer(0, 1); },

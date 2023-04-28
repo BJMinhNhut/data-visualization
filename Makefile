@@ -41,6 +41,8 @@ dir:
 	$(HIDE)mkdir -p $(OBJSDIR)/States/
 	$(HIDE)[ -d $(OBJSDIR)/SLL ] && echo $(OBJSDIR)/SLL/ found || echo Make directory $(OBJSDIR)/SLL/
 	$(HIDE)mkdir -p $(OBJSDIR)/SLL/
+		$(HIDE)[ -d $(OBJSDIR)/Stack ] && echo $(OBJSDIR)/Stack/ found || echo Make directory $(OBJSDIR)/Stack/
+	$(HIDE)mkdir -p $(OBJSDIR)/Stack/
 
 $(BINDIR)/$(TARGET): $(OBJS)
 	$(HIDE)echo Linking $@

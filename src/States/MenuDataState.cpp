@@ -70,7 +70,7 @@ MenuDataState::MenuDataState(StateStack& stack, Context context)
     StackButton->setPosition(context.window->getSize().x / 2.f - 140.f, 750.f);
     StackButton->setCallback([this]() {
         requestStackPop();
-        requestStackPush(States::VisualDLL);
+        requestStackPush(States::VisualStack);
     });
     mGUIContainer.pack(StackButton);
 

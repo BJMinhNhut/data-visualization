@@ -1,5 +1,6 @@
 #include <Application.hpp>
 #include <SLL/VisualSLLState.hpp>
+#include <Stack/VisualStackState.hpp>
 #include <States/MenuDataState.hpp>
 #include <States/MenuState.hpp>
 #include <States/State.hpp>
@@ -171,4 +172,5 @@ void Application::registerStates() {
     mStateStack.registerState<MenuDataState>(States::MenuData);
     mStateStack.registerState<VisualSLLState>(States::VisualSLL);
     mStateStack.registerState<VisualDLLState>(States::VisualDLL);
+    mStateStack.registerState<VisualStackState>(States::VisualStack);
 }

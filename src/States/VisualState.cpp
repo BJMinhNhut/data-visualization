@@ -16,7 +16,7 @@ VisualState::VisualState(StateStack& stack, Context context)
       GUICommandContainer(),
       currentOption(0),
       mAnimationList(),
-      mSpeedMap({{"x0.5", 0.5f}, {" x1 ", 1.f}, {" x2 ", 2.f}}),
+      mSpeedMap({{"x0.5", 0.5f}, {"x1.0", 1.f}, {"x2.0", 2.f}, {"x3.0", 3.f}}),
       mSpeedID(1) {
 
     mBackgroundSprite.setTexture(context.textures->get(Textures::TitleScreen));
