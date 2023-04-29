@@ -446,13 +446,13 @@ void VisualSLLState::loadSearchAnimation() {
                     {4, 5}, [=]() { mSLL.setHighlight("cur", index); });
             else {
                 addAnimation("Set cur to its next node...", {4},
-                             [=]() { mSLL.setHighlight("cur", index); });
+                             [=]() { mSLL.setHighlight("cur", -1); });
 
                 addAnimation(
-                    "cur is null (we have gone past the end\n"
-                    "of SLL after O(N) step(s)). So the value " +
-                        std::to_string(value) + " is NOT_FOUND in the SLL.",
-                    {6});
+                    "cur is null (we have gone past the end of SLL\n"
+                    "after O(N) step(s)). So the value " +
+                        std::to_string(value) + " is NOT_FOUND\nin the SLL.",
+                    {5, 6});
 
                 return;
             }
