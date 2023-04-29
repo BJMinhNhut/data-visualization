@@ -11,25 +11,22 @@
 class SinglyLinkedList : public SceneNode {
    public:
     explicit SinglyLinkedList(const FontHolder& fonts,
-                              const TextureHolder& textures);
+                              const TextureHolder& textures,
+                              bool drawTail = false);
 
     int getSize() const;
     int getValue(const int& index) const;
     int getRandomNodeValue() const;
     std::vector<int> getData() const;
     bool isInList(const int& index) const;
-    void loadData(const std::vector<int>& data);
 
+    void loadData(const std::vector<int>& data);
     void randomGen();
 
     void pureInsert(const int& index, int value = -1);
     void insertNode(const int& index, int value = -1);
-
     void eraseNode(const int& index);
-
     void updateNode(const int& index, int newValue);
-
-    int searchNode(int value);
 
     void refreshPointerTarget();
     void clearHighlight();
@@ -38,6 +35,7 @@ class SinglyLinkedList : public SceneNode {
     void alignNodes();
 
     void setHeadTarget(const int& target);
+    void setTailTarget(const int& target);
     void setPointer(const int& source, const int& target);
     // void removePointer(const int& index);
 
@@ -53,6 +51,7 @@ class SinglyLinkedList : public SceneNode {
     const TextureHolder& mTextures;
 
     Pointer* mHead;
+    Pointer* mTail;
     std::map<std::string, Pointer*> mHighlight;
 
     int highlightIndex;

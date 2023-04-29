@@ -593,7 +593,7 @@ void VisualSLLState::validateCommand() {
             } else if (GUIArrayInput->validate() == GUI::Input::InvalidLength) {
                 callError("List size must be in range [1, 10]");
             } else {
-                callInfo("Init a new singly linked list");
+                callInfo("Init a new Singly Linked List");
             }
             break;
         }

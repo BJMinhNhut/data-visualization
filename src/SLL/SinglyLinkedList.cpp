@@ -16,8 +16,9 @@
 #define DEBUG_SLL 0
 
 SinglyLinkedList::SinglyLinkedList(const FontHolder& fonts,
-                                   const TextureHolder& textures)
+                                   const TextureHolder& textures, bool drawTail)
     : mHead(new Pointer(fonts)),
+      mTail(nullptr),
       mHighlight(),
       mFonts(fonts),
       mTextures(textures),
@@ -28,6 +29,13 @@ SinglyLinkedList::SinglyLinkedList(const FontHolder& fonts,
     mHead->setLabel("head");
     attachChild(std::move(headPtr));
 
+    if (drawTail) {
+        mTail = new Pointer(fonts);
+        mTail->setLabel("tail");
+        mTail->setTargetPosition(sf::Vector2f(0.f, 100.f), Smooth);
+        std::unique_ptr<Pointer> tailPtr(mTail);
+        attachChild(std::move(tailPtr));
+    }
     randomGen();
 }
 
@@ -107,11 +115,9 @@ void SinglyLinkedList::insertNode(const int& index, SinglyNode* node) {
     if (DEBUG_SLL)
         std::cerr << "Insert " << node->getValue() << " at " << index << '\n';
     alignNodes();
-    if (!nodes.empty()) {
-        mHead->setTarget(nodes[0]);
-    } else {
-        mHead->setNull();
-    }
+
+    setHeadTarget(0);
+    setTailTarget((int)nodes.size() - 1);
 }
 
 void SinglyLinkedList::eraseNode(const int& index) {
@@ -134,22 +140,23 @@ void SinglyLinkedList::eraseNode(const int& index) {
 
     erasedNode->setNextNode(nullptr);
     erasedNode->setTargetScale(0.f, 0.f, Smooth);
+    erasedNode->setTargetPosition(
+        erasedNode->getPosition() + sf::Vector2f(0.f, -30.f), Smooth);
     nodes.erase(nodes.begin() + index);
     tempNode = erasedNode;
     alignNodes();
 
-    if (!nodes.empty()) {
-        mHead->setTarget(nodes[0]);
-    } else {
-        mHead->setNull();
-    }
+    setHeadTarget(0);
+    setTailTarget((int)nodes.size() - 1);
+
     if (DEBUG_SLL)
         std::cerr << "Delete " << erasedNode->getValue() << " at " << index
                   << '\n';
 }
 
 void SinglyLinkedList::resetNodes() {
-    mHead->setNull();
+    setTailTarget(-1);
+    setHeadTarget(-1);
     clearHighlight();
 
     for (SinglyNode* nodePtr : nodes)
@@ -183,17 +190,6 @@ void SinglyLinkedList::randomGen() {
 
     for (int index = 0; index < mSize; ++index)
         insertNode(index);
-}
-
-int SinglyLinkedList::searchNode(int value) {
-    clearHighlight();
-    for (int index = 0; index < nodes.size(); ++index) {
-        if (value == nodes[index]->getValue()) {
-            setHighlight("cur", index);
-            return index;
-        }
-    }
-    return -1;
 }
 
 void SinglyLinkedList::clearHighlight() {
@@ -253,6 +249,10 @@ void SinglyLinkedList::updateCurrent(sf::Time dt) {
 
 void SinglyLinkedList::refreshPointerTarget() {
     mHead->resetDestination();
+
+    if (mTail)
+        mTail->resetDestination();
+
     for (auto& [label, ptr] : mHighlight) {
         ptr->resetDestination();
     }
@@ -265,7 +265,7 @@ void SinglyLinkedList::refreshPointerTarget() {
 void SinglyLinkedList::popUpNode(const int& index) {
     assert(isInList(index));
     nodes[index]->setTargetPosition(
-        nodes[index]->getTargetPosition() + sf::Vector2f(0.f, 50.f), Smooth);
+        nodes[index]->getTargetPosition() + sf::Vector2f(0.f, 35.f), Smooth);
 }
 
 void SinglyLinkedList::updateNode(const int& index, int newValue) {
@@ -280,6 +280,21 @@ void SinglyLinkedList::setHeadTarget(const int& target) {
         mHead->setTarget(nodes[target]);
     else
         mHead->setNull();
+}
+
+void SinglyLinkedList::setTailTarget(const int& target) {
+    if (mTail == nullptr)
+        return;
+
+    if (isInList(target)) {
+        mTail->setTarget(nodes[target]);
+        mTail->setTargetPosition(
+            nodes[target]->getTargetPosition() + sf::Vector2f(0.f, 50.f),
+            Smooth);
+    } else {
+        mTail->setNull();
+        mTail->setTargetPosition(sf::Vector2f(0.f, 25.f), Smooth);
+    }
 }
 
 void SinglyLinkedList::setPointer(const int& source, const int& target) {

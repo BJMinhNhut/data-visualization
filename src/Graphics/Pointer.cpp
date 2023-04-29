@@ -20,7 +20,7 @@ Pointer::Pointer(const FontHolder& fonts)
       mCircle(4.f, 20),
       mTarget(nullptr) {
     centerOrigin(mLabel);
-    mLabel.setPosition(0.f, mCircle.getRadius() + 10.f);
+    mLabel.setPosition(0.f, mCircle.getRadius() + 8.f);
     mLabel.setFillColor(Constants::mBlack);
 
     centerOrigin(TextNULL);
@@ -53,7 +53,8 @@ void Pointer::setTarget(SceneNode* node) {
 
 void Pointer::setTargetPosition(sf::Vector2f position, Transition transition) {
     SceneNode::setTargetPosition(position, transition);
-    resetDestination();
+    if (transition == None)
+        resetDestination();
 }
 
 sf::Vector2f Pointer::getDestination() const {

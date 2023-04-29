@@ -79,7 +79,7 @@ MenuDataState::MenuDataState(StateStack& stack, Context context)
     QueueButton->setPosition(context.window->getSize().x / 2.f + 140.f, 750.f);
     QueueButton->setCallback([this]() {
         requestStackPop();
-        requestStackPush(States::VisualDLL);
+        requestStackPush(States::VisualQueue);
     });
     mGUIContainer.pack(QueueButton);
 }

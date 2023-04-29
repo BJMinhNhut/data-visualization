@@ -4,16 +4,16 @@
 #include <GUI/Label.hpp>
 #include <GUI/Panel.hpp>
 #include <Graphics/ResourceHolder.hpp>
-#include <Stack/StackCode.hpp>
-#include <Stack/VisualStackState.hpp>
+#include <Queue/QueueCode.hpp>
+#include <Queue/VisualQueueState.hpp>
 #include <Utility.hpp>
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <iostream>
 
-VisualStackState::VisualStackState(StateStack& stack, Context context)
+VisualQueueState::VisualQueueState(StateStack& stack, Context context)
     : VisualState(stack, context),
-      mSLL(*context.fonts, *context.textures),
+      mSLL(*context.fonts, *context.textures, true),
       GUIValueInput(OptionCount),
       GUIIndexInput(OptionCount) {
 
@@ -23,14 +23,14 @@ VisualStackState::VisualStackState(StateStack& stack, Context context)
     initGUIButtons();
 
     loadNewGUI();
-    loadPushGUI();
-    loadPopGUI();
+    loadEnqueueGUI();
+    loadDequeueGUI();
     loadClearGUI();
 
     loadCallback();
 }
 
-void VisualStackState::centerSLL(const SceneNode::Transition& transition) {
+void VisualQueueState::centerSLL(const SceneNode::Transition& transition) {
     sf::Vector2u windowSize = getContext().window->getSize();
     if (mSLL.getSize() == 0)
         mSLL.setTargetPosition(windowSize.x / 2.f, windowSize.y / 4.f,
@@ -45,23 +45,23 @@ void VisualStackState::centerSLL(const SceneNode::Transition& transition) {
             windowSize.y / 4.f, transition);
 }
 
-void VisualStackState::initGUIButtons() {
+void VisualQueueState::initGUIButtons() {
     addOption(New, "Create", [this]() {
         setCurrentOption(New);
         GUIArrayInput->loadArray(mSLL.getData());
     });
 
-    addOption(Push, "Push", [this]() {
-        setCurrentOption(Push);
-        GUIValueInput[Push]->randomizeValue();
+    addOption(Enqueue, "Enqueue", [this]() {
+        setCurrentOption(Enqueue);
+        GUIValueInput[Enqueue]->randomizeValue();
     });
 
-    addOption(Pop, "Pop", [this]() { setCurrentOption(Pop); });
+    addOption(Dequeue, "Dequeue", [this]() { setCurrentOption(Dequeue); });
 
     addOption(Clear, "Clear", [this]() { setCurrentOption(Clear); });
 }
 
-void VisualStackState::loadNewGUI() {
+void VisualQueueState::loadNewGUI() {
     packOptionGUI(
         New, createNewGUIButton(
                  GUI::Button::Small,
@@ -106,187 +106,216 @@ void VisualStackState::loadNewGUI() {
     packOptionGUI(New, GUIArrayInput);
 }
 
-void VisualStackState::loadPushGUI() {
+void VisualQueueState::loadEnqueueGUI() {
     auto valueLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "Value",
                                                    *getContext().fonts);
     valueLabel->setPosition(firstLabelPosition);
-    packOptionGUI(Push, valueLabel);
+    packOptionGUI(Enqueue, valueLabel);
 
-    GUIValueInput[Push] = std::make_shared<GUI::InputNumber>(
+    GUIValueInput[Enqueue] = std::make_shared<GUI::InputNumber>(
         *getContext().fonts, *getContext().textures);
-    GUIValueInput[Push]->setPosition(firstInputPosition);
-    GUIValueInput[Push]->setRange(Constants::NODE_MINVALUE,
-                                  Constants::NODE_MAXVALUE);
-    packOptionGUI(Push, GUIValueInput[Push]);
+    GUIValueInput[Enqueue]->setPosition(firstInputPosition);
+    GUIValueInput[Enqueue]->setRange(Constants::NODE_MINVALUE,
+                                     Constants::NODE_MAXVALUE);
+    packOptionGUI(Enqueue, GUIValueInput[Enqueue]);
 }
 
-void VisualStackState::loadPushAnimation() {
-    int value = GUIValueInput[Push]->getValue();
+void VisualQueueState::loadEnqueueAnimation() {
+    int value = GUIValueInput[Enqueue]->getValue();
+    int index = mSLL.getSize();
 
     addAnimation(
         "Create new node to store value " + std::to_string(value) + ".", {0},
         [=]() {
-            mSLL.pureInsert(0, value);
-            mSLL.popUpNode(0);
-            mSLL.setHighlight("myNode", 0);
+            mSLL.pureInsert(index, value);
+            mSLL.popUpNode(index);
+            mSLL.setHighlight("myNode", index);
         },
         [=]() {
             mSLL.clearHighlight();
-            mSLL.eraseNode(0);
+            mSLL.eraseNode(index);
         });
 
     if (mSLL.getSize() > 0)
         addAnimation(
-            "Set myNode.next = head.", {1}, [=]() { mSLL.setPointer(0, 1); },
-            [=]() { mSLL.setPointer(0, -1); });
+            "Queue is not empty, so set tail.next to myNode.", {1, 3},
+            [=]() { mSLL.setPointer(index - 1, index); },
+            [=]() { mSLL.setPointer(index - 1, -1); });
     else
-        addAnimation("Set myNode.next = head. Head is currently null.", {1});
+        addAnimation(
+            "Queue is empty, so set head to myNode.", {1, 2},
+            [=]() { mSLL.setHeadTarget(0); },
+            [=]() { mSLL.setHeadTarget(-1); });
 
     addAnimation(
-        "Set head = myNode", {2}, [=]() { mSLL.setHeadTarget(0); },
-        [=]() { mSLL.setHeadTarget(1); });
+        "Set tail to myNode", {2}, [=]() { mSLL.setTailTarget(index); },
+        [=]() { mSLL.setTailTarget(index - 1); });
 
     addAnimation(
-        "Re-layout the Stack for visualization (not in\nthe "
-        "actual Stack). The whole process complexity\nis O(1).",
+        "Re-layout the Queue for visualization (not in\nthe "
+        "actual Queue). The whole process complexity\nis O(1).",
         {},
         [=]() {
             mSLL.clearHighlight();
             mSLL.alignNodes();
+            mSLL.setTailTarget(index);
         },
         [=]() {
-            mSLL.popUpNode(0);
-            mSLL.setHighlight("myNode", 0);
+            mSLL.popUpNode(index);
+            mSLL.setHighlight("myNode", index);
+            mSLL.setTailTarget(index);
         });
 }
 
-void VisualStackState::loadPopGUI() {}
+void VisualQueueState::loadDequeueGUI() {}
 
-void VisualStackState::loadPopAnimation() {
+void VisualQueueState::loadDequeueAnimation() {
     if (mSLL.getSize() == 0) {
-        addAnimation("Stack is empty. No action is performed.", {0});
+        addAnimation("Queue is empty. No action is performed.", {0});
     } else {
         int value = mSLL.getValue(0);
-        addAnimation("Stack is not empty.", {0});
+        addAnimation("Queue is not empty.", {0});
         addAnimation(
             "Set myNode = head.", {1},
             [=]() {
                 mSLL.popUpNode(0);
+                if (mSLL.getSize() == 1)
+                    mSLL.popUpNode(0);
                 mSLL.setHighlight("myNode", 0);
+                if (mSLL.getSize() == 1)
+                    mSLL.setTailTarget(0);
             },
             [=]() {
                 mSLL.clearHighlight();
                 mSLL.alignNodes();
+                if (mSLL.getSize() == 1)
+                    mSLL.setTailTarget(0);
             });
 
-        addAnimation(
-            "Set head to its next node.", {2}, [=]() { mSLL.setHeadTarget(1); },
-            [=]() { mSLL.setHeadTarget(0); });
+        if (mSLL.getSize() == 1) {
+            addAnimation(
+                "Head == tail, so set head and tail to null.", {2, 3},
+                [=]() {
+                    mSLL.setHeadTarget(-1);
+                    mSLL.setTailTarget(-1);
+                },
+                [=]() {
+                    mSLL.setHeadTarget(0);
+                    mSLL.setTailTarget(0);
+                });
+        } else
+            addAnimation(
+                "Head != tail, so set head to its next node.", {2, 4},
+                [=]() { mSLL.setHeadTarget(1); },
+                [=]() { mSLL.setHeadTarget(0); });
 
         addAnimation(
             "Delete myNode (which is previous head).\nThe whole process is "
             "O(1).",
-            {3},
+            {5},
             [=]() {
-                mSLL.clearHighlight();
+                mSLL.setHighlight("myNode", -1);
                 mSLL.eraseNode(0);
             },
             [=]() {
                 mSLL.insertNode(0, value);
                 mSLL.popUpNode(0);
+                if (mSLL.getSize() == 1)
+                    mSLL.popUpNode(0);
                 mSLL.setHighlight("myNode", 0);
             });
     }
 }
 
-void VisualStackState::loadClearGUI() {}
+void VisualQueueState::loadClearGUI() {}
 
-void VisualStackState::loadClearAnimation() {
+void VisualQueueState::loadClearAnimation() {
     for (int i = 0; i < mSLL.getSize(); ++i) {
-        addAnimation("Stack is not empty, so continue.", {0});
+        addAnimation("Queue is not empty, so continue.", {0});
 
         int value = mSLL.getValue(i);
 
         addAnimation(
-            "Pop node at the top of stack", {1}, [=]() { mSLL.eraseNode(0); },
-            [=]() { mSLL.insertNode(0, value); });
+            "Dequeue node at the front of queue.", {1},
+            [=]() { mSLL.eraseNode(0); }, [=]() { mSLL.insertNode(0, value); });
     }
 }
 
-void VisualStackState::loadCallback() {
+void VisualQueueState::loadCallback() {
     setLoadAnimationCallback(
         New, [this]() { mSLL.loadData(GUIArrayInput->getArray()); });
 
-    setLoadAnimationCallback(Push, [this]() { loadPushAnimation(); });
+    setLoadAnimationCallback(Enqueue, [this]() { loadEnqueueAnimation(); });
 
-    setLoadAnimationCallback(Pop, [this]() { loadPopAnimation(); });
+    setLoadAnimationCallback(Dequeue, [this]() { loadDequeueAnimation(); });
 
     setLoadAnimationCallback(Clear, [this]() { loadClearAnimation(); });
 }
 
-void VisualStackState::validateCommand() {
+void VisualQueueState::validateCommand() {
     switch (getCurrentOption()) {
         case New: {
             if (GUIArrayInput->validate() == GUI::Input::InvalidValue) {
                 callError("Value must be a number in range " +
-                          GUIValueInput[Push]->getStringRange());
+                          GUIValueInput[Enqueue]->getStringRange());
             } else if (GUIArrayInput->validate() == GUI::Input::InvalidLength) {
-                callError("Stack size must be in range [1, 10]");
+                callError("Queue size must be in range [1, 10]");
             } else {
-                callInfo("Init a new Stack.");
+                callInfo("Init a new Queue.");
             }
             break;
         }
 
-        case Push: {
+        case Enqueue: {
             if (mSLL.getSize() == Constants::LIST_MAXSIZE) {
                 callError("Stack size limit reached!");
-            } else if (GUIValueInput[Push]->validate() != GUI::Input::Success) {
+            } else if (GUIValueInput[Enqueue]->validate() !=
+                       GUI::Input::Success) {
                 callError("Value must be a number in range " +
-                          GUIValueInput[Push]->getStringRange());
+                          GUIValueInput[Enqueue]->getStringRange());
             } else {
-                int value = GUIValueInput[Push]->getValue();
-                std::string info =
-                    "Push value " + std::to_string(value) + " to stack";
+                int value = GUIValueInput[Enqueue]->getValue();
+                std::string info = "Enqueue value " + std::to_string(value) +
+                                   " to the back of queue.";
                 callInfo(info);
-                loadCode(StackCode::push);
+                loadCode(QueueCode::enqueue);
             }
             break;
         }
 
-        case Pop: {
-            std::string info = "Pop the last pushed node from stack.";
+        case Dequeue: {
+            std::string info = "Dequeue node at the front of queue.";
             callInfo(info);
-            loadCode(StackCode::pop);
+            loadCode(QueueCode::dequeue);
             break;
         }
 
         case Clear: {
-            std::string info = "Clear stack";
+            std::string info = "Clear queue";
             callInfo(info);
-            loadCode(StackCode::clear);
+            loadCode(QueueCode::clear);
             break;
         }
     };
 }
 
-void VisualStackState::resetDataStructure() {
+void VisualQueueState::resetDataStructure() {
     mSLL.clearHighlight();
     mSLL.alignNodes();
 }
 
-void VisualStackState::draw() {
+void VisualQueueState::draw() {
     VisualState::draw();
     getContext().window->draw(mSLL);
 }
 
-bool VisualStackState::update(sf::Time dt) {
+bool VisualQueueState::update(sf::Time dt) {
     mSLL.update(dt);
     centerSLL(SceneNode::Smooth);
     return VisualState::update(dt);
 }
 
-bool VisualStackState::handleEvent(const sf::Event& event) {
+bool VisualQueueState::handleEvent(const sf::Event& event) {
     VisualState::handleEvent(event);
 
     // deactivate input fields when click outside

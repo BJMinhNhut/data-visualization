@@ -1,5 +1,5 @@
-#ifndef VISUALSTACKSTATE_HPP
-#define VISUALSTACKSTATE_HPP
+#ifndef VISUALQUEUESTATE_HPP
+#define VISUALQUEUESTATE_HPP
 
 #include <GUI/Button.hpp>
 #include <GUI/Container.hpp>
@@ -11,19 +11,19 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
 
-class VisualStackState : public VisualState {
+class VisualQueueState : public VisualState {
    private:
     enum Options {
         None,
         New,
-        Push,
-        Pop,
+        Enqueue,
+        Dequeue,
         Clear,
         OptionCount,
     };
 
    public:
-    VisualStackState(StateStack& stack, Context context);
+    VisualQueueState(StateStack& stack, Context context);
 
     virtual void draw();
     virtual bool update(sf::Time dt);
@@ -35,11 +35,11 @@ class VisualStackState : public VisualState {
 
     void loadNewGUI();
 
-    void loadPushGUI();
-    void loadPushAnimation();
+    void loadEnqueueGUI();
+    void loadEnqueueAnimation();
 
-    void loadPopGUI();
-    void loadPopAnimation();
+    void loadDequeueGUI();
+    void loadDequeueAnimation();
 
     void loadClearGUI();
     void loadClearAnimation();
@@ -57,4 +57,4 @@ class VisualStackState : public VisualState {
     SinglyLinkedList mSLL;
 };
 
-#endif  // VISUALSTACKSTATE_HPP
+#endif  // VISUALQUEUESTATE_HPP
