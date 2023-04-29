@@ -4,6 +4,7 @@
 #include <Stack/VisualStackState.hpp>
 #include <States/MenuDataState.hpp>
 #include <States/MenuState.hpp>
+#include <States/SettingsState.hpp>
 #include <States/State.hpp>
 #include <States/StateIdentifiers.hpp>
 #include <States/VisualDLLState.hpp>
@@ -172,6 +173,7 @@ void Application::updateStatistics(sf::Time dt) {
 
 void Application::registerStates() {
     mStateStack.registerState<MenuState>(States::Menu);
+    mStateStack.registerState<SettingsState>(States::Settings);
     mStateStack.registerState<MenuDataState>(States::MenuData);
     mStateStack.registerState<VisualSLLState>(States::VisualSLL);
     mStateStack.registerState<VisualDLLState>(States::VisualDLL);

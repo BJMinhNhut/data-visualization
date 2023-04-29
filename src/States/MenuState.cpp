@@ -23,14 +23,24 @@ MenuState::MenuState(StateStack& stack, Context context)
         requestStackPush(States::MenuData);
     });
 
+    auto settingsButton = std::make_shared<GUI::Button>(
+        GUI::Button::Big, *context.fonts, *context.textures);
+    settingsButton->setPosition(bounds.x / 2u, bounds.y / 2u + 80u);
+    settingsButton->setText("Settings");
+    settingsButton->setCallback([this]() {
+        requestStackPop();
+        requestStackPush(States::Settings);
+    });
+
     auto exitButton = std::make_shared<GUI::Button>(
         GUI::Button::Big, *context.fonts, *context.textures);
-    exitButton->setPosition(bounds.x / 2u, bounds.y / 2u + 80u);
+    exitButton->setPosition(bounds.x / 2u, bounds.y / 2u + 160u);
     exitButton->setText("Exit");
     exitButton->setCallback([this]() { requestStackPop(); });
 
     mGUIContainer.pack(startButton);
     mGUIContainer.pack(exitButton);
+    mGUIContainer.pack(settingsButton);
 }
 
 void MenuState::draw() {
