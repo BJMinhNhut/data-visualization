@@ -1,10 +1,10 @@
 #include <GUI/Button.hpp>
-#include <States/SettingsState.hpp>
+#include <States/AboutState.hpp>
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/View.hpp>
 
-SettingsState::SettingsState(StateStack& stack, Context context)
+AboutState::AboutState(StateStack& stack, Context context)
     : State(stack, context), mGUIContainer() {
     sf::Texture& texture = context.textures->get(Textures::TitleScreen);
     sf::Font& font = context.fonts->get(Fonts::Main);
@@ -22,7 +22,7 @@ SettingsState::SettingsState(StateStack& stack, Context context)
     mGUIContainer.pack(backButton);
 }
 
-void SettingsState::draw() {
+void AboutState::draw() {
     sf::RenderWindow& window = *getContext().window;
     window.setView(window.getDefaultView());
 
@@ -30,16 +30,16 @@ void SettingsState::draw() {
     window.draw(mGUIContainer);
 }
 
-bool SettingsState::update(sf::Time dt) {
+bool AboutState::update(sf::Time dt) {
     return true;
 }
 
-bool SettingsState::handleEvent(const sf::Event& event) {
+bool AboutState::handleEvent(const sf::Event& event) {
     mGUIContainer.handleEvent(event);
     return false;
 }
 
-bool SettingsState::handleRealtime(const sf::Vector2i mousePosition) {
+bool AboutState::handleRealtime(const sf::Vector2i mousePosition) {
     // real-time mouse input
     mGUIContainer.updateSelect(mousePosition);
     return false;

@@ -2,6 +2,7 @@
 #include <Queue/VisualQueueState.hpp>
 #include <SLL/VisualSLLState.hpp>
 #include <Stack/VisualStackState.hpp>
+#include <States/AboutState.hpp>
 #include <States/MenuDataState.hpp>
 #include <States/MenuState.hpp>
 #include <States/SettingsState.hpp>
@@ -173,6 +174,7 @@ void Application::updateStatistics(sf::Time dt) {
 
 void Application::registerStates() {
     mStateStack.registerState<MenuState>(States::Menu);
+    mStateStack.registerState<AboutState>(States::About);
     mStateStack.registerState<SettingsState>(States::Settings);
     mStateStack.registerState<MenuDataState>(States::MenuData);
     mStateStack.registerState<VisualSLLState>(States::VisualSLL);

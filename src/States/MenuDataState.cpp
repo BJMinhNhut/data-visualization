@@ -10,15 +10,6 @@ MenuDataState::MenuDataState(StateStack& stack, Context context)
     : State(stack, context), mGUIContainer() {
     mBackgroundSprite.setTexture(context.textures->get(Textures::TitleScreen));
 
-    auto homeButton = std::make_shared<GUI::Button>(
-        GUI::Button::Home, *getContext().fonts, *getContext().textures);
-    homeButton->setPosition(75u, 30u);
-    homeButton->setCallback([this]() {
-        requestStackPop();
-        requestStackPush(States::Menu);
-    });
-    mGUIContainer.pack(homeButton);
-
     auto backButton = std::make_shared<GUI::Button>(
         GUI::Button::Back, *getContext().fonts, *getContext().textures);
     backButton->setPosition(30u, 30u);

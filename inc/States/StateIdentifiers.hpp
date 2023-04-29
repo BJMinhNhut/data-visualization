@@ -5,6 +5,7 @@ namespace States {
 enum ID {
     None,
     Menu,
+    About,
     Settings,
     MenuData,
     VisualSLL,
