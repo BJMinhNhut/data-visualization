@@ -33,11 +33,6 @@ int VisualState::getCurrentOption() const {
 }
 
 void VisualState::initGUIPanels() {
-    auto topPanel =
-        std::make_shared<GUI::Panel>(getContext().window->getSize().x, 60.f,
-                                     Constants::WhiteUI, Constants::GrayBorder);
-    topPanel->setPosition(0.f, 0.f);
-
     auto codePanel = std::make_shared<GUI::Panel>(
         500.f, 250.f, Constants::WhiteDisplay, Constants::GrayBorder);
     codePanel->setPosition(800.f, getContext().window->getSize().y - 400.f);
@@ -58,7 +53,6 @@ void VisualState::initGUIPanels() {
         300.f, 250.f, Constants::WhiteUI, Constants::GrayBorder);
     executePanel->setPosition(500.f, getContext().window->getSize().y - 300.f);
 
-    mGUIContainer.pack(topPanel);
     mGUIContainer.pack(consolePanel);
     mGUIContainer.pack(executePanel);
     mGUIContainer.pack(commandPanel);
@@ -69,12 +63,21 @@ void VisualState::initGUIPanels() {
 void VisualState::initGUIButtons() {
     auto homeButton = std::make_shared<GUI::Button>(
         GUI::Button::Home, *getContext().fonts, *getContext().textures);
-    homeButton->setPosition(1560u, 30u);
+    homeButton->setPosition(75u, 30u);
     homeButton->setCallback([this]() {
         requestStackPop();
         requestStackPush(States::Menu);
     });
     mGUIContainer.pack(homeButton);
+
+    auto backButton = std::make_shared<GUI::Button>(
+        GUI::Button::Back, *getContext().fonts, *getContext().textures);
+    backButton->setPosition(30u, 30u);
+    backButton->setCallback([this]() {
+        requestStackPop();
+        requestStackPush(States::MenuData);
+    });
+    mGUIContainer.pack(backButton);
 
     GUIPlay.pack(createNewGUIButton(
         GUI::Button::Play,

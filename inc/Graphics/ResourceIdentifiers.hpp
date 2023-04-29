@@ -15,6 +15,8 @@ enum ID {
 
     HomeNormal,
     HomeSelected,
+    BackNormal,
+    BackSelected,
 
     CommandNormal,
     CommandSelected,

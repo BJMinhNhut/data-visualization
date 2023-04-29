@@ -12,12 +12,21 @@ MenuDataState::MenuDataState(StateStack& stack, Context context)
 
     auto homeButton = std::make_shared<GUI::Button>(
         GUI::Button::Home, *getContext().fonts, *getContext().textures);
-    homeButton->setPosition(1560u, 30u);
+    homeButton->setPosition(75u, 30u);
     homeButton->setCallback([this]() {
         requestStackPop();
         requestStackPush(States::Menu);
     });
     mGUIContainer.pack(homeButton);
+
+    auto backButton = std::make_shared<GUI::Button>(
+        GUI::Button::Back, *getContext().fonts, *getContext().textures);
+    backButton->setPosition(30u, 30u);
+    backButton->setCallback([this]() {
+        requestStackPop();
+        requestStackPush(States::Menu);
+    });
+    mGUIContainer.pack(backButton);
 
     auto StaticButton = std::make_shared<GUI::Button>(
         GUI::Button::MenuStatic, *context.fonts, *context.textures);

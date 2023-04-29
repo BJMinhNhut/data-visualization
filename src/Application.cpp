@@ -31,6 +31,8 @@ Application::Application()
 
     mTextures.load(Textures::HomeNormal, "data/images/home-normal.png");
     mTextures.load(Textures::HomeSelected, "data/images/home-selected.png");
+    mTextures.load(Textures::BackNormal, "data/images/back-normal.png");
+    mTextures.load(Textures::BackSelected, "data/images/back-selected.png");
 
     mTextures.load(Textures::CommandNormal, "data/images/command-normal.png");
     mTextures.load(Textures::CommandSelected,

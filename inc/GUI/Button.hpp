@@ -19,6 +19,7 @@ class Button : public Component {
    public:
     enum Type {
         Home,
+        Back,
         Command,
         Checkbox,
         Play,
