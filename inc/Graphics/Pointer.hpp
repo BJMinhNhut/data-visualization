@@ -14,10 +14,13 @@
 
 class Pointer : public SceneNode {
    public:
+    enum TargetType { Left, Right, Bottom };
+
+   public:
     explicit Pointer(const FontHolder& fonts);
 
     void setLabel(const std::string label);
-    void setTarget(SceneNode* node);
+    void setTarget(SceneNode* node, TargetType type = Left);
     void setNull();
     void resetDestination();
     virtual void setTargetPosition(sf::Vector2f position,
@@ -44,6 +47,7 @@ class Pointer : public SceneNode {
     sf::Text TextNULL;
 
     SceneNode* mTarget;
+    TargetType mType;
 };
 
 #endif  // POINTER_HPP

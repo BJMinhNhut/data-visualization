@@ -148,7 +148,7 @@ void VisualQueueState::loadEnqueueAnimation() {
             [=]() { mSLL.setHeadTarget(-1); });
 
     addAnimation(
-        "Set tail to myNode", {2}, [=]() { mSLL.setTailTarget(index); },
+        "Set tail to myNode", {4}, [=]() { mSLL.setTailTarget(index); },
         [=]() { mSLL.setTailTarget(index - 1); });
 
     addAnimation(

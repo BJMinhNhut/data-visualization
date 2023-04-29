@@ -287,9 +287,9 @@ void SinglyLinkedList::setTailTarget(const int& target) {
         return;
 
     if (isInList(target)) {
-        mTail->setTarget(nodes[target]);
+        mTail->setTarget(nodes[target], Pointer::Bottom);
         mTail->setTargetPosition(
-            nodes[target]->getTargetPosition() + sf::Vector2f(0.f, 50.f),
+            nodes[target]->getTargetPosition() + sf::Vector2f(0.f, 60.f),
             Smooth);
     } else {
         mTail->setNull();

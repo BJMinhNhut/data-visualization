@@ -18,7 +18,8 @@ Pointer::Pointer(const FontHolder& fonts)
       mLabel("", fonts.get(Fonts::Main), 16u),
       TextNULL("null", fonts.get(Fonts::Main), 16u),
       mCircle(4.f, 20),
-      mTarget(nullptr) {
+      mTarget(nullptr),
+      mType(Left) {
     centerOrigin(mLabel);
     mLabel.setPosition(0.f, mCircle.getRadius() + 8.f);
     mLabel.setFillColor(Constants::mBlack);
@@ -29,9 +30,6 @@ Pointer::Pointer(const FontHolder& fonts)
 
     centerOrigin(mCircle);
     mCircle.setFillColor(Constants::mBlack);
-
-    mArrow.setFillColor(Constants::mBlack);
-    mArrowTip.setFillColor(Constants::mBlack);
 }
 
 void Pointer::setLabel(const std::string label) {
@@ -47,8 +45,9 @@ void Pointer::resetDestination() {
     mDestination = getWorldPosition();
 }
 
-void Pointer::setTarget(SceneNode* node) {
+void Pointer::setTarget(SceneNode* node, TargetType type) {
     mTarget = node;
+    mType = type;
 }
 
 void Pointer::setTargetPosition(sf::Vector2f position, Transition transition) {
@@ -66,11 +65,31 @@ bool Pointer::isNULL() const {
 }
 
 void Pointer::updateCurrent(sf::Time dt) {
-    if (mTarget)
-        mTargetDestination = mTarget->getLeftBound();
-    else
-        mTargetDestination = getWorldPosition() +
-                             sf::Vector2f(Constants::NODE_DISTANCE - 10.f, 0.f);
+    if (mTarget) {
+        switch (mType) {
+            case Left:
+                mTargetDestination = mTarget->getLeftBound();
+                break;
+            case Right:
+                mTargetDestination = mTarget->getRightBound();
+                break;
+            case Bottom:
+                mTargetDestination = mTarget->getBottomBound();
+                break;
+        }
+    } else {
+        switch (mType) {
+            case Left:
+            case Bottom:
+                mTargetDestination =
+                    getWorldPosition() + sf::Vector2f(65.f, 0.f);
+                break;
+            case Right:
+                mTargetDestination =
+                    getWorldPosition() + sf::Vector2f(-65.f, 0.f);
+                break;
+        }
+    }
 
     if (mDestination != mTargetDestination) {
         sf::Vector2f delta = (mTargetDestination - mDestination) * 0.2f;
@@ -80,7 +99,6 @@ void Pointer::updateCurrent(sf::Time dt) {
     sf::Vector2f Delta = mDestination - getWorldPosition();
     mArrowTip = getArrowTip(Delta, 2.f);
     mArrowTip.setFillColor(mColor);
-
     mArrow = getArrow(Delta, 2.f);
     mArrow.setFillColor(mColor);
 }

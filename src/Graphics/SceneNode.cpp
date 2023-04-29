@@ -128,3 +128,11 @@ sf::Vector2f SceneNode::getTargetPosition() const {
 sf::Vector2f SceneNode::getLeftBound() const {
     return getWorldPosition();
 }
+
+sf::Vector2f SceneNode::getRightBound() const {
+    return getWorldPosition();
+}
+
+sf::Vector2f SceneNode::getBottomBound() const {
+    return getWorldPosition();
+}

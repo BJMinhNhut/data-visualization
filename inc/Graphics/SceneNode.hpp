@@ -40,6 +40,8 @@ class SceneNode : public sf::Transformable,
     sf::Vector2f getTargetPosition() const;
 
     virtual sf::Vector2f getLeftBound() const;
+    virtual sf::Vector2f getRightBound() const;
+    virtual sf::Vector2f getBottomBound() const;
 
    private:
     virtual void updateCurrent(sf::Time dt);

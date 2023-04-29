@@ -17,6 +17,7 @@ class SinglyNode : public SceneNode {
 
     int getValue() const;
     virtual sf::Vector2f getLeftBound() const;
+    virtual sf::Vector2f getBottomBound() const;
 
     void setValue(int value);
     void setNextNode(SinglyNode* node);
