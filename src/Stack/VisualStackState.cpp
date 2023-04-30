@@ -12,7 +12,7 @@
 #include <iostream>
 
 VisualStackState::VisualStackState(StateStack& stack, Context context)
-    : VisualState(stack, context),
+    : VisualState(stack, context, "Stack"),
       mSLL(*context.fonts, *context.textures),
       GUIValueInput(OptionCount),
       GUIIndexInput(OptionCount) {

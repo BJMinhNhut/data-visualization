@@ -21,7 +21,8 @@ sf::Vector2f const secondLabelPosition(secondInputPosition +
 class VisualState : public State {
 
    public:
-    VisualState(StateStack& stack, Context context);
+    VisualState(StateStack& stack, Context context,
+                const std::string& title = "");
 
     virtual void draw();
     virtual bool update(sf::Time dt);

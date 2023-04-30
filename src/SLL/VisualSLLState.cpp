@@ -12,7 +12,7 @@
 #include <iostream>
 
 VisualSLLState::VisualSLLState(StateStack& stack, Context context)
-    : VisualState(stack, context),
+    : VisualState(stack, context, "Singly Linked List"),
       mSLL(*context.fonts, *context.textures),
       GUIValueInput(OptionCount),
       GUIIndexInput(OptionCount) {

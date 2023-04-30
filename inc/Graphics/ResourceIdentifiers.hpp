@@ -17,6 +17,7 @@ enum ID {
     HomeSelected,
     BackNormal,
     BackSelected,
+    TitleBar,
 
     CommandNormal,
     CommandSelected,

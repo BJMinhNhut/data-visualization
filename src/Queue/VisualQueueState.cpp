@@ -12,7 +12,7 @@
 #include <iostream>
 
 VisualQueueState::VisualQueueState(StateStack& stack, Context context)
-    : VisualState(stack, context),
+    : VisualState(stack, context, "Queue"),
       mSLL(*context.fonts, *context.textures, true),
       GUIValueInput(OptionCount),
       GUIIndexInput(OptionCount) {

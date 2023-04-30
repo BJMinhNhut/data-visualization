@@ -14,6 +14,7 @@ class Label : public Component {
    public:
     enum Type {
         Main,
+        Bold,
         Mono,
     };
 
@@ -26,6 +27,7 @@ class Label : public Component {
     virtual bool isSelectable() const;
     void setText(const std::string& text);
     void setColor(const sf::Color& color);
+    void alignCenter();
 
     virtual void handleEvent(const sf::Event& event);
 

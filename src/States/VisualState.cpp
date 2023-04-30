@@ -2,6 +2,7 @@
 #include <GUI/Button.hpp>
 #include <GUI/Label.hpp>
 #include <GUI/Panel.hpp>
+#include <GUI/Sprite.hpp>
 #include <Graphics/ResourceHolder.hpp>
 #include <States/VisualState.hpp>
 #include <Utility.hpp>
@@ -9,7 +10,8 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <iostream>
 
-VisualState::VisualState(StateStack& stack, Context context)
+VisualState::VisualState(StateStack& stack, Context context,
+                         const std::string& title)
     : State(stack, context),
       mGUIContainer(),
       GUIOptionContainer(),
@@ -20,6 +22,17 @@ VisualState::VisualState(StateStack& stack, Context context)
       mSpeedID(1) {
 
     mBackgroundSprite.setTexture(context.textures->get(Textures::TitleScreen));
+
+    auto titleBar = std::make_shared<GUI::Sprite>(
+        context.textures->get(Textures::TitleBar));
+    titleBar->setPosition(800.f, 30.f);
+    mGUIContainer.pack(titleBar);
+
+    auto titleLabel =
+        std::make_shared<GUI::Label>(GUI::Label::Bold, title, *context.fonts);
+    titleLabel->setPosition(titleBar->getPosition());
+    titleLabel->alignCenter();
+    mGUIContainer.pack(titleLabel);
 
     initGUIPanels();
     initGUIButtons();
@@ -63,7 +76,7 @@ void VisualState::initGUIPanels() {
 void VisualState::initGUIButtons() {
     auto homeButton = std::make_shared<GUI::Button>(
         GUI::Button::Home, *getContext().fonts, *getContext().textures);
-    homeButton->setPosition(75u, 30u);
+    homeButton->setPosition(990u, 30u);
     homeButton->setCallback([this]() {
         requestStackPop();
         requestStackPush(States::Menu);
@@ -72,7 +85,7 @@ void VisualState::initGUIButtons() {
 
     auto backButton = std::make_shared<GUI::Button>(
         GUI::Button::Back, *getContext().fonts, *getContext().textures);
-    backButton->setPosition(30u, 30u);
+    backButton->setPosition(610u, 30u);
     backButton->setCallback([this]() {
         requestStackPop();
         requestStackPush(States::MenuData);

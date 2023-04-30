@@ -26,10 +26,16 @@ void Label::setColor(const sf::Color& color) {
     mText.setFillColor(color);
 }
 
+void Label::alignCenter() {
+    centerOrigin(mText);
+}
+
 Fonts::ID Label::getFontID(Type type) {
     switch (type) {
         case Main:
             return Fonts::Main;
+        case Bold:
+            return Fonts::Bold;
         case Mono:
             return Fonts::Mono;
         default:

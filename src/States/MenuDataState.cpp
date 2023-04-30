@@ -1,4 +1,6 @@
 #include <GUI/Button.hpp>
+#include <GUI/Label.hpp>
+#include <GUI/Sprite.hpp>
 #include <Graphics/ResourceHolder.hpp>
 #include <States/MenuDataState.hpp>
 
@@ -12,12 +14,23 @@ MenuDataState::MenuDataState(StateStack& stack, Context context)
 
     auto backButton = std::make_shared<GUI::Button>(
         GUI::Button::Back, *getContext().fonts, *getContext().textures);
-    backButton->setPosition(30u, 30u);
+    backButton->setPosition(610u, 30u);
     backButton->setCallback([this]() {
         requestStackPop();
         requestStackPush(States::Menu);
     });
     mGUIContainer.pack(backButton);
+
+    auto titleBar = std::make_shared<GUI::Sprite>(
+        context.textures->get(Textures::TitleBar));
+    titleBar->setPosition(800.f, 30.f);
+    mGUIContainer.pack(titleBar);
+
+    auto titleLabel = std::make_shared<GUI::Label>(
+        GUI::Label::Bold, "Data Structure Menu", *context.fonts);
+    titleLabel->setPosition(titleBar->getPosition());
+    titleLabel->alignCenter();
+    mGUIContainer.pack(titleLabel);
 
     auto StaticButton = std::make_shared<GUI::Button>(
         GUI::Button::MenuStatic, *context.fonts, *context.textures);
