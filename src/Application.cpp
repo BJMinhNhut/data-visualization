@@ -2,6 +2,7 @@
 #include <Constants.hpp>
 #include <Queue/VisualQueueState.hpp>
 #include <SLL/VisualSLLState.hpp>
+#include <Settings.hpp>
 #include <Stack/VisualStackState.hpp>
 #include <States/AboutState.hpp>
 #include <States/MenuDataState.hpp>
@@ -33,7 +34,10 @@ Application::Application()
     mFonts.load(Fonts::Main, "data/fonts/Ubuntu-Regular.ttf");
     mFonts.load(Fonts::Mono, "data/fonts/UbuntuMono-Regular.ttf");
 
-    loadLightTheme();
+    if (getSettings().theme == Settings::Themes::Light)
+        loadLightTheme();
+    else
+        loadDarkTheme();
 
     mStatisticsText.setFont(mFonts.get(Fonts::Main));
     mStatisticsText.setFillColor(sf::Color::Black);
@@ -132,6 +136,13 @@ void Application::loadLightTheme() {
 
     mTextures.load(Textures::SinglyNode,
                    "data/images/node-singly.png");
+
+    mTextures.load(Textures::CheckBoxNormal,
+                   "data/images/checkbox-normal.png");
+    mTextures.load(Textures::CheckBoxSelected,
+                   "data/images/checkbox-selected.png");
+    mTextures.load(Textures::CheckBoxActivated,
+                   "data/images/checkbox-activated.png");
 
     mTextures.load(Textures::HomeNormal,
                    "data/images/home-normal.png");
@@ -234,6 +245,13 @@ void Application::loadDarkTheme() {
 
     mTextures.load(Textures::SinglyNode,
                    "data/images/node-singly-dark.png");
+
+    mTextures.load(Textures::CheckBoxNormal,
+                   "data/images/checkbox-normal-dark.png");
+    mTextures.load(Textures::CheckBoxSelected,
+                   "data/images/checkbox-selected-dark.png");
+    mTextures.load(Textures::CheckBoxActivated,
+                   "data/images/checkbox-activated-dark.png");
 
     mTextures.load(Textures::HomeNormal,
                    "data/images/home-normal-dark.png");

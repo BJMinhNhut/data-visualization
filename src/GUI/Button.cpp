@@ -35,6 +35,8 @@ Textures::ID Button::getNormalTextureID(Type type) const {
             return Textures::CommandNormal;
         case Home:
             return Textures::HomeNormal;
+        case Checkbox:
+            return Textures::CheckBoxNormal;
         case Back:
             return Textures::BackNormal;
         case Play:
@@ -78,6 +80,8 @@ Textures::ID Button::getSelectedTextureID(Type type) const {
             return Textures::CommandSelected;
         case Home:
             return Textures::HomeSelected;
+        case Checkbox:
+            return Textures::CheckBoxSelected;
         case Back:
             return Textures::BackSelected;
         case Play:
@@ -121,6 +125,8 @@ Textures::ID Button::getPressedTextureID(Type type) const {
             return Textures::CommandActivated;
         case Home:
             return Textures::HomeSelected;
+        case Checkbox:
+            return Textures::CheckBoxActivated;
         case Back:
             return Textures::BackSelected;
         case Play:

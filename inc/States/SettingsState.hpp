@@ -18,8 +18,10 @@ class SettingsState : public State {
     void loadLightTheme();
 
    private:
+    GUI::Container themeContainer;
     GUI::Container mGUIContainer;
     sf::Sprite mBackgroundSprite;
+    Settings mSettings;
 };
 
 #endif  // SETTINGSSTATE_HPP

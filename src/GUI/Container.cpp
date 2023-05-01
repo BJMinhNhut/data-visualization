@@ -6,10 +6,17 @@
 
 namespace GUI {
 
-Container::Container() : mChildren(), mSelectedChild(-1), mActivatedChild(-1) {}
+Container::Container()
+    : mChildren(), mSelectedChild(-1), mActivatedChild(-1) {}
 
 void Container::pack(Component::Ptr component) {
     mChildren.push_back(component);
+}
+
+void Container::activateChild(Component::Ptr component) {
+    for (int index = 0; index < mChildren.size(); ++index)
+        if (mChildren[index] == component)
+            activate(index);
 }
 
 void Container::reset() {
@@ -41,19 +48,16 @@ void Container::handleEvent(const sf::Event& event) {
     if (event.type == sf::Event::MouseButtonReleased) {
         if (event.mouseButton.button == sf::Mouse::Left) {
             if (hasSelection()) {
-                if (hasActivation()) {
-                    mChildren[mActivatedChild]->deactivate();
-                }
                 mChildren[mSelectedChild]->deselect();
-                mChildren[mSelectedChild]->activate();
-                mActivatedChild = mSelectedChild;
+                activate(mSelectedChild);
                 mSelectedChild = -1;
             }
         }
     }
 }
 
-void Container::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+void Container::draw(sf::RenderTarget& target,
+                     sf::RenderStates states) const {
     states.transform *= getTransform();
 
     for (const Component::Ptr& child : mChildren)
@@ -69,7 +73,8 @@ bool Container::hasActivation() const {
 }
 
 void Container::select(std::size_t index) {
-    if (mChildren[index]->isSelectable() && !mChildren[index]->isActive()) {
+    if (mChildren[index]->isSelectable() &&
+        !mChildren[index]->isActive()) {
         if (hasSelection() && !mChildren[mSelectedChild]->isActive())
             mChildren[mSelectedChild]->deselect();
 
@@ -78,9 +83,21 @@ void Container::select(std::size_t index) {
     }
 }
 
+void Container::activate(std::size_t index) {
+    if (mChildren[index]->isSelectable() &&
+        !mChildren[index]->isActive()) {
+        if (hasActivation()) {
+            mChildren[mActivatedChild]->deactivate();
+        }
+        mChildren[index]->activate();
+        mActivatedChild = index;
+    }
+}
+
 void Container::updateSelect(sf::Vector2i point) {
     for (int index = 0; index < mChildren.size(); ++index) {
-        if (mChildren[index]->isSelectable() && !mChildren[index]->isActive() &&
+        if (mChildren[index]->isSelectable() &&
+            !mChildren[index]->isActive() &&
             mChildren[index]->contains(point)) {
             select(index);
             return;

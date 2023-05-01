@@ -15,7 +15,7 @@ class Container : public Component {
     Container();
 
     void pack(Component::Ptr component);
-
+    void activateChild(Component::Ptr component);
     void reset();
 
     virtual bool isSelectable() const;
@@ -25,11 +25,13 @@ class Container : public Component {
     void updateSelect(sf::Vector2i point);
 
    private:
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+    virtual void draw(sf::RenderTarget& target,
+                      sf::RenderStates states) const;
 
     bool hasSelection() const;
     bool hasActivation() const;
     void select(std::size_t index);
+    void activate(std::size_t index);
 
    private:
     std::vector<Component::Ptr> mChildren;

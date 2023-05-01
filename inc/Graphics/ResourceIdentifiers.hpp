@@ -13,6 +13,10 @@ enum ID {
 
     SinglyNode,
 
+    CheckBoxNormal,
+    CheckBoxSelected,
+    CheckBoxActivated,
+
     HomeNormal,
     HomeSelected,
     BackNormal,
