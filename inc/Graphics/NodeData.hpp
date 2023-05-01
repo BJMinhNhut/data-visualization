@@ -1,6 +1,7 @@
 #ifndef NODEDATA_HPP
 #define NODEDATA_HPP
 
+#include <Graphics/ColorHolder.hpp>
 #include <Graphics/ResourceIdentifiers.hpp>
 #include <Graphics/SceneNode.hpp>
 
@@ -10,7 +11,8 @@
 
 class NodeData : public SceneNode {
    public:
-    explicit NodeData(int value, const FontHolder& fonts);
+    explicit NodeData(int value, const FontHolder& fonts,
+                      const ColorHolder& colors);
     int getValue();
     void setValue(int value);
 

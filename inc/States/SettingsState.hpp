@@ -14,6 +14,10 @@ class SettingsState : public State {
     virtual bool handleRealtime(const sf::Vector2i mousePosition);
 
    private:
+    void loadDarkTheme();
+    void loadLightTheme();
+
+   private:
     GUI::Container mGUIContainer;
     sf::Sprite mBackgroundSprite;
 };

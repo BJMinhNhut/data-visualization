@@ -2,6 +2,7 @@
 #define INPUT_HPP
 
 #include <GUI/Component.hpp>
+#include <Graphics/ColorHolder.hpp>
 #include <Graphics/ResourceHolder.hpp>
 #include <Graphics/ResourceIdentifiers.hpp>
 
@@ -24,7 +25,8 @@ class Input : public Component {
     };
 
    public:
-    Input(const FontHolder& fonts, const TextureHolder& textures);
+    Input(const FontHolder& fonts, const TextureHolder& textures,
+          const ColorHolder& colors);
 
     void setText(const std::string& text);
     std::string getText() const;
@@ -53,7 +55,8 @@ class Input : public Component {
     void alignText();
     void wrapText();
 
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+    virtual void draw(sf::RenderTarget& target,
+                      sf::RenderStates states) const;
 
    private:
     sf::RectangleShape mCursor;

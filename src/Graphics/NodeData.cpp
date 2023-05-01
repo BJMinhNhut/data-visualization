@@ -9,10 +9,12 @@
 #include <iostream>
 #include <string>
 
-NodeData::NodeData(int value, const FontHolder& fonts)
+NodeData::NodeData(int value, const FontHolder& fonts,
+                   const ColorHolder& colors)
     : mValue(value),
-      mColor(Constants::mBlack),
-      mRect(sf::Vector2f(Constants::NODE_SIZE, Constants::NODE_SIZE)) {
+      mColor(colors.get(Colors::Text)),
+      mRect(
+          sf::Vector2f(Constants::NODE_SIZE, Constants::NODE_SIZE)) {
     centerOrigin(mRect);
     mRect.setOutlineThickness(2);
     mRect.setFillColor(sf::Color::White);

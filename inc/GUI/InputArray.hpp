@@ -2,6 +2,7 @@
 #define INPUTARRAY_HPP
 
 #include <GUI/Input.hpp>
+#include <Graphics/ColorHolder.hpp>
 #include <Graphics/ResourceHolder.hpp>
 #include <Graphics/ResourceIdentifiers.hpp>
 
@@ -12,7 +13,8 @@ class InputArray : public Input {
     typedef std::shared_ptr<InputArray> Ptr;
 
    public:
-    InputArray(const FontHolder& fonts, const TextureHolder& textures);
+    InputArray(const FontHolder& fonts, const TextureHolder& textures,
+               const ColorHolder& colors);
 
     void randomizeArray();
     ValidationResult validate() const;

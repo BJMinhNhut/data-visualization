@@ -7,8 +7,10 @@
 #include <iostream>
 
 namespace GUI {
-InputNumber::InputNumber(const FontHolder& fonts, const TextureHolder& textures)
-    : Input(fonts, textures), mMinValue(0), mMaxValue(0) {
+InputNumber::InputNumber(const FontHolder& fonts,
+                         const TextureHolder& textures,
+                         const ColorHolder& colors)
+    : Input(fonts, textures, colors), mMinValue(0), mMaxValue(0) {
     allowNumber();
 }
 
@@ -31,8 +33,8 @@ std::pair<int, int> InputNumber::getRange() const {
 }
 
 std::string InputNumber::getStringRange() const {
-    return "[" + std::to_string(mMinValue) + ", " + std::to_string(mMaxValue) +
-           "]";
+    return "[" + std::to_string(mMinValue) + ", " +
+           std::to_string(mMaxValue) + "]";
 }
 
 int InputNumber::getValue() const {

@@ -13,7 +13,7 @@
 
 VisualQueueState::VisualQueueState(StateStack& stack, Context context)
     : VisualState(stack, context, "Queue"),
-      mSLL(*context.fonts, *context.textures, true),
+      mSLL(*context.fonts, *context.textures, *context.colors, true),
       GUIValueInput(OptionCount),
       GUIIndexInput(OptionCount) {
 
@@ -30,7 +30,8 @@ VisualQueueState::VisualQueueState(StateStack& stack, Context context)
     loadCallback();
 }
 
-void VisualQueueState::centerSLL(const SceneNode::Transition& transition) {
+void VisualQueueState::centerSLL(
+    const SceneNode::Transition& transition) {
     sf::Vector2u windowSize = getContext().window->getSize();
     if (mSLL.getSize() == 0)
         mSLL.setTargetPosition(windowSize.x / 2.f, windowSize.y / 4.f,
@@ -56,64 +57,75 @@ void VisualQueueState::initGUIButtons() {
         GUIValueInput[Enqueue]->randomizeValue();
     });
 
-    addOption(Dequeue, "Dequeue", [this]() { setCurrentOption(Dequeue); });
+    addOption(Dequeue, "Dequeue",
+              [this]() { setCurrentOption(Dequeue); });
 
     addOption(Clear, "Clear", [this]() { setCurrentOption(Clear); });
 }
 
 void VisualQueueState::loadNewGUI() {
     packOptionGUI(
-        New, createNewGUIButton(
-                 GUI::Button::Small,
-                 sf::Vector2f(600.f, getContext().window->getSize().y - 180.f),
-                 "Random", [this]() { GUIArrayInput->randomizeArray(); }));
-
-    packOptionGUI(
         New,
         createNewGUIButton(
             GUI::Button::Small,
-            sf::Vector2f(700.f, getContext().window->getSize().y - 180.f),
-            "Load file", [this]() {
-                std::cerr << "Load file\n";
-                auto selection = pfd::open_file("Select a text file to load",
-                                                "..", {"Text files", "*.txt"})
-                                     .result();
-                if (!selection.empty()) {
-                    GUIArrayInput->loadArray(loadArrayFromFile(selection[0]));
-                }
-            }));
+            sf::Vector2f(600.f,
+                         getContext().window->getSize().y - 180.f),
+            "Random", [this]() { GUIArrayInput->randomizeArray(); }));
+
+    packOptionGUI(
+        New, createNewGUIButton(
+                 GUI::Button::Small,
+                 sf::Vector2f(
+                     700.f, getContext().window->getSize().y - 180.f),
+                 "Load file", [this]() {
+                     std::cerr << "Load file\n";
+                     auto selection =
+                         pfd::open_file("Select a text file to load",
+                                        "..", {"Text files", "*.txt"})
+                             .result();
+                     if (!selection.empty()) {
+                         GUIArrayInput->loadArray(
+                             loadArrayFromFile(selection[0]));
+                     }
+                 }));
 
     packOptionGUI(
         New, createNewGUIButton(
                  GUI::Button::Big,
-                 sf::Vector2f(650.f, getContext().window->getSize().y - 110.f),
+                 sf::Vector2f(
+                     650.f, getContext().window->getSize().y - 110.f),
                  "Apply", [this]() {
-                     if (GUIArrayInput->validate() == GUI::Input::Success) {
+                     if (GUIArrayInput->validate() ==
+                         GUI::Input::Success) {
                          mSLL.loadData(GUIArrayInput->getArray());
                          mSLL.refreshPointerTarget();
                          resetOption();
                      }
                  }));
 
-    auto dataLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "Data",
-                                                  *getContext().fonts);
+    auto dataLabel = std::make_shared<GUI::Label>(
+        GUI::Label::Main, "Data", *getContext().fonts,
+        *getContext().colors);
     dataLabel->setPosition(firstLabelPosition);
     packOptionGUI(New, dataLabel);
 
-    GUIArrayInput = std::make_shared<GUI::InputArray>(*getContext().fonts,
-                                                      *getContext().textures);
+    GUIArrayInput = std::make_shared<GUI::InputArray>(
+        *getContext().fonts, *getContext().textures,
+        *getContext().colors);
     GUIArrayInput->setPosition(firstInputPosition);
     packOptionGUI(New, GUIArrayInput);
 }
 
 void VisualQueueState::loadEnqueueGUI() {
-    auto valueLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "Value",
-                                                   *getContext().fonts);
+    auto valueLabel = std::make_shared<GUI::Label>(
+        GUI::Label::Main, "Value", *getContext().fonts,
+        *getContext().colors);
     valueLabel->setPosition(firstLabelPosition);
     packOptionGUI(Enqueue, valueLabel);
 
     GUIValueInput[Enqueue] = std::make_shared<GUI::InputNumber>(
-        *getContext().fonts, *getContext().textures);
+        *getContext().fonts, *getContext().textures,
+        *getContext().colors);
     GUIValueInput[Enqueue]->setPosition(firstInputPosition);
     GUIValueInput[Enqueue]->setRange(Constants::NODE_MINVALUE,
                                      Constants::NODE_MAXVALUE);
@@ -125,7 +137,9 @@ void VisualQueueState::loadEnqueueAnimation() {
     int index = mSLL.getSize();
 
     addAnimation(
-        "Create new node to store value " + std::to_string(value) + ".", {0},
+        "Create new node to store value " + std::to_string(value) +
+            ".",
+        {0},
         [=]() {
             mSLL.pureInsert(index, value);
             mSLL.popUpNode(index);
@@ -148,7 +162,8 @@ void VisualQueueState::loadEnqueueAnimation() {
             [=]() { mSLL.setHeadTarget(-1); });
 
     addAnimation(
-        "Set tail to myNode", {4}, [=]() { mSLL.setTailTarget(index); },
+        "Set tail to myNode", {4},
+        [=]() { mSLL.setTailTarget(index); },
         [=]() { mSLL.setTailTarget(index - 1); });
 
     addAnimation(
@@ -210,7 +225,8 @@ void VisualQueueState::loadDequeueAnimation() {
                 [=]() { mSLL.setHeadTarget(0); });
 
         addAnimation(
-            "Delete myNode (which is previous head).\nThe whole process is "
+            "Delete myNode (which is previous head).\nThe whole "
+            "process is "
             "O(1).",
             {5},
             [=]() {
@@ -237,7 +253,8 @@ void VisualQueueState::loadClearAnimation() {
 
         addAnimation(
             "Dequeue node at the front of queue.", {1},
-            [=]() { mSLL.eraseNode(0); }, [=]() { mSLL.insertNode(0, value); });
+            [=]() { mSLL.eraseNode(0); },
+            [=]() { mSLL.insertNode(0, value); });
     }
 }
 
@@ -245,20 +262,25 @@ void VisualQueueState::loadCallback() {
     setLoadAnimationCallback(
         New, [this]() { mSLL.loadData(GUIArrayInput->getArray()); });
 
-    setLoadAnimationCallback(Enqueue, [this]() { loadEnqueueAnimation(); });
+    setLoadAnimationCallback(Enqueue,
+                             [this]() { loadEnqueueAnimation(); });
 
-    setLoadAnimationCallback(Dequeue, [this]() { loadDequeueAnimation(); });
+    setLoadAnimationCallback(Dequeue,
+                             [this]() { loadDequeueAnimation(); });
 
-    setLoadAnimationCallback(Clear, [this]() { loadClearAnimation(); });
+    setLoadAnimationCallback(Clear,
+                             [this]() { loadClearAnimation(); });
 }
 
 void VisualQueueState::validateCommand() {
     switch (getCurrentOption()) {
         case New: {
-            if (GUIArrayInput->validate() == GUI::Input::InvalidValue) {
+            if (GUIArrayInput->validate() ==
+                GUI::Input::InvalidValue) {
                 callError("Value must be a number in range " +
                           GUIValueInput[Enqueue]->getStringRange());
-            } else if (GUIArrayInput->validate() == GUI::Input::InvalidLength) {
+            } else if (GUIArrayInput->validate() ==
+                       GUI::Input::InvalidLength) {
                 callError("Queue size must be in range [1, 10]");
             } else {
                 callInfo("Init a new Queue.");
@@ -275,7 +297,8 @@ void VisualQueueState::validateCommand() {
                           GUIValueInput[Enqueue]->getStringRange());
             } else {
                 int value = GUIValueInput[Enqueue]->getValue();
-                std::string info = "Enqueue value " + std::to_string(value) +
+                std::string info = "Enqueue value " +
+                                   std::to_string(value) +
                                    " to the back of queue.";
                 callInfo(info);
                 loadCode(QueueCode::enqueue);
@@ -324,13 +347,14 @@ bool VisualQueueState::handleEvent(const sf::Event& event) {
 
             if (GUIValueInput[getCurrentOption()] != nullptr &&
                 !GUIValueInput[getCurrentOption()]->contains(
-                    sf::Vector2(event.mouseButton.x, event.mouseButton.y))) {
+                    sf::Vector2(event.mouseButton.x,
+                                event.mouseButton.y))) {
                 GUIValueInput[getCurrentOption()]->deactivate();
             }
 
             if (getCurrentOption() == New &&
-                !GUIArrayInput->contains(
-                    sf::Vector2(event.mouseButton.x, event.mouseButton.y))) {
+                !GUIArrayInput->contains(sf::Vector2(
+                    event.mouseButton.x, event.mouseButton.y))) {
                 GUIArrayInput->deactivate();
             }
         }

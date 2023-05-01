@@ -18,18 +18,22 @@ VisualState::VisualState(StateStack& stack, Context context,
       GUICommandContainer(),
       currentOption(0),
       mAnimationList(),
-      mSpeedMap({{"x0.5", 0.5f}, {"x1.0", 1.f}, {"x2.0", 2.f}, {"x3.0", 3.f}}),
+      mSpeedMap({{"x0.5", 0.5f},
+                 {"x1.0", 1.f},
+                 {"x2.0", 2.f},
+                 {"x3.0", 3.f}}),
       mSpeedID(1) {
 
-    mBackgroundSprite.setTexture(context.textures->get(Textures::TitleScreen));
+    mBackgroundSprite.setTexture(
+        context.textures->get(Textures::Background));
 
     auto titleBar = std::make_shared<GUI::Sprite>(
         context.textures->get(Textures::TitleBar));
     titleBar->setPosition(800.f, 30.f);
     mGUIContainer.pack(titleBar);
 
-    auto titleLabel =
-        std::make_shared<GUI::Label>(GUI::Label::Bold, title, *context.fonts);
+    auto titleLabel = std::make_shared<GUI::Label>(
+        GUI::Label::Bold, title, *context.fonts, *context.colors);
     titleLabel->setPosition(titleBar->getPosition());
     titleLabel->alignCenter();
     mGUIContainer.pack(titleLabel);
@@ -47,24 +51,34 @@ int VisualState::getCurrentOption() const {
 
 void VisualState::initGUIPanels() {
     auto codePanel = std::make_shared<GUI::Panel>(
-        500.f, 250.f, Constants::WhiteDisplay, Constants::GrayBorder);
-    codePanel->setPosition(800.f, getContext().window->getSize().y - 400.f);
+        500.f, 250.f, getContext().colors->get(Colors::UISecondary),
+        getContext().colors->get(Colors::UIBorder));
+    codePanel->setPosition(800.f,
+                           getContext().window->getSize().y - 400.f);
 
     auto progressPanel = std::make_shared<GUI::Panel>(
-        500.f, 100.f, Constants::WhiteUI, Constants::GrayBorder);
-    progressPanel->setPosition(800.f, getContext().window->getSize().y - 150.f);
+        500.f, 100.f, getContext().colors->get(Colors::UIPrimary),
+        getContext().colors->get(Colors::UIBorder));
+    progressPanel->setPosition(
+        800.f, getContext().window->getSize().y - 150.f);
 
     auto consolePanel = std::make_shared<GUI::Panel>(
-        500.f, 100.f, Constants::WhiteDisplay, Constants::GrayBorder);
-    consolePanel->setPosition(300.f, getContext().window->getSize().y - 400.f);
+        500.f, 100.f, getContext().colors->get(Colors::UISecondary),
+        getContext().colors->get(Colors::UIBorder));
+    consolePanel->setPosition(
+        300.f, getContext().window->getSize().y - 400.f);
 
     auto commandPanel = std::make_shared<GUI::Panel>(
-        200.f, 250.f, Constants::WhiteUI, Constants::GrayBorder);
-    commandPanel->setPosition(300.f, getContext().window->getSize().y - 300.f);
+        200.f, 250.f, getContext().colors->get(Colors::UIPrimary),
+        getContext().colors->get(Colors::UIBorder));
+    commandPanel->setPosition(
+        300.f, getContext().window->getSize().y - 300.f);
 
     auto executePanel = std::make_shared<GUI::Panel>(
-        300.f, 250.f, Constants::WhiteUI, Constants::GrayBorder);
-    executePanel->setPosition(500.f, getContext().window->getSize().y - 300.f);
+        300.f, 250.f, getContext().colors->get(Colors::UIPrimary),
+        getContext().colors->get(Colors::UIBorder));
+    executePanel->setPosition(
+        500.f, getContext().window->getSize().y - 300.f);
 
     mGUIContainer.pack(consolePanel);
     mGUIContainer.pack(executePanel);
@@ -74,38 +88,35 @@ void VisualState::initGUIPanels() {
 }
 
 void VisualState::initGUIButtons() {
-    auto homeButton = std::make_shared<GUI::Button>(
-        GUI::Button::Home, *getContext().fonts, *getContext().textures);
-    homeButton->setPosition(990u, 30u);
-    homeButton->setCallback([this]() {
-        requestStackPop();
-        requestStackPush(States::Menu);
-    });
-    mGUIContainer.pack(homeButton);
+    mGUIContainer.pack(createNewGUIButton(
+        GUI::Button::Home, sf::Vector2f(990u, 30u), "", [this]() {
+            requestStackPop();
+            requestStackPush(States::Menu);
+        }));
 
-    auto backButton = std::make_shared<GUI::Button>(
-        GUI::Button::Back, *getContext().fonts, *getContext().textures);
-    backButton->setPosition(610u, 30u);
-    backButton->setCallback([this]() {
-        requestStackPop();
-        requestStackPush(States::MenuData);
-    });
-    mGUIContainer.pack(backButton);
+    mGUIContainer.pack(createNewGUIButton(
+        GUI::Button::Back, sf::Vector2f(610u, 30u), "", [this]() {
+            requestStackPop();
+            requestStackPush(States::MenuData);
+        }));
 
     GUIPlay.pack(createNewGUIButton(
         GUI::Button::Play,
-        sf::Vector2f(1050.f, getContext().window->getSize().y - 100.f), "",
-        [this]() { execute(); }));
+        sf::Vector2f(1050.f,
+                     getContext().window->getSize().y - 100.f),
+        "", [this]() { execute(); }));
 
     GUIPause.pack(createNewGUIButton(
         GUI::Button::Pause,
-        sf::Vector2f(1050.f, getContext().window->getSize().y - 100.f), "",
-        [this]() { mAnimationList.pause(); }));
+        sf::Vector2f(1050.f,
+                     getContext().window->getSize().y - 100.f),
+        "", [this]() { mAnimationList.pause(); }));
 
     GUIReplay.pack(createNewGUIButton(
         GUI::Button::Replay,
-        sf::Vector2f(1050.f, getContext().window->getSize().y - 100.f), "",
-        [this]() {
+        sf::Vector2f(1050.f,
+                     getContext().window->getSize().y - 100.f),
+        "", [this]() {
             resetOption();
             mAnimationList.goToFront();
             mAnimationList.play();
@@ -113,76 +124,87 @@ void VisualState::initGUIButtons() {
 
     mGUIContainer.pack(createNewGUIButton(
         GUI::Button::DoubleArrow,
-        sf::Vector2f(950.f, getContext().window->getSize().y - 100.f), "",
-        [this]() { mAnimationList.goToFront(); }));
+        sf::Vector2f(960.f, getContext().window->getSize().y - 100.f),
+        "", [this]() { mAnimationList.goToFront(); }));
 
     auto goPreviousButton = createNewGUIButton(
         GUI::Button::Arrow,
-        sf::Vector2f(990.f, getContext().window->getSize().y - 100.f), "",
-        [this]() { mAnimationList.playPrevious(); });
+        sf::Vector2f(998.f, getContext().window->getSize().y - 100.f),
+        "", [this]() { mAnimationList.playPrevious(); });
     goPreviousButton->setRotation(180);
     mGUIContainer.pack(goPreviousButton);
 
     mGUIContainer.pack(createNewGUIButton(
         GUI::Button::Arrow,
-        sf::Vector2f(1102.f, getContext().window->getSize().y - 100.f), "",
-        [this]() { mAnimationList.playNext(); }));
+        sf::Vector2f(1102.f,
+                     getContext().window->getSize().y - 100.f),
+        "", [this]() { mAnimationList.playNext(); }));
 
     auto goBackButton = createNewGUIButton(
         GUI::Button::DoubleArrow,
-        sf::Vector2f(1140.f, getContext().window->getSize().y - 100.f), "",
-        [this]() { mAnimationList.goToBack(); });
+        sf::Vector2f(1140.f,
+                     getContext().window->getSize().y - 100.f),
+        "", [this]() { mAnimationList.goToBack(); });
     goBackButton->setRotation(180);
     mGUIContainer.pack(goBackButton);
 }
 void VisualState::addOption(int option, std::string title,
                             GUI::Button::Callback callback) {
     sf::Vector2f position(400u, 625u + 50.f * int(option - 1));
-    GUIOptionContainer.pack(createNewGUIButton(GUI::Button::Command, position,
-                                               title, callback, true));
+    GUIOptionContainer.pack(createNewGUIButton(
+        GUI::Button::Command, position, title, callback, true));
 }
 
 void VisualState::initConsole() {
-    GUIConsole = std::make_shared<GUI::Console>(*getContext().fonts);
-    GUIConsole->setPosition(315.f, getContext().window->getSize().y - 390.f);
+    GUIConsole = std::make_shared<GUI::Console>(*getContext().fonts,
+                                                *getContext().colors);
+    GUIConsole->setPosition(315.f,
+                            getContext().window->getSize().y - 390.f);
     mGUIContainer.pack(GUIConsole);
 
-    GUIProgressBar =
-        std::make_shared<GUI::ProgressBar>(sf::Vector2f(500.f, 5.f));
-    GUIProgressBar->setPosition(800.f,
-                                getContext().window->getSize().y - 155.f);
+    GUIProgressBar = std::make_shared<GUI::ProgressBar>(
+        *getContext().colors, sf::Vector2f(500.f, 5.f));
+    GUIProgressBar->setPosition(
+        800.f, getContext().window->getSize().y - 155.f);
     mGUIContainer.pack(GUIProgressBar);
 
-    GUICodeBlock = std::make_shared<GUI::CodeBlock>(*getContext().fonts);
-    GUICodeBlock->setPosition(800.f, getContext().window->getSize().y - 400.f);
+    GUICodeBlock = std::make_shared<GUI::CodeBlock>(
+        *getContext().fonts, *getContext().colors);
+    GUICodeBlock->setPosition(
+        800.f, getContext().window->getSize().y - 400.f);
     mGUIContainer.pack(GUICodeBlock);
 }
 
 void VisualState::initSpeed() {
-    auto speedLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "Speed",
-                                                   *getContext().fonts);
-    speedLabel->setPosition(820.f, getContext().window->getSize().y - 125.f);
+    auto speedLabel = std::make_shared<GUI::Label>(
+        GUI::Label::Main, "Speed", *getContext().fonts,
+        *getContext().colors);
+    speedLabel->setPosition(820.f,
+                            getContext().window->getSize().y - 125.f);
     mGUIContainer.pack(speedLabel);
 
     GUISpeed = std::make_shared<GUI::Label>(
-        GUI::Label::Mono, mSpeedMap[mSpeedID].first, *getContext().fonts);
-    GUISpeed->setPosition(820.f, getContext().window->getSize().y - 95.f);
+        GUI::Label::Mono, mSpeedMap[mSpeedID].first,
+        *getContext().fonts, *getContext().colors);
+    GUISpeed->setPosition(820.f,
+                          getContext().window->getSize().y - 95.f);
     mGUIContainer.pack(GUISpeed);
 
     auto increaseButton = createNewGUIButton(
         GUI::Button::SmallArrow,
-        sf::Vector2f(870.f, getContext().window->getSize().y - 100.f), "",
-        [this]() { increaseSpeed(); });
+        sf::Vector2f(870.f, getContext().window->getSize().y - 100.f),
+        "", [this]() { increaseSpeed(); });
     increaseButton->rotate(180);
     mGUIContainer.pack(increaseButton);
 
     mGUIContainer.pack(createNewGUIButton(
         GUI::Button::SmallArrow,
-        sf::Vector2f(870.f, getContext().window->getSize().y - 80.f), "",
-        [this]() { decreaseSpeed(); }));
+        sf::Vector2f(870.f, getContext().window->getSize().y - 80.f),
+        "", [this]() { decreaseSpeed(); }));
 }
 
-void VisualState::packOptionGUI(int option, GUI::Component::Ptr component) {
+void VisualState::packOptionGUI(int option,
+                                GUI::Component::Ptr component) {
     GUICommandContainer[option].pack(component);
 }
 
@@ -198,8 +220,8 @@ void VisualState::resetOption() {
     currentOption = 0;
 }
 
-void VisualState::setLoadAnimationCallback(int option,
-                                           GUI::Button::Callback callback) {
+void VisualState::setLoadAnimationCallback(
+    int option, GUI::Button::Callback callback) {
     loadAnimationCallback[option] = callback;
 }
 
@@ -215,10 +237,11 @@ void VisualState::cleanLog() {
     GUIConsole->clean();
 }
 
-void VisualState::addAnimation(const std::string& description,
-                               const std::vector<int>& highlightLineID,
-                               const std::function<void()>& forward,
-                               const std::function<void()>& backward) {
+void VisualState::addAnimation(
+    const std::string& description,
+    const std::vector<int>& highlightLineID,
+    const std::function<void()>& forward,
+    const std::function<void()>& backward) {
     mAnimationList.push(Animation(
         [=]() {
             callInfo(description);
@@ -250,8 +273,9 @@ void VisualState::clearCode() {
 std::shared_ptr<GUI::Button> VisualState::createNewGUIButton(
     GUI::Button::Type type, sf::Vector2f position, std::string label,
     GUI::Button::Callback callback, bool toggle) {
-    auto button = std::make_shared<GUI::Button>(type, *getContext().fonts,
-                                                *getContext().textures);
+    auto button = std::make_shared<GUI::Button>(
+        type, *getContext().fonts, *getContext().textures,
+        *getContext().colors);
     button->setPosition(position);
     button->setText(label);
     button->setCallback(callback);
@@ -364,7 +388,8 @@ bool VisualState::handleRealtime(const sf::Vector2i mousePosition) {
         GUIPause.updateSelect(mousePosition);
     } else {
         GUIOptionContainer.updateSelect(mousePosition);
-        GUICommandContainer[currentOption].updateSelect(mousePosition);
+        GUICommandContainer[currentOption].updateSelect(
+            mousePosition);
 
         if (mAnimationList.isFinished())
             GUIReplay.updateSelect(mousePosition);

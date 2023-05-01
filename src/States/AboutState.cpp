@@ -8,14 +8,16 @@
 
 AboutState::AboutState(StateStack& stack, Context context)
     : State(stack, context), mGUIContainer() {
-    sf::Texture& texture = context.textures->get(Textures::TitleScreen);
+    sf::Texture& texture =
+        context.textures->get(Textures::Background);
     sf::Font& font = context.fonts->get(Fonts::Main);
 
     mBackgroundSprite.setTexture(texture);
     sf::Vector2u bounds = context.window->getSize();
 
     auto backButton = std::make_shared<GUI::Button>(
-        GUI::Button::Back, *getContext().fonts, *getContext().textures);
+        GUI::Button::Back, *getContext().fonts,
+        *getContext().textures, *getContext().colors);
     backButton->setPosition(610u, 30u);
     backButton->setCallback([this]() {
         requestStackPop();
@@ -28,8 +30,9 @@ AboutState::AboutState(StateStack& stack, Context context)
     titleBar->setPosition(800.f, 30.f);
     mGUIContainer.pack(titleBar);
 
-    auto titleLabel =
-        std::make_shared<GUI::Label>(GUI::Label::Bold, "About", *context.fonts);
+    auto titleLabel = std::make_shared<GUI::Label>(
+        GUI::Label::Bold, "About", *context.fonts,
+        *getContext().colors);
     titleLabel->setPosition(titleBar->getPosition());
     titleLabel->alignCenter();
     mGUIContainer.pack(titleLabel);

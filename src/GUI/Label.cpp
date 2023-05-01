@@ -7,9 +7,10 @@
 
 namespace GUI {
 
-Label::Label(Type type, const std::string& text, const FontHolder& fonts)
+Label::Label(Type type, const std::string& text,
+             const FontHolder& fonts, const ColorHolder& colors)
     : mText(text, fonts.get(getFontID(type)), 18) {
-    mText.setFillColor(Constants::mBlack);
+    mText.setFillColor(colors.get(Colors::Text));
     mText.setOrigin(0.f, mText.getGlobalBounds().height / 2.f);
     mText.setLineSpacing(1.5f);
 }
@@ -45,7 +46,8 @@ Fonts::ID Label::getFontID(Type type) {
 
 void Label::handleEvent(const sf::Event& event) {}
 
-void Label::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+void Label::draw(sf::RenderTarget& target,
+                 sf::RenderStates states) const {
     states.transform *= getTransform();
     target.draw(mText, states);
 }

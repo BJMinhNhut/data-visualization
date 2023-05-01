@@ -1,6 +1,5 @@
 #include <Constants.hpp>
 #include <Graphics/Pointer.hpp>
-#include <Graphics/ResourceHolder.hpp>
 #include <Utility.hpp>
 
 #include <SFML/Graphics/CircleShape.hpp>
@@ -13,8 +12,8 @@
 #include <cassert>
 #include <iostream>
 
-Pointer::Pointer(const FontHolder& fonts)
-    : mColor(Constants::mBlack),
+Pointer::Pointer(const FontHolder& fonts, const ColorHolder& colors)
+    : mColor(colors.get(Colors::Text)),
       mLabel("", fonts.get(Fonts::Main), 16u),
       TextNULL("null", fonts.get(Fonts::Main), 16u),
       mCircle(4.f, 20),
@@ -22,14 +21,14 @@ Pointer::Pointer(const FontHolder& fonts)
       mType(Left) {
     centerOrigin(mLabel);
     mLabel.setPosition(0.f, mCircle.getRadius() + 8.f);
-    mLabel.setFillColor(Constants::mBlack);
+    mLabel.setFillColor(colors.get(Colors::Text));
 
     centerOrigin(TextNULL);
     TextNULL.setPosition(Constants::NODE_DISTANCE + 5.f, 0.f);
-    TextNULL.setFillColor(Constants::mBlack);
+    TextNULL.setFillColor(colors.get(Colors::Text));
 
     centerOrigin(mCircle);
-    mCircle.setFillColor(Constants::mBlack);
+    mCircle.setFillColor(colors.get(Colors::Text));
 }
 
 void Pointer::setLabel(const std::string label) {
@@ -50,7 +49,8 @@ void Pointer::setTarget(SceneNode* node, TargetType type) {
     mType = type;
 }
 
-void Pointer::setTargetPosition(sf::Vector2f position, Transition transition) {
+void Pointer::setTargetPosition(sf::Vector2f position,
+                                Transition transition) {
     SceneNode::setTargetPosition(position, transition);
     if (transition == None)
         resetDestination();
@@ -92,7 +92,8 @@ void Pointer::updateCurrent(sf::Time dt) {
     }
 
     if (mDestination != mTargetDestination) {
-        sf::Vector2f delta = (mTargetDestination - mDestination) * 0.2f;
+        sf::Vector2f delta =
+            (mTargetDestination - mDestination) * 0.2f;
         mDestination += delta;
     }
 

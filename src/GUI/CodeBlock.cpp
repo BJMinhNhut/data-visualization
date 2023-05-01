@@ -7,9 +7,13 @@
 #include <iostream>
 
 namespace GUI {
-CodeBlock::CodeBlock(const FontHolder& fonts)
-    : mText("", fonts.get(Fonts::Mono), 18u), mHighlight(), mLinePositions() {
-    mText.setFillColor(Constants::mBlack);
+CodeBlock::CodeBlock(const FontHolder& fonts,
+                     const ColorHolder& colors)
+    : mText("", fonts.get(Fonts::Mono), 18u),
+      mHighlight(),
+      mLinePositions(),
+      highlightColor(colors.get(Colors::Highlight)) {
+    mText.setFillColor(colors.get(Colors::Text));
     mText.setPosition(15.f, 10.f);
     mText.setLineSpacing(1.5f);
 }
@@ -24,9 +28,10 @@ void CodeBlock::setHighlight(const std::vector<int>& lineID) {
     mHighlight.clear();
     for (int id : lineID) {
         assert(id >= 0 && id < mLinePositions.size());
-        mHighlight[id] = sf::RectangleShape(sf::Vector2f(500.f, 25.f));
+        mHighlight[id] =
+            sf::RectangleShape(sf::Vector2f(500.f, 25.f));
         mHighlight[id].setPosition(mLinePositions[id]);
-        mHighlight[id].setFillColor(Constants::YellowLight);
+        mHighlight[id].setFillColor(highlightColor);
     }
 }
 
@@ -36,7 +41,8 @@ bool CodeBlock::isSelectable() const {
 
 void CodeBlock::handleEvent(const sf::Event& event) {}
 
-void CodeBlock::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+void CodeBlock::draw(sf::RenderTarget& target,
+                     sf::RenderStates states) const {
     states.transform *= getTransform();
     for (auto& [id, rect] : mHighlight)
         target.draw(rect, states);

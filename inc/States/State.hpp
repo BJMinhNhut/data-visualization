@@ -1,6 +1,7 @@
 #ifndef STATE_HPP
 #define STATE_HPP
 
+#include <Graphics/ColorHolder.hpp>
 #include <Graphics/ResourceIdentifiers.hpp>
 #include <States/StateIdentifiers.hpp>
 
@@ -21,11 +22,12 @@ class State {
     typedef std::unique_ptr<State> Ptr;
     struct Context {
         Context(sf::RenderWindow& window, TextureHolder& textures,
-                FontHolder& fonts);
+                FontHolder& fonts, ColorHolder& colors);
 
         sf::RenderWindow* window;
         TextureHolder* textures;
         FontHolder* fonts;
+        ColorHolder* colors;
     };
 
    public:

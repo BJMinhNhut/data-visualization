@@ -1,6 +1,7 @@
 #ifndef APPLICATION_HPP
 #define APPLICATION_HPP
 
+#include <Graphics/ColorHolder.hpp>
 #include <Graphics/ResourceHolder.hpp>
 #include <Graphics/ResourceIdentifiers.hpp>
 #include <States/StateStack.hpp>
@@ -22,12 +23,16 @@ class Application {
     void updateStatistics(sf::Time dt);
     void registerStates();
 
+    void loadLightTheme();
+    void loadDarkTheme();
+
    private:
     static const sf::Time TimePerFrame;
 
     sf::RenderWindow mWindow;
     TextureHolder mTextures;
     FontHolder mFonts;
+    ColorHolder mColors;
 
     StateStack mStateStack;
 

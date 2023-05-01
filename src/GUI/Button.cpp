@@ -11,13 +11,14 @@
 namespace GUI {
 
 Button::Button(Type type, const FontHolder& fonts,
-               const TextureHolder& textures)
+               const TextureHolder& textures,
+               const ColorHolder& colors)
     : mCallback(),
       mIsToggle(false),
       mNormalTexture(textures.get(getNormalTextureID(type))),
       mSelectedTexture(textures.get(getSelectedTextureID(type))),
       mPressedTexture(textures.get(getPressedTextureID(type))) {
-    setFont(type, fonts);
+    setFont(type, fonts, colors);
     mSprite.setTexture(mNormalTexture);
 
     centerOrigin(mSprite);
@@ -153,12 +154,13 @@ Textures::ID Button::getPressedTextureID(Type type) const {
     }
 }
 
-void Button::setFont(Type type, const FontHolder& fonts) {
+void Button::setFont(Type type, const FontHolder& fonts,
+                     const ColorHolder& colors) {
     switch (type) {
         case Small:
             mText.setFont(fonts.get(Fonts::Medium));
             mText.setCharacterSize(16u);
-            mText.setFillColor(Constants::mBlue);
+            mText.setFillColor(colors.get(Colors::Blue));
             break;
 
         case Big:
@@ -170,7 +172,7 @@ void Button::setFont(Type type, const FontHolder& fonts) {
         default:
             mText.setFont(fonts.get(Fonts::Bold));
             mText.setCharacterSize(18u);
-            mText.setFillColor(Constants::mBlack);
+            mText.setFillColor(colors.get(Colors::Text));
             break;
     }
 }
@@ -232,15 +234,17 @@ void Button::deactivate() {
 void Button::handleEvent(const sf::Event& event) {}
 
 bool Button::contains(sf::Vector2i point) const {
-    sf::IntRect bounds(getPosition().x - mSprite.getGlobalBounds().width / 2.f,
-                       getPosition().y - mSprite.getGlobalBounds().height / 2.f,
-                       mSprite.getGlobalBounds().width,
-                       mSprite.getGlobalBounds().height);
+    sf::IntRect bounds(
+        getPosition().x - mSprite.getGlobalBounds().width / 2.f,
+        getPosition().y - mSprite.getGlobalBounds().height / 2.f,
+        mSprite.getGlobalBounds().width,
+        mSprite.getGlobalBounds().height);
 
     return bounds.contains(point);
 }
 
-void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+void Button::draw(sf::RenderTarget& target,
+                  sf::RenderStates states) const {
     states.transform *= getTransform();
     target.draw(mSprite, states);
     target.draw(mText, states);

@@ -1,6 +1,8 @@
 #ifndef POINTER_HPP
 #define POINTER_HPP
 
+#include <Graphics/ColorHolder.hpp>
+#include <Graphics/ResourceHolder.hpp>
 #include <Graphics/ResourceIdentifiers.hpp>
 #include <Graphics/SceneNode.hpp>
 
@@ -17,7 +19,8 @@ class Pointer : public SceneNode {
     enum TargetType { Left, Right, Bottom };
 
    public:
-    explicit Pointer(const FontHolder& fonts);
+    explicit Pointer(const FontHolder& fonts,
+                     const ColorHolder& colors);
 
     void setLabel(const std::string label);
     void setTarget(SceneNode* node, TargetType type = Left);

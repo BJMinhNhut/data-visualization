@@ -1,9 +1,13 @@
 #include <Constants.hpp>
 #include <GUI/Console.hpp>
+#include <Graphics/ColorHolder.hpp>
 #include <Graphics/ResourceHolder.hpp>
 namespace GUI {
-Console::Console(const FontHolder& fonts)
-    : Label(Mono, "", fonts), currentType(Info) {}
+Console::Console(const FontHolder& fonts, const ColorHolder& colors)
+    : Label(Mono, "", fonts, colors),
+      currentType(Info),
+      InfoColor(colors.get(Colors::Blue)),
+      ErrorColor(colors.get(Colors::Red)) {}
 
 void Console::log(LogType type, const std::string& text) {
     if (type == Console::Info)
@@ -26,11 +30,11 @@ Console::LogType Console::getLogType() const {
 sf::Color Console::getColorFromType(LogType type) const {
     switch (type) {
         case Info:
-            return Constants::mBlue;
+            return InfoColor;
         case Error:
-            return sf::Color(183, 28, 28);
+            return ErrorColor;
         default:
-            return Constants::mBlue;
+            return InfoColor;
     }
 }
 

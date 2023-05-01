@@ -13,7 +13,9 @@
 
 class SinglyNode : public SceneNode {
    public:
-    explicit SinglyNode(const FontHolder& fonts, const TextureHolder& textures);
+    explicit SinglyNode(const FontHolder& fonts,
+                        const TextureHolder& textures,
+                        const ColorHolder& colors);
 
     int getValue() const;
     virtual sf::Vector2f getLeftBound() const;

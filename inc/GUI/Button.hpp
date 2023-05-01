@@ -2,6 +2,7 @@
 #define BUTTON_HPP
 
 #include <GUI/Component.hpp>
+#include <Graphics/ColorHolder.hpp>
 #include <Graphics/ResourceHolder.hpp>
 #include <Graphics/ResourceIdentifiers.hpp>
 
@@ -44,7 +45,8 @@ class Button : public Component {
     typedef std::function<void()> Callback;
 
    public:
-    Button(Type type, const FontHolder& fonts, const TextureHolder& textures);
+    Button(Type type, const FontHolder& fonts,
+           const TextureHolder& textures, const ColorHolder& colors);
 
     void setCallback(Callback callback);
     void setText(const std::string& text);
@@ -61,12 +63,14 @@ class Button : public Component {
     virtual bool contains(sf::Vector2i point) const;
 
    private:
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+    virtual void draw(sf::RenderTarget& target,
+                      sf::RenderStates states) const;
 
     Textures::ID getNormalTextureID(Type type) const;
     Textures::ID getSelectedTextureID(Type type) const;
     Textures::ID getPressedTextureID(Type type) const;
-    void setFont(Type type, const FontHolder& fonts);
+    void setFont(Type type, const FontHolder& fonts,
+                 const ColorHolder& colors);
 
    private:
     Callback mCallback;

@@ -13,11 +13,13 @@
 #include <memory>
 #include <string>
 
-SinglyNode::SinglyNode(const FontHolder& fonts, const TextureHolder& textures)
-    : mData(new NodeData(
-          Random::get(Constants::NODE_MINVALUE, Constants::NODE_MAXVALUE),
-          fonts)),
-      mPointer(new Pointer(fonts)),
+SinglyNode::SinglyNode(const FontHolder& fonts,
+                       const TextureHolder& textures,
+                       const ColorHolder& colors)
+    : mData(new NodeData(Random::get(Constants::NODE_MINVALUE,
+                                     Constants::NODE_MAXVALUE),
+                         fonts, colors)),
+      mPointer(new Pointer(fonts, colors)),
       mTextures(textures) {
     std::unique_ptr<NodeData> dataPtr(mData);
     std::unique_ptr<Pointer> nextNodePtr(mPointer);
@@ -32,8 +34,9 @@ SinglyNode::SinglyNode(const FontHolder& fonts, const TextureHolder& textures)
     mPointer->resetDestination();
     mPointer->setNull();
 
-    mSprite.setOrigin(Constants::NODE_SIZE / 2.f, Constants::NODE_SIZE / 2.f);
-    mSprite.setTexture(mTextures.get(Textures::SinglyNodeNormal), true);
+    mSprite.setOrigin(Constants::NODE_SIZE / 2.f,
+                      Constants::NODE_SIZE / 2.f);
+    mSprite.setTexture(mTextures.get(Textures::SinglyNode), true);
 }
 
 void SinglyNode::updateCurrent(sf::Time dt) {}

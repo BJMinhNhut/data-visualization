@@ -8,14 +8,16 @@
 
 MenuState::MenuState(StateStack& stack, Context context)
     : State(stack, context), mGUIContainer() {
-    sf::Texture& texture = context.textures->get(Textures::TitleScreen);
+    sf::Texture& texture =
+        context.textures->get(Textures::Background);
     sf::Font& font = context.fonts->get(Fonts::Main);
 
     mBackgroundSprite.setTexture(texture);
     sf::Vector2u bounds = context.window->getSize();
 
     auto startButton = std::make_shared<GUI::Button>(
-        GUI::Button::Big, *context.fonts, *context.textures);
+        GUI::Button::Big, *context.fonts, *context.textures,
+        *context.colors);
     startButton->setPosition(bounds.x / 2u, bounds.y / 2u);
     startButton->setText("Start");
     startButton->setCallback([this]() {
@@ -24,7 +26,8 @@ MenuState::MenuState(StateStack& stack, Context context)
     });
 
     auto settingsButton = std::make_shared<GUI::Button>(
-        GUI::Button::Big, *context.fonts, *context.textures);
+        GUI::Button::Big, *context.fonts, *context.textures,
+        *context.colors);
     settingsButton->setPosition(bounds.x / 2u, bounds.y / 2u + 70u);
     settingsButton->setText("Settings");
     settingsButton->setCallback([this]() {
@@ -33,7 +36,8 @@ MenuState::MenuState(StateStack& stack, Context context)
     });
 
     auto aboutButton = std::make_shared<GUI::Button>(
-        GUI::Button::Big, *context.fonts, *context.textures);
+        GUI::Button::Big, *context.fonts, *context.textures,
+        *context.colors);
     aboutButton->setPosition(bounds.x / 2u, bounds.y / 2u + 140u);
     aboutButton->setText("About");
     aboutButton->setCallback([this]() {
@@ -42,7 +46,8 @@ MenuState::MenuState(StateStack& stack, Context context)
     });
 
     auto exitButton = std::make_shared<GUI::Button>(
-        GUI::Button::Big, *context.fonts, *context.textures);
+        GUI::Button::Big, *context.fonts, *context.textures,
+        *context.colors);
     exitButton->setPosition(bounds.x / 2u, bounds.y / 2u + 210u);
     exitButton->setText("Exit");
     exitButton->setCallback([this]() { requestStackPop(); });

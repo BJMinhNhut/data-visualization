@@ -10,8 +10,10 @@
 
 #define DEBUG_INPUT_ARRAY 0
 namespace GUI {
-InputArray::InputArray(const FontHolder& fonts, const TextureHolder& textures)
-    : Input(fonts, textures) {
+InputArray::InputArray(const FontHolder& fonts,
+                       const TextureHolder& textures,
+                       const ColorHolder& colors)
+    : Input(fonts, textures, colors) {
     allowNumber();
     allowChar(',');
 }
@@ -21,8 +23,8 @@ void InputArray::randomizeArray() {
     std::string buffer;
 
     for (int index = 0; index < length; ++index) {
-        int value =
-            Random::get(Constants::NODE_MINVALUE, Constants::NODE_MAXVALUE);
+        int value = Random::get(Constants::NODE_MINVALUE,
+                                Constants::NODE_MAXVALUE);
         buffer += std::to_string(value);
         if (index + 1 < length)
             buffer += ",";
@@ -50,14 +52,16 @@ Input::ValidationResult InputArray::validate() const {
         if (mChar == ',') {
             if (currentValue > Constants::NODE_MAXVALUE) {
                 if (DEBUG_INPUT_ARRAY)
-                    std::cerr << "Value too big: " << currentValue << " \n";
+                    std::cerr << "Value too big: " << currentValue
+                              << " \n";
                 return Input::InvalidValue;
             }
 
             length++;
             currentValue = 0;
         } else if (std::isdigit(mChar)) {
-            currentValue = currentValue * 10 + static_cast<int>(mChar - '0');
+            currentValue =
+                currentValue * 10 + static_cast<int>(mChar - '0');
         }
 
         if (length > Constants::LIST_MAXSIZE) {
@@ -86,7 +90,8 @@ std::vector<int> InputArray::getArray() const {
             mArray.push_back(currentValue);
             currentValue = 0;
         } else if (std::isdigit(mChar)) {
-            currentValue = currentValue * 10 + static_cast<int>(mChar - '0');
+            currentValue =
+                currentValue * 10 + static_cast<int>(mChar - '0');
         }
     }
     return mArray;

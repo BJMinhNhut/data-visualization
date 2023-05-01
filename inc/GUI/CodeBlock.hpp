@@ -2,6 +2,7 @@
 #define CODEBLOCK_HPP
 
 #include <GUI/Component.hpp>
+#include <Graphics/ColorHolder.hpp>
 #include <Graphics/ResourceHolder.hpp>
 #include <Graphics/ResourceIdentifiers.hpp>
 
@@ -17,7 +18,7 @@ class CodeBlock : public Component {
     typedef std::shared_ptr<CodeBlock> Ptr;
 
    public:
-    CodeBlock(const FontHolder& fonts);
+    CodeBlock(const FontHolder& fonts, const ColorHolder& colors);
 
     void loadCode(const std::string& code);
     void setHighlight(const std::vector<int>& lineID);
@@ -26,13 +27,15 @@ class CodeBlock : public Component {
     virtual void handleEvent(const sf::Event& event);
 
    private:
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+    virtual void draw(sf::RenderTarget& target,
+                      sf::RenderStates states) const;
     void getLinePosition();
 
    private:
     std::vector<sf::Vector2f> mLinePositions;
     sf::Text mText;
     std::map<int, sf::RectangleShape> mHighlight;
+    const sf::Color highlightColor;
 };
 }  // namespace GUI
 

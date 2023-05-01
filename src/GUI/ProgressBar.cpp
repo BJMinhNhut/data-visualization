@@ -1,13 +1,15 @@
 #include <Constants.hpp>
 #include <GUI/ProgressBar.hpp>
+#include <Graphics/ColorHolder.hpp>
 
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
 namespace GUI {
-ProgressBar::ProgressBar(const sf::Vector2f& size)
+ProgressBar::ProgressBar(const ColorHolder& colors,
+                         const sf::Vector2f& size)
     : mLength(1), mProgress(0), mSize(size), mBar() {
-    mBar.setFillColor(Constants::mBlue);
+    mBar.setFillColor(colors.get(Colors::Blue));
     updateBar();
 }
 
@@ -29,8 +31,8 @@ void ProgressBar::setProgress(const int& progress) {
 void ProgressBar::handleEvent(const sf::Event& event) {}
 
 void ProgressBar::updateBar() {
-    float width =
-        static_cast<float>(mProgress) / static_cast<float>(mLength) * mSize.x;
+    float width = static_cast<float>(mProgress) /
+                  static_cast<float>(mLength) * mSize.x;
     mBar.setSize(sf::Vector2f(width, mSize.y));
 }
 

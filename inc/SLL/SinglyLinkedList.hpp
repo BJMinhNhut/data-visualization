@@ -12,6 +12,7 @@ class SinglyLinkedList : public SceneNode {
    public:
     explicit SinglyLinkedList(const FontHolder& fonts,
                               const TextureHolder& textures,
+                              const ColorHolder& colors,
                               bool drawTail = false);
 
     int getSize() const;
@@ -49,6 +50,7 @@ class SinglyLinkedList : public SceneNode {
    private:
     const FontHolder& mFonts;
     const TextureHolder& mTextures;
+    const ColorHolder& mColors;
 
     Pointer* mHead;
     Pointer* mTail;

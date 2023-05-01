@@ -14,7 +14,8 @@
 #define DEBUG_INPUT 0
 
 namespace GUI {
-Input::Input(const FontHolder& fonts, const TextureHolder& textures)
+Input::Input(const FontHolder& fonts, const TextureHolder& textures,
+             const ColorHolder& colors)
     : mNormalTexture(textures.get(Textures::InputNormal)),
       mSelectedTexture(textures.get(Textures::InputSelected)),
       mPressedTexture(textures.get(Textures::InputSelected)),
@@ -25,20 +26,21 @@ Input::Input(const FontHolder& fonts, const TextureHolder& textures)
 
     allowChar('\n');
 
-    mText.setFillColor(Constants::mBlack);
+    mText.setFillColor(colors.get(Colors::Text));
     alignText();
 
     mSprite.setTexture(mNormalTexture);
     centerOrigin(mSprite);
 
-    mCursor.setFillColor(Constants::mBlack);
+    mCursor.setFillColor(colors.get(Colors::Text));
     mCursor.setOrigin(-4.f, 0.f);
 }
 
 std::string Input::getText() const {
     // return input text with '\n' removed
     std::string text(mText.getString());
-    text.erase(std::remove(text.begin(), text.end(), '\n'), text.end());
+    text.erase(std::remove(text.begin(), text.end(), '\n'),
+               text.end());
     return text;
 }
 
@@ -127,15 +129,17 @@ void Input::handleEvent(const sf::Event& event) {
 }
 
 bool Input::contains(sf::Vector2i point) const {
-    sf::IntRect bounds(getPosition().x - mSprite.getGlobalBounds().width / 2.f,
-                       getPosition().y - mSprite.getGlobalBounds().height / 2.f,
-                       mSprite.getGlobalBounds().width,
-                       mSprite.getGlobalBounds().height);
+    sf::IntRect bounds(
+        getPosition().x - mSprite.getGlobalBounds().width / 2.f,
+        getPosition().y - mSprite.getGlobalBounds().height / 2.f,
+        mSprite.getGlobalBounds().width,
+        mSprite.getGlobalBounds().height);
 
     return bounds.contains(point);
 }
 
-void Input::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+void Input::draw(sf::RenderTarget& target,
+                 sf::RenderStates states) const {
     states.transform *= getTransform();
     target.draw(mSprite, states);
     target.draw(mText, states);

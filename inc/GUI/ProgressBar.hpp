@@ -2,6 +2,7 @@
 #define PROGRESSBAR_HPP
 
 #include <GUI/Component.hpp>
+#include <Graphics/ColorHolder.hpp>
 #include <Graphics/ResourceHolder.hpp>
 #include <Graphics/ResourceIdentifiers.hpp>
 
@@ -13,7 +14,7 @@ class ProgressBar : public Component {
     typedef std::shared_ptr<ProgressBar> Ptr;
 
    public:
-    ProgressBar(const sf::Vector2f& size);
+    ProgressBar(const ColorHolder& colors, const sf::Vector2f& size);
 
     virtual bool isSelectable() const;
 
@@ -23,7 +24,8 @@ class ProgressBar : public Component {
     virtual void handleEvent(const sf::Event& event);
 
    private:
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+    virtual void draw(sf::RenderTarget& target,
+                      sf::RenderStates states) const;
     void updateBar();
 
    private:

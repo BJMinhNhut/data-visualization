@@ -13,7 +13,7 @@
 
 VisualStackState::VisualStackState(StateStack& stack, Context context)
     : VisualState(stack, context, "Stack"),
-      mSLL(*context.fonts, *context.textures),
+      mSLL(*context.fonts, *context.textures, *context.colors),
       GUIValueInput(OptionCount),
       GUIIndexInput(OptionCount) {
 
@@ -30,7 +30,8 @@ VisualStackState::VisualStackState(StateStack& stack, Context context)
     loadCallback();
 }
 
-void VisualStackState::centerSLL(const SceneNode::Transition& transition) {
+void VisualStackState::centerSLL(
+    const SceneNode::Transition& transition) {
     sf::Vector2u windowSize = getContext().window->getSize();
     if (mSLL.getSize() == 0)
         mSLL.setTargetPosition(windowSize.x / 2.f, windowSize.y / 4.f,
@@ -63,57 +64,67 @@ void VisualStackState::initGUIButtons() {
 
 void VisualStackState::loadNewGUI() {
     packOptionGUI(
-        New, createNewGUIButton(
-                 GUI::Button::Small,
-                 sf::Vector2f(600.f, getContext().window->getSize().y - 180.f),
-                 "Random", [this]() { GUIArrayInput->randomizeArray(); }));
-
-    packOptionGUI(
         New,
         createNewGUIButton(
             GUI::Button::Small,
-            sf::Vector2f(700.f, getContext().window->getSize().y - 180.f),
-            "Load file", [this]() {
-                std::cerr << "Load file\n";
-                auto selection = pfd::open_file("Select a text file to load",
-                                                "..", {"Text files", "*.txt"})
-                                     .result();
-                if (!selection.empty()) {
-                    GUIArrayInput->loadArray(loadArrayFromFile(selection[0]));
-                }
-            }));
+            sf::Vector2f(600.f,
+                         getContext().window->getSize().y - 180.f),
+            "Random", [this]() { GUIArrayInput->randomizeArray(); }));
+
+    packOptionGUI(
+        New, createNewGUIButton(
+                 GUI::Button::Small,
+                 sf::Vector2f(
+                     700.f, getContext().window->getSize().y - 180.f),
+                 "Load file", [this]() {
+                     std::cerr << "Load file\n";
+                     auto selection =
+                         pfd::open_file("Select a text file to load",
+                                        "..", {"Text files", "*.txt"})
+                             .result();
+                     if (!selection.empty()) {
+                         GUIArrayInput->loadArray(
+                             loadArrayFromFile(selection[0]));
+                     }
+                 }));
 
     packOptionGUI(
         New, createNewGUIButton(
                  GUI::Button::Big,
-                 sf::Vector2f(650.f, getContext().window->getSize().y - 110.f),
+                 sf::Vector2f(
+                     650.f, getContext().window->getSize().y - 110.f),
                  "Apply", [this]() {
-                     if (GUIArrayInput->validate() == GUI::Input::Success) {
+                     if (GUIArrayInput->validate() ==
+                         GUI::Input::Success) {
                          mSLL.loadData(GUIArrayInput->getArray());
                          mSLL.refreshPointerTarget();
                          resetOption();
                      }
                  }));
 
-    auto dataLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "Data",
-                                                  *getContext().fonts);
+    auto dataLabel = std::make_shared<GUI::Label>(
+        GUI::Label::Main, "Data", *getContext().fonts,
+        *getContext().colors);
     dataLabel->setPosition(firstLabelPosition);
     packOptionGUI(New, dataLabel);
 
-    GUIArrayInput = std::make_shared<GUI::InputArray>(*getContext().fonts,
-                                                      *getContext().textures);
+    GUIArrayInput = std::make_shared<GUI::InputArray>(
+        *getContext().fonts, *getContext().textures,
+        *getContext().colors);
     GUIArrayInput->setPosition(firstInputPosition);
     packOptionGUI(New, GUIArrayInput);
 }
 
 void VisualStackState::loadPushGUI() {
-    auto valueLabel = std::make_shared<GUI::Label>(GUI::Label::Main, "Value",
-                                                   *getContext().fonts);
+    auto valueLabel = std::make_shared<GUI::Label>(
+        GUI::Label::Main, "Value", *getContext().fonts,
+        *getContext().colors);
     valueLabel->setPosition(firstLabelPosition);
     packOptionGUI(Push, valueLabel);
 
     GUIValueInput[Push] = std::make_shared<GUI::InputNumber>(
-        *getContext().fonts, *getContext().textures);
+        *getContext().fonts, *getContext().textures,
+        *getContext().colors);
     GUIValueInput[Push]->setPosition(firstInputPosition);
     GUIValueInput[Push]->setRange(Constants::NODE_MINVALUE,
                                   Constants::NODE_MAXVALUE);
@@ -124,7 +135,9 @@ void VisualStackState::loadPushAnimation() {
     int value = GUIValueInput[Push]->getValue();
 
     addAnimation(
-        "Create new node to store value " + std::to_string(value) + ".", {0},
+        "Create new node to store value " + std::to_string(value) +
+            ".",
+        {0},
         [=]() {
             mSLL.pureInsert(0, value);
             mSLL.popUpNode(0);
@@ -137,10 +150,12 @@ void VisualStackState::loadPushAnimation() {
 
     if (mSLL.getSize() > 0)
         addAnimation(
-            "Set myNode.next = head.", {1}, [=]() { mSLL.setPointer(0, 1); },
+            "Set myNode.next = head.", {1},
+            [=]() { mSLL.setPointer(0, 1); },
             [=]() { mSLL.setPointer(0, -1); });
     else
-        addAnimation("Set myNode.next = head. Head is currently null.", {1});
+        addAnimation(
+            "Set myNode.next = head. Head is currently null.", {1});
 
     addAnimation(
         "Set head = myNode", {2}, [=]() { mSLL.setHeadTarget(0); },
@@ -180,11 +195,13 @@ void VisualStackState::loadPopAnimation() {
             });
 
         addAnimation(
-            "Set head to its next node.", {2}, [=]() { mSLL.setHeadTarget(1); },
+            "Set head to its next node.", {2},
+            [=]() { mSLL.setHeadTarget(1); },
             [=]() { mSLL.setHeadTarget(0); });
 
         addAnimation(
-            "Delete myNode (which is previous head).\nThe whole process is "
+            "Delete myNode (which is previous head).\nThe whole "
+            "process is "
             "O(1).",
             {3},
             [=]() {
@@ -208,7 +225,8 @@ void VisualStackState::loadClearAnimation() {
         int value = mSLL.getValue(i);
 
         addAnimation(
-            "Pop node at the top of stack", {1}, [=]() { mSLL.eraseNode(0); },
+            "Pop node at the top of stack", {1},
+            [=]() { mSLL.eraseNode(0); },
             [=]() { mSLL.insertNode(0, value); });
     }
 }
@@ -221,16 +239,19 @@ void VisualStackState::loadCallback() {
 
     setLoadAnimationCallback(Pop, [this]() { loadPopAnimation(); });
 
-    setLoadAnimationCallback(Clear, [this]() { loadClearAnimation(); });
+    setLoadAnimationCallback(Clear,
+                             [this]() { loadClearAnimation(); });
 }
 
 void VisualStackState::validateCommand() {
     switch (getCurrentOption()) {
         case New: {
-            if (GUIArrayInput->validate() == GUI::Input::InvalidValue) {
+            if (GUIArrayInput->validate() ==
+                GUI::Input::InvalidValue) {
                 callError("Value must be a number in range " +
                           GUIValueInput[Push]->getStringRange());
-            } else if (GUIArrayInput->validate() == GUI::Input::InvalidLength) {
+            } else if (GUIArrayInput->validate() ==
+                       GUI::Input::InvalidLength) {
                 callError("Stack size must be in range [1, 10]");
             } else {
                 callInfo("Init a new Stack.");
@@ -241,13 +262,15 @@ void VisualStackState::validateCommand() {
         case Push: {
             if (mSLL.getSize() == Constants::LIST_MAXSIZE) {
                 callError("Stack size limit reached!");
-            } else if (GUIValueInput[Push]->validate() != GUI::Input::Success) {
+            } else if (GUIValueInput[Push]->validate() !=
+                       GUI::Input::Success) {
                 callError("Value must be a number in range " +
                           GUIValueInput[Push]->getStringRange());
             } else {
                 int value = GUIValueInput[Push]->getValue();
-                std::string info =
-                    "Push value " + std::to_string(value) + " to stack";
+                std::string info = "Push value " +
+                                   std::to_string(value) +
+                                   " to stack";
                 callInfo(info);
                 loadCode(StackCode::push);
             }
@@ -295,13 +318,14 @@ bool VisualStackState::handleEvent(const sf::Event& event) {
 
             if (GUIValueInput[getCurrentOption()] != nullptr &&
                 !GUIValueInput[getCurrentOption()]->contains(
-                    sf::Vector2(event.mouseButton.x, event.mouseButton.y))) {
+                    sf::Vector2(event.mouseButton.x,
+                                event.mouseButton.y))) {
                 GUIValueInput[getCurrentOption()]->deactivate();
             }
 
             if (getCurrentOption() == New &&
-                !GUIArrayInput->contains(
-                    sf::Vector2(event.mouseButton.x, event.mouseButton.y))) {
+                !GUIArrayInput->contains(sf::Vector2(
+                    event.mouseButton.x, event.mouseButton.y))) {
                 GUIArrayInput->deactivate();
             }
         }

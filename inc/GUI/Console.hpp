@@ -17,15 +17,19 @@ class Console : public Label {
     typedef std::shared_ptr<Console> Ptr;
 
    public:
-    Console(const FontHolder& fonts);
+    Console(const FontHolder& fonts, const ColorHolder& colors);
     void log(LogType type, const std::string& text);
     void clean();
 
     LogType getLogType() const;
 
    private:
-    LogType currentType;
     sf::Color getColorFromType(LogType type) const;
+
+   private:
+    LogType currentType;
+    const sf::Color InfoColor;
+    const sf::Color ErrorColor;
 };
 
 }  // namespace GUI

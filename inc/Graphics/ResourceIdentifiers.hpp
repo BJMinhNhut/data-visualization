@@ -9,9 +9,9 @@ class Font;
 
 namespace Textures {
 enum ID {
-    TitleScreen,
+    Background,
 
-    SinglyNodeNormal,
+    SinglyNode,
 
     HomeNormal,
     HomeSelected,

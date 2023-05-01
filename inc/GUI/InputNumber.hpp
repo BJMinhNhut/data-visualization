@@ -2,6 +2,7 @@
 #define INPUTNUMBER_HPP
 
 #include <GUI/Input.hpp>
+#include <Graphics/ColorHolder.hpp>
 #include <Graphics/ResourceHolder.hpp>
 #include <Graphics/ResourceIdentifiers.hpp>
 
@@ -11,7 +12,9 @@ class InputNumber : public Input {
     typedef std::shared_ptr<InputNumber> Ptr;
 
    public:
-    InputNumber(const FontHolder& fonts, const TextureHolder& textures);
+    InputNumber(const FontHolder& fonts,
+                const TextureHolder& textures,
+                const ColorHolder& colors);
 
     void setValue(const int value);
     void setRange(int minValue, int maxValue);

@@ -2,6 +2,7 @@
 #define LABEL_HPP
 
 #include <GUI/Component.hpp>
+#include <Graphics/ColorHolder.hpp>
 #include <Graphics/ResourceHolder.hpp>
 #include <Graphics/ResourceIdentifiers.hpp>
 
@@ -22,7 +23,8 @@ class Label : public Component {
     typedef std::shared_ptr<Label> Ptr;
 
    public:
-    Label(Type type, const std::string& text, const FontHolder& fonts);
+    Label(Type type, const std::string& text, const FontHolder& fonts,
+          const ColorHolder& colors);
 
     virtual bool isSelectable() const;
     void setText(const std::string& text);
@@ -33,7 +35,8 @@ class Label : public Component {
 
    private:
     Fonts::ID getFontID(Type type);
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+    void draw(sf::RenderTarget& target,
+              sf::RenderStates states) const;
 
    private:
     sf::Text mText;

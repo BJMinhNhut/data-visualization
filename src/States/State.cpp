@@ -1,9 +1,13 @@
 #include <States/State.hpp>
 #include <States/StateStack.hpp>
 
-State::Context::Context(sf::RenderWindow& window, TextureHolder& textures,
-                        FontHolder& fonts)
-    : window(&window), textures(&textures), fonts(&fonts) {}
+State::Context::Context(sf::RenderWindow& window,
+                        TextureHolder& textures, FontHolder& fonts,
+                        ColorHolder& colors)
+    : window(&window),
+      textures(&textures),
+      fonts(&fonts),
+      colors(&colors) {}
 
 State::State(StateStack& stack, Context context)
     : mStack(&stack), mContext(context) {}
