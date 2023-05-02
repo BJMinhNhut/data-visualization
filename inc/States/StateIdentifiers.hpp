@@ -8,6 +8,8 @@ enum ID {
     About,
     Settings,
     MenuData,
+    VisualStaticArray,
+    VisualDynamicArray,
     VisualSLL,
     VisualDLL,
     VisualCLL,

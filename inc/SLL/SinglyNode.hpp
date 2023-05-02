@@ -7,9 +7,7 @@
 #include <Graphics/SceneNode.hpp>
 
 #include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Text.hpp>
 
 class SinglyNode : public SceneNode {
    public:
@@ -31,7 +29,6 @@ class SinglyNode : public SceneNode {
                              sf::RenderStates states) const;
 
    private:
-    const TextureHolder& mTextures;
     sf::Sprite mSprite;
     NodeData* mData;
     Pointer* mPointer;

@@ -45,6 +45,8 @@ dir:
 	$(HIDE)mkdir -p $(OBJSDIR)/Stack/
 	$(HIDE)[ -d $(OBJSDIR)/Queue ] && echo $(OBJSDIR)/Queue/ found || echo Make directory $(OBJSDIR)/Queue/
 	$(HIDE)mkdir -p $(OBJSDIR)/Queue/
+	$(HIDE)[ -d $(OBJSDIR)/Array ] && echo $(OBJSDIR)/Array/ found || echo Make directory $(OBJSDIR)/Array/
+	$(HIDE)mkdir -p $(OBJSDIR)/Array/
 
 $(BINDIR)/$(TARGET): $(OBJS)
 	$(HIDE)echo Linking $@

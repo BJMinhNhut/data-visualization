@@ -5,13 +5,11 @@
 #include <Graphics/ResourceIdentifiers.hpp>
 #include <Graphics/SceneNode.hpp>
 
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Text.hpp>
 
 class NodeData : public SceneNode {
    public:
-    explicit NodeData(int value, const FontHolder& fonts,
+    explicit NodeData(const FontHolder& fonts,
                       const ColorHolder& colors);
     int getValue();
     void setValue(int value);
@@ -23,10 +21,7 @@ class NodeData : public SceneNode {
 
    private:
     int mValue;
-
-    sf::Color mColor;
     sf::Text mText;
-    sf::RectangleShape mRect;
 };
 
 #endif  // NODEDATA_HPP

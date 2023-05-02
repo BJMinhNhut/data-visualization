@@ -42,7 +42,7 @@ MenuDataState::MenuDataState(StateStack& stack, Context context)
         context.window->getSize().x / 2.f - 140.f, 410.f);
     StaticButton->setCallback([this]() {
         requestStackPop();
-        requestStackPush(States::VisualDLL);
+        requestStackPush(States::VisualStaticArray);
     });
     mGUIContainer.pack(StaticButton);
 

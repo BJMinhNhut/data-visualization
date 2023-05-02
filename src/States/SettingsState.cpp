@@ -150,6 +150,8 @@ void SettingsState::loadLightTheme() {
 
     getContext().textures->load(Textures::SinglyNode,
                                 "data/images/node-singly.png");
+    getContext().textures->load(Textures::ArrayNode,
+                                "data/images/node-array.png");
 
     getContext().textures->load(Textures::CheckBoxNormal,
                                 "data/images/checkbox-normal.png");
@@ -273,6 +275,8 @@ void SettingsState::loadDarkTheme() {
 
     getContext().textures->load(Textures::SinglyNode,
                                 "data/images/node-singly-dark.png");
+    getContext().textures->load(Textures::ArrayNode,
+                                "data/images/node-array-dark.png");
 
     getContext().textures->load(
         Textures::CheckBoxNormal,

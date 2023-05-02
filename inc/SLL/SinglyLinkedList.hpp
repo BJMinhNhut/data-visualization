@@ -55,11 +55,9 @@ class SinglyLinkedList : public SceneNode {
     Pointer* mHead;
     Pointer* mTail;
     std::map<std::string, Pointer*> mHighlight;
-
     int highlightIndex;
 
     std::vector<SinglyNode*> nodes;
-
     SinglyNode* tempNode;
 };
 

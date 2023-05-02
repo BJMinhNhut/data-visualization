@@ -1,4 +1,5 @@
 #include <Application.hpp>
+#include <Array/VisualStaticState.hpp>
 #include <Constants.hpp>
 #include <Queue/VisualQueueState.hpp>
 #include <SLL/VisualSLLState.hpp>
@@ -19,7 +20,7 @@ const sf::Time Application::TimePerFrame = sf::seconds(1.f / 60.f);
 
 Application::Application()
     : mWindow(sf::VideoMode(1600, 900), "Data Visualization",
-              sf::Style::Close, sf::ContextSettings(0, 0, 16)),
+              sf::Style::Close, sf::ContextSettings(0, 0, 4)),
       mTextures(),
       mFonts(),
       mColors(),
@@ -116,6 +117,8 @@ void Application::registerStates() {
     mStateStack.registerState<AboutState>(States::About);
     mStateStack.registerState<SettingsState>(States::Settings);
     mStateStack.registerState<MenuDataState>(States::MenuData);
+    mStateStack.registerState<VisualStaticState>(
+        States::VisualStaticArray);
     mStateStack.registerState<VisualSLLState>(States::VisualSLL);
     mStateStack.registerState<VisualDLLState>(States::VisualDLL);
     mStateStack.registerState<VisualStackState>(States::VisualStack);
@@ -136,6 +139,7 @@ void Application::loadLightTheme() {
 
     mTextures.load(Textures::SinglyNode,
                    "data/images/node-singly.png");
+    mTextures.load(Textures::ArrayNode, "data/images/node-array.png");
 
     mTextures.load(Textures::CheckBoxNormal,
                    "data/images/checkbox-normal.png");
@@ -245,6 +249,8 @@ void Application::loadDarkTheme() {
 
     mTextures.load(Textures::SinglyNode,
                    "data/images/node-singly-dark.png");
+    mTextures.load(Textures::ArrayNode,
+                   "data/images/node-array-dark.png");
 
     mTextures.load(Textures::CheckBoxNormal,
                    "data/images/checkbox-normal-dark.png");
@@ -320,7 +326,7 @@ void Application::loadDarkTheme() {
     mTextures.load(Textures::MenuDLLSelected,
                    "data/images/menu-dll-selected.png");
     mTextures.load(Textures::MenuCLLNormal,
-                   "data/images/menu-cll-normal.png");
+                   "data/images/menu-cll-normal-dark.png");
     mTextures.load(Textures::MenuCLLSelected,
                    "data/images/menu-cll-selected.png");
     mTextures.load(Textures::MenuStackNormal,
