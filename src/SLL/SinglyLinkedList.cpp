@@ -102,6 +102,9 @@ void SinglyLinkedList::insertNode(const int& index, int value) {
     SinglyNode* newNode = new SinglyNode(mFonts, mTextures, mColors);
     if (value != -1)
         newNode->setValue(value);
+    else
+        newNode->setValue(Random::get(Constants::NODE_MINVALUE,
+                                      Constants::NODE_MAXVALUE));
 
     insertNode(index, newNode);
 }

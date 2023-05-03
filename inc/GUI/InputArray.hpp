@@ -17,6 +17,7 @@ class InputArray : public Input {
                const ColorHolder& colors);
 
     void randomizeArray();
+    void randomizeArray(const int maxSize);
     ValidationResult validate() const;
     std::vector<int> getArray() const;
 

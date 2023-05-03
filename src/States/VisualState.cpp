@@ -51,10 +51,10 @@ int VisualState::getCurrentOption() const {
 
 void VisualState::initGUIPanels() {
     auto codePanel = std::make_shared<GUI::Panel>(
-        500.f, 250.f, getContext().colors->get(Colors::UISecondary),
+        500.f, 300.f, getContext().colors->get(Colors::UISecondary),
         getContext().colors->get(Colors::UIBorder));
     codePanel->setPosition(800.f,
-                           getContext().window->getSize().y - 400.f);
+                           getContext().window->getSize().y - 450.f);
 
     auto progressPanel = std::make_shared<GUI::Panel>(
         500.f, 100.f, getContext().colors->get(Colors::UIPrimary),
@@ -66,19 +66,19 @@ void VisualState::initGUIPanels() {
         500.f, 100.f, getContext().colors->get(Colors::UISecondary),
         getContext().colors->get(Colors::UIBorder));
     consolePanel->setPosition(
-        300.f, getContext().window->getSize().y - 400.f);
+        300.f, getContext().window->getSize().y - 450.f);
 
     auto commandPanel = std::make_shared<GUI::Panel>(
-        200.f, 250.f, getContext().colors->get(Colors::UIPrimary),
+        200.f, 300.f, getContext().colors->get(Colors::UIPrimary),
         getContext().colors->get(Colors::UIBorder));
     commandPanel->setPosition(
-        300.f, getContext().window->getSize().y - 300.f);
+        300.f, getContext().window->getSize().y - 350.f);
 
     auto executePanel = std::make_shared<GUI::Panel>(
-        300.f, 250.f, getContext().colors->get(Colors::UIPrimary),
+        300.f, 300.f, getContext().colors->get(Colors::UIPrimary),
         getContext().colors->get(Colors::UIBorder));
     executePanel->setPosition(
-        500.f, getContext().window->getSize().y - 300.f);
+        500.f, getContext().window->getSize().y - 350.f);
 
     mGUIContainer.pack(consolePanel);
     mGUIContainer.pack(executePanel);
@@ -150,7 +150,7 @@ void VisualState::initGUIButtons() {
 }
 void VisualState::addOption(int option, std::string title,
                             GUI::Button::Callback callback) {
-    sf::Vector2f position(400u, 625u + 50.f * int(option - 1));
+    sf::Vector2f position(400u, 575u + 50.f * int(option - 1));
     GUIOptionContainer.pack(createNewGUIButton(
         GUI::Button::Command, position, title, callback, true));
 }
@@ -159,7 +159,7 @@ void VisualState::initConsole() {
     GUIConsole = std::make_shared<GUI::Console>(*getContext().fonts,
                                                 *getContext().colors);
     GUIConsole->setPosition(315.f,
-                            getContext().window->getSize().y - 390.f);
+                            getContext().window->getSize().y - 440.f);
     mGUIContainer.pack(GUIConsole);
 
     GUIProgressBar = std::make_shared<GUI::ProgressBar>(
@@ -171,7 +171,7 @@ void VisualState::initConsole() {
     GUICodeBlock = std::make_shared<GUI::CodeBlock>(
         *getContext().fonts, *getContext().colors);
     GUICodeBlock->setPosition(
-        800.f, getContext().window->getSize().y - 400.f);
+        800.f, getContext().window->getSize().y - 450.f);
     mGUIContainer.pack(GUICodeBlock);
 }
 

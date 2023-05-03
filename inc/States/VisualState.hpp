@@ -12,10 +12,10 @@
 
 #include <SFML/Graphics/Sprite.hpp>
 
-sf::Vector2f const firstInputPosition(650.f, 675.f);
+sf::Vector2f const firstInputPosition(650.f, 625.f);
 sf::Vector2f const firstLabelPosition(firstInputPosition +
                                       sf::Vector2f(-100.f, -45.f));
-sf::Vector2f const secondInputPosition(650.f, 800.f);
+sf::Vector2f const secondInputPosition(650.f, 750.f);
 sf::Vector2f const secondLabelPosition(secondInputPosition +
                                        sf::Vector2f(-100.f, -45.f));
 class VisualState : public State {
@@ -38,14 +38,16 @@ class VisualState : public State {
     void setCurrentOption(int option);
     void resetOption();
 
-    void setLoadAnimationCallback(int option, GUI::Button::Callback callback);
+    void setLoadAnimationCallback(int option,
+                                  GUI::Button::Callback callback);
 
     void callError(const std::string& text);
     void callInfo(const std::string& text);
     void cleanLog();
 
     void addAnimation(
-        const std::string& description, const std::vector<int>& highlightLineID,
+        const std::string& description,
+        const std::vector<int>& highlightLineID,
         const std::function<void()>& forward = []() {},
         const std::function<void()>& backward = []() {});
 
@@ -58,8 +60,9 @@ class VisualState : public State {
     virtual void resetDataStructure() = 0;
 
     std::shared_ptr<GUI::Button> createNewGUIButton(
-        GUI::Button::Type type, sf::Vector2f position, std::string label,
-        GUI::Button::Callback callback, bool toggle = false);
+        GUI::Button::Type type, sf::Vector2f position,
+        std::string label, GUI::Button::Callback callback,
+        bool toggle = false);
 
    private:
     void initGUIButtons();

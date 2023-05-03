@@ -5,6 +5,7 @@
 #include <GUI/Label.hpp>
 #include <GUI/Panel.hpp>
 #include <Graphics/ResourceHolder.hpp>
+#include <Random.hpp>
 #include <Utility.hpp>
 
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -22,8 +23,9 @@ VisualStaticState::VisualStaticState(StateStack& stack,
 
     loadCallback();
 
-    mArray.create(10);
-    GUIArrayInput->randomizeArray();
+    mArray.create(Random::get(Constants::ARRAY_MAXSIZE - 3,
+                              Constants::ARRAY_MAXSIZE));
+    GUIArrayInput->randomizeArray(mArray.getArraySize());
     mArray.loadData(GUIArrayInput->getArray());
     centerArray(SceneNode::None);
 }
@@ -39,6 +41,7 @@ void VisualStaticState::centerArray(
 void VisualStaticState::initGUIButtons() {
     addOption(New, "Create", [this]() {
         setCurrentOption(New);
+        GUIIndexInput[New]->setValue(mArray.getArraySize());
         GUIArrayInput->loadArray(mArray.getData());
     });
 
@@ -52,22 +55,70 @@ void VisualStaticState::initGUIButtons() {
 }
 
 void VisualStaticState::loadNewGUI() {
-	// TODO:
-	// + Array size input
-	// + Randomize elements depending on array size
+    // TODO:
+    // + Array size input
+    // + Randomize elements depending on array size
     packOptionGUI(
         New,
         createNewGUIButton(
-            GUI::Button::Small,
-            sf::Vector2f(600.f,
-                         getContext().window->getSize().y - 180.f),
-            "Random", [this]() { GUIArrayInput->randomizeArray(); }));
+            GUI::Button::Big,
+            sf::Vector2f(650.f,
+                         getContext().window->getSize().y - 90.f),
+            "Apply", [this]() {
+                if (GUIArrayInput->validate() ==
+                        GUI::Input::Success &&
+                    GUIIndexInput[New]->validate() ==
+                        GUI::Input::Success &&
+                    GUIArrayInput->getArray().size() <=
+                        GUIIndexInput[New]->getValue()) {
+                    mArray.create(GUIIndexInput[New]->getValue());
+                    mArray.loadData(GUIArrayInput->getArray());
+                    resetOption();
+                }
+            }));
+
+    auto sizeLabel = std::make_shared<GUI::Label>(
+        GUI::Label::Main, "Array size", *getContext().fonts,
+        *getContext().colors);
+    sizeLabel->setPosition(firstLabelPosition);
+    packOptionGUI(New, sizeLabel);
+
+    GUIIndexInput[New] = std::make_shared<GUI::InputNumber>(
+        *getContext().fonts, *getContext().textures,
+        *getContext().colors);
+    GUIIndexInput[New]->setPosition(firstInputPosition);
+    GUIIndexInput[New]->setRange(1, Constants::ARRAY_MAXSIZE);
+    packOptionGUI(New, GUIIndexInput[New]);
+
+    auto dataLabel = std::make_shared<GUI::Label>(
+        GUI::Label::Main, "Data", *getContext().fonts,
+        *getContext().colors);
+    dataLabel->setPosition(firstLabelPosition +
+                           sf::Vector2f(0.f, 90.f));
+    packOptionGUI(New, dataLabel);
+
+    GUIArrayInput = std::make_shared<GUI::InputArray>(
+        *getContext().fonts, *getContext().textures,
+        *getContext().colors);
+    GUIArrayInput->setPosition(firstInputPosition +
+                               sf::Vector2f(0.f, 90.f));
+    packOptionGUI(New, GUIArrayInput);
 
     packOptionGUI(
         New, createNewGUIButton(
                  GUI::Button::Small,
                  sf::Vector2f(
-                     700.f, getContext().window->getSize().y - 180.f),
+                     600.f, getContext().window->getSize().y - 140.f),
+                 "Random", [this]() {
+                     GUIArrayInput->randomizeArray(
+                         GUIIndexInput[New]->getValue());
+                 }));
+
+    packOptionGUI(
+        New, createNewGUIButton(
+                 GUI::Button::Small,
+                 sf::Vector2f(
+                     700.f, getContext().window->getSize().y - 140.f),
                  "Load file", [this]() {
                      std::cerr << "Load file\n";
                      auto selection =
@@ -79,35 +130,11 @@ void VisualStaticState::loadNewGUI() {
                              loadArrayFromFile(selection[0]));
                      }
                  }));
-
-    packOptionGUI(
-        New, createNewGUIButton(
-                 GUI::Button::Big,
-                 sf::Vector2f(
-                     650.f, getContext().window->getSize().y - 110.f),
-                 "Apply", [this]() {
-                     if (GUIArrayInput->validate() ==
-                         GUI::Input::Success) {
-                         mArray.loadData(GUIArrayInput->getArray());
-                         resetOption();
-                     }
-                 }));
-
-    auto dataLabel = std::make_shared<GUI::Label>(
-        GUI::Label::Main, "Data", *getContext().fonts,
-        *getContext().colors);
-    dataLabel->setPosition(firstLabelPosition);
-    packOptionGUI(New, dataLabel);
-
-    GUIArrayInput = std::make_shared<GUI::InputArray>(
-        *getContext().fonts, *getContext().textures,
-        *getContext().colors);
-    GUIArrayInput->setPosition(firstInputPosition);
-    packOptionGUI(New, GUIArrayInput);
 }
 
 void VisualStaticState::loadCallback() {
     setLoadAnimationCallback(New, [this]() {
+        mArray.create(GUIIndexInput[New]->getValue());
         mArray.loadData(GUIArrayInput->getArray());
     });
 }
@@ -119,9 +146,17 @@ void VisualStaticState::validateCommand() {
                 GUI::Input::InvalidValue) {
                 callError("Value must be a number in range " +
                           GUIValueInput[Add]->getStringRange());
-            } else if (GUIArrayInput->validate() ==
-                       GUI::Input::InvalidLength) {
+            } else if (GUIIndexInput[New]->validate() ==
+                       GUI::Input::InvalidValue) {
                 callError("Array size must be in range [1, 10]");
+            } else if (GUIArrayInput->validate() ==
+                           GUI::Input::InvalidLength ||
+                       GUIArrayInput->getArray().size() >
+                           GUIIndexInput[New]->getValue()) {
+                callError(
+                    "Number of elements must be in range [1, " +
+                    std::to_string(GUIIndexInput[New]->getValue()) +
+                    "]");
             } else {
                 callInfo("Init a new Static Array.");
             }
@@ -155,6 +190,13 @@ bool VisualStaticState::handleEvent(const sf::Event& event) {
                     sf::Vector2(event.mouseButton.x,
                                 event.mouseButton.y))) {
                 GUIValueInput[getCurrentOption()]->deactivate();
+            }
+
+            if (GUIIndexInput[getCurrentOption()] != nullptr &&
+                !GUIIndexInput[getCurrentOption()]->contains(
+                    sf::Vector2(event.mouseButton.x,
+                                event.mouseButton.y))) {
+                GUIIndexInput[getCurrentOption()]->deactivate();
             }
 
             if (getCurrentOption() == New &&

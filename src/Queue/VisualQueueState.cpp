@@ -69,14 +69,14 @@ void VisualQueueState::loadNewGUI() {
         createNewGUIButton(
             GUI::Button::Small,
             sf::Vector2f(600.f,
-                         getContext().window->getSize().y - 180.f),
+                         getContext().window->getSize().y - 230.f),
             "Random", [this]() { GUIArrayInput->randomizeArray(); }));
 
     packOptionGUI(
         New, createNewGUIButton(
                  GUI::Button::Small,
                  sf::Vector2f(
-                     700.f, getContext().window->getSize().y - 180.f),
+                     700.f, getContext().window->getSize().y - 230.f),
                  "Load file", [this]() {
                      std::cerr << "Load file\n";
                      auto selection =

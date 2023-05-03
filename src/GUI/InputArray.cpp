@@ -8,7 +8,7 @@
 #include <sstream>
 #include <string>
 
-#define DEBUG_INPUT_ARRAY 0
+#define DEBUG_INPUT_ARRAY 1
 namespace GUI {
 InputArray::InputArray(const FontHolder& fonts,
                        const TextureHolder& textures,
@@ -19,7 +19,12 @@ InputArray::InputArray(const FontHolder& fonts,
 }
 
 void InputArray::randomizeArray() {
-    int length = Random::get(1, Constants::LIST_MAXSIZE);
+    randomizeArray(Constants::LIST_MAXSIZE);
+}
+
+void InputArray::randomizeArray(const int maxSize) {
+    assert(maxSize >= 1);
+    int length = Random::get(1, maxSize);
     std::string buffer;
 
     for (int index = 0; index < length; ++index) {
@@ -50,13 +55,6 @@ Input::ValidationResult InputArray::validate() const {
     int length = 0;
     for (char mChar : text) {
         if (mChar == ',') {
-            if (currentValue > Constants::NODE_MAXVALUE) {
-                if (DEBUG_INPUT_ARRAY)
-                    std::cerr << "Value too big: " << currentValue
-                              << " \n";
-                return Input::InvalidValue;
-            }
-
             length++;
             currentValue = 0;
         } else if (std::isdigit(mChar)) {
@@ -68,6 +66,13 @@ Input::ValidationResult InputArray::validate() const {
             if (DEBUG_INPUT_ARRAY)
                 std::cerr << "Array too long: " << length << "\n";
             return Input::InvalidLength;
+        }
+
+        if (currentValue > Constants::NODE_MAXVALUE) {
+            if (DEBUG_INPUT_ARRAY)
+                std::cerr << "Value too big: " << currentValue
+                          << " \n";
+            return Input::InvalidValue;
         }
     }
 

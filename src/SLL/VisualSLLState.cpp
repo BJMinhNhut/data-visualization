@@ -87,14 +87,14 @@ void VisualSLLState::loadNewGUI() {
         createNewGUIButton(
             GUI::Button::Small,
             sf::Vector2f(600.f,
-                         getContext().window->getSize().y - 180.f),
+                         getContext().window->getSize().y - 230.f),
             "Random", [this]() { GUIArrayInput->randomizeArray(); }));
 
     packOptionGUI(
         New, createNewGUIButton(
                  GUI::Button::Small,
                  sf::Vector2f(
-                     700.f, getContext().window->getSize().y - 180.f),
+                     700.f, getContext().window->getSize().y - 230.f),
                  "Load file", [this]() {
                      std::cerr << "Load file\n";
                      auto selection =
@@ -153,7 +153,7 @@ void VisualSLLState::loadAddGUI() {
         createNewGUIButton(
             GUI::Button::Small,
             sf::Vector2f(600.f,
-                         getContext().window->getSize().y - 180.f),
+                         getContext().window->getSize().y - 230.f),
             "Front", [this]() { GUIIndexInput[Add]->setValue(0); }));
 
     // back option
@@ -161,7 +161,7 @@ void VisualSLLState::loadAddGUI() {
         Add, createNewGUIButton(
                  GUI::Button::Small,
                  sf::Vector2f(
-                     700.f, getContext().window->getSize().y - 180.f),
+                     700.f, getContext().window->getSize().y - 230.f),
                  "Back", [this]() {
                      GUIIndexInput[Add]->setValue(mSLL.getSize());
                  }));
@@ -313,7 +313,7 @@ void VisualSLLState::loadDeleteGUI() {
         createNewGUIButton(
             GUI::Button::Small,
             sf::Vector2f(600.f,
-                         getContext().window->getSize().y - 180.f),
+                         getContext().window->getSize().y - 230.f),
             "Front",
             [this]() { GUIIndexInput[Delete]->setValue(0); }));
 
@@ -323,7 +323,7 @@ void VisualSLLState::loadDeleteGUI() {
         createNewGUIButton(
             GUI::Button::Small,
             sf::Vector2f(700.f,
-                         getContext().window->getSize().y - 180.f),
+                         getContext().window->getSize().y - 230.f),
             "Back", [this]() {
                 GUIIndexInput[Delete]->setValue(mSLL.getSize() - 1);
             }));
@@ -539,7 +539,7 @@ void VisualSLLState::loadUpdateGUI() {
         createNewGUIButton(
             GUI::Button::Small,
             sf::Vector2f(600.f,
-                         getContext().window->getSize().y - 180.f),
+                         getContext().window->getSize().y - 230.f),
             "Front",
             [this]() { GUIIndexInput[Update]->setValue(0); }));
 
@@ -549,7 +549,7 @@ void VisualSLLState::loadUpdateGUI() {
         createNewGUIButton(
             GUI::Button::Small,
             sf::Vector2f(700.f,
-                         getContext().window->getSize().y - 180.f),
+                         getContext().window->getSize().y - 230.f),
             "Back", [this]() {
                 GUIIndexInput[Update]->setValue(mSLL.getSize() - 1);
             }));

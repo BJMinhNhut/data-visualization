@@ -14,7 +14,8 @@ float const NODE_DISTANCE = 80.f;
 
 int const NODE_MAXVALUE = 99;
 int const NODE_MINVALUE = 0;
-unsigned int const LIST_MAXSIZE = 10;
+int const LIST_MAXSIZE = 10;
+int const ARRAY_MAXSIZE = 10;
 
 // Math
 float const PI = 3.14159265;
