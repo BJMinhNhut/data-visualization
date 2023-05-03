@@ -8,7 +8,7 @@
 #include <sstream>
 #include <string>
 
-#define DEBUG_INPUT_ARRAY 1
+#define DEBUG_INPUT_ARRAY 0
 namespace GUI {
 InputArray::InputArray(const FontHolder& fonts,
                        const TextureHolder& textures,

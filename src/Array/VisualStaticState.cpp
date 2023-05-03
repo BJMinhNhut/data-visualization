@@ -1,4 +1,5 @@
 #include <portable-file-dialogs.h>
+#include <Array/StaticArrayCode.hpp>
 #include <Array/VisualStaticState.hpp>
 #include <Constants.hpp>
 #include <GUI/Button.hpp>
@@ -20,6 +21,7 @@ VisualStaticState::VisualStaticState(StateStack& stack,
     initGUIButtons();
 
     loadNewGUI();
+    loadAddGUI();
 
     loadCallback();
 
@@ -47,6 +49,8 @@ void VisualStaticState::initGUIButtons() {
 
     addOption(Add, "Add", [this]() {
         setCurrentOption(Add);
+        GUIIndexInput[Add]->setRange(0, mArray.getUsingSize());
+        GUIIndexInput[Add]->randomizeValue();
         GUIValueInput[Add]->randomizeValue();
     });
 
@@ -55,9 +59,6 @@ void VisualStaticState::initGUIButtons() {
 }
 
 void VisualStaticState::loadNewGUI() {
-    // TODO:
-    // + Array size input
-    // + Randomize elements depending on array size
     packOptionGUI(
         New,
         createNewGUIButton(
@@ -132,11 +133,63 @@ void VisualStaticState::loadNewGUI() {
                  }));
 }
 
+void VisualStaticState::loadAddGUI() {
+    auto indexLabel = std::make_shared<GUI::Label>(
+        GUI::Label::Main, "Position", *getContext().fonts,
+        *getContext().colors);
+    indexLabel->setPosition(firstLabelPosition);
+    packOptionGUI(Add, indexLabel);
+
+    GUIIndexInput[Add] = std::make_shared<GUI::InputNumber>(
+        *getContext().fonts, *getContext().textures,
+        *getContext().colors);
+    GUIIndexInput[Add]->setPosition(firstInputPosition);
+    packOptionGUI(Add, GUIIndexInput[Add]);
+
+    // front option
+    packOptionGUI(
+        Add,
+        createNewGUIButton(
+            GUI::Button::Small,
+            sf::Vector2f(600.f,
+                         getContext().window->getSize().y - 230.f),
+            "Front", [this]() { GUIIndexInput[Add]->setValue(0); }));
+
+    // back option
+    packOptionGUI(
+        Add,
+        createNewGUIButton(
+            GUI::Button::Small,
+            sf::Vector2f(700.f,
+                         getContext().window->getSize().y - 230.f),
+            "Back", [this]() {
+                GUIIndexInput[Add]->setValue(mArray.getUsingSize());
+            }));
+
+    auto valueLabel = std::make_shared<GUI::Label>(
+        GUI::Label::Main, "Value", *getContext().fonts,
+        *getContext().colors);
+    valueLabel->setPosition(secondLabelPosition);
+    packOptionGUI(Add, valueLabel);
+
+    GUIValueInput[Add] = std::make_shared<GUI::InputNumber>(
+        *getContext().fonts, *getContext().textures,
+        *getContext().colors);
+    GUIValueInput[Add]->setPosition(secondInputPosition);
+    GUIValueInput[Add]->setRange(Constants::NODE_MINVALUE,
+                                 Constants::NODE_MAXVALUE);
+    packOptionGUI(Add, GUIValueInput[Add]);
+}
+
+void VisualStaticState::loadAddAnimation() {}
+
 void VisualStaticState::loadCallback() {
     setLoadAnimationCallback(New, [this]() {
         mArray.create(GUIIndexInput[New]->getValue());
         mArray.loadData(GUIArrayInput->getArray());
     });
+
+    setLoadAnimationCallback(Add, [this]() { loadAddAnimation(); });
 }
 
 void VisualStaticState::validateCommand() {
@@ -159,6 +212,40 @@ void VisualStaticState::validateCommand() {
                     "]");
             } else {
                 callInfo("Init a new Static Array.");
+            }
+            break;
+        }
+
+        case Add: {
+            if (mArray.getUsingSize() == mArray.getArraySize()) {
+                callError("Using size reach array size!");
+            } else if (GUIIndexInput[Add]->validate() !=
+                       GUI::Input::Success) {
+                callError("Index must be a number in range " +
+                          GUIIndexInput[Add]->getStringRange());
+            } else if (GUIValueInput[Add]->validate() !=
+                       GUI::Input::Success) {
+                callError("Value must be a number in range " +
+                          GUIValueInput[Add]->getStringRange());
+            } else {
+                int value = GUIValueInput[Add]->getValue(),
+                    index = GUIIndexInput[Add]->getValue();
+                std::string info =
+                    "Insert " + std::to_string(value) + " to ";
+                if (index == 0)
+                    info += "front";
+                else if (index == mArray.getUsingSize())
+                    info += "back";
+                else
+                    info += "index " + std::to_string(index);
+                callInfo(info);
+
+                if (index == 0)
+                    loadCode(StaticArrayCode::insertFront);
+                else if (index < mArray.getUsingSize())
+                    loadCode(StaticArrayCode::insertMiddle);
+                else
+                    loadCode(StaticArrayCode::insertBack);
             }
             break;
         }

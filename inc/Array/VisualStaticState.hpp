@@ -37,8 +37,8 @@ class VisualStaticState : public VisualState {
 
     void loadNewGUI();
 
-    // void loadEnqueueGUI();
-    // void loadEnqueueAnimation();
+    void loadAddGUI();
+    void loadAddAnimation();
 
     // void loadDequeueGUI();
     // void loadDequeueAnimation();
