@@ -27,7 +27,7 @@ const std::string eraseMiddle = {
 
 const std::string eraseBack = {"n--\n"};
 
-const std::string insertFront = {
+const std::string eraseFront = {
     "for(i = 0; i+1 < n; ++i)\n"
     "	a[i] = a[i+1]\n"
     "n--"};
