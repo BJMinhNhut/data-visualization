@@ -43,6 +43,9 @@ class VisualStaticState : public VisualState {
     void loadDeleteGUI();
     void loadDeleteAnimation();
 
+    void loadUpdateGUI();
+    void loadUpdateAnimation();
+
     void loadAccessGUI();
     void loadAccessAnimation();
 

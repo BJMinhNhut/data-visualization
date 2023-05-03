@@ -717,7 +717,7 @@ void VisualSLLState::validateCommand() {
 
         case Update: {
             if (mSLL.getSize() == 0) {
-                callError("List Empty");
+                callError("List is empty!");
             } else if (GUIIndexInput[Update]->validate() !=
                        GUI::Input::Success) {
                 callError("Index must be a number in range " +

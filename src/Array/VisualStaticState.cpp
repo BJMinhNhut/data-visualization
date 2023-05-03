@@ -23,6 +23,7 @@ VisualStaticState::VisualStaticState(StateStack& stack,
     loadNewGUI();
     loadAddGUI();
     loadDeleteGUI();
+    loadUpdateGUI();
     loadAccessGUI();
 
     loadCallback();
@@ -61,6 +62,14 @@ void VisualStaticState::initGUIButtons() {
         GUIIndexInput[Delete]->setRange(
             0, std::max(0, (int)mArray.getUsingSize() - 1));
         GUIIndexInput[Delete]->randomizeValue();
+    });
+
+    addOption(Update, "Update", [this]() {
+        setCurrentOption(Update);
+        GUIIndexInput[Update]->setRange(
+            0, std::max(0, (int)mArray.getUsingSize() - 1));
+        GUIIndexInput[Update]->randomizeValue();
+        GUIValueInput[Update]->randomizeValue();
     });
 
     addOption(Access, "Access", [this]() {
@@ -400,6 +409,75 @@ void VisualStaticState::loadDeleteAnimation() {
     }
 }
 
+void VisualStaticState::loadUpdateGUI() {
+    auto indexLabel = std::make_shared<GUI::Label>(
+        GUI::Label::Main, "Position", *getContext().fonts,
+        *getContext().colors);
+    indexLabel->setPosition(firstLabelPosition);
+    packOptionGUI(Update, indexLabel);
+
+    GUIIndexInput[Update] = std::make_shared<GUI::InputNumber>(
+        *getContext().fonts, *getContext().textures,
+        *getContext().colors);
+    GUIIndexInput[Update]->setPosition(firstInputPosition);
+    packOptionGUI(Update, GUIIndexInput[Update]);
+
+    // front option
+    packOptionGUI(
+        Update,
+        createNewGUIButton(
+            GUI::Button::Small,
+            sf::Vector2f(600.f,
+                         getContext().window->getSize().y - 230.f),
+            "Front",
+            [this]() { GUIIndexInput[Update]->setValue(0); }));
+
+    // back option
+    packOptionGUI(
+        Update,
+        createNewGUIButton(
+            GUI::Button::Small,
+            sf::Vector2f(700.f,
+                         getContext().window->getSize().y - 230.f),
+            "Back", [this]() {
+                GUIIndexInput[Update]->setValue(
+                    mArray.getUsingSize() - 1);
+            }));
+
+    auto valueLabel = std::make_shared<GUI::Label>(
+        GUI::Label::Main, "New value", *getContext().fonts,
+        *getContext().colors);
+    valueLabel->setPosition(secondLabelPosition);
+    packOptionGUI(Update, valueLabel);
+
+    GUIValueInput[Update] = std::make_shared<GUI::InputNumber>(
+        *getContext().fonts, *getContext().textures,
+        *getContext().colors);
+    GUIValueInput[Update]->setPosition(secondInputPosition);
+    GUIValueInput[Update]->setRange(Constants::NODE_MINVALUE,
+                                    Constants::NODE_MAXVALUE);
+    packOptionGUI(Update, GUIValueInput[Update]);
+}
+
+void VisualStaticState::loadUpdateAnimation() {
+    int index = GUIIndexInput[Update]->getValue();
+    int value = GUIIndexInput[Update]->getValue();
+    int oldValue = mArray.getNode(index);
+    addAnimation(
+        "Node at index " + std::to_string(index) +
+            " has been updated to " + std::to_string(value) +
+            ". The\nwhole process complexity is O(1).",
+        {0},
+        [=]() {
+            mArray.highlight(index);
+            mArray.setNode(index, value);
+        },
+        [=]() {
+            mArray.unhighlight(index);
+            mArray.setNode(index, oldValue);
+        });
+}
+
 void VisualStaticState::loadAccessGUI() {
     auto indexLabel = std::make_shared<GUI::Label>(
         GUI::Label::Main, "Position", *getContext().fonts,
@@ -455,6 +533,8 @@ void VisualStaticState::loadCallback() {
     setLoadAnimationCallback(Add, [this]() { loadAddAnimation(); });
     setLoadAnimationCallback(Delete,
                              [this]() { loadDeleteAnimation(); });
+    setLoadAnimationCallback(Update,
+                             [this]() { loadUpdateAnimation(); });
     setLoadAnimationCallback(Access,
                              [this]() { loadAccessAnimation(); });
 }
@@ -540,6 +620,29 @@ void VisualStaticState::validateCommand() {
                 }
 
                 callInfo(info);
+            }
+            break;
+        }
+
+        case Update: {
+            if (mArray.getUsingSize() == 0) {
+                callError("Array is empty!");
+            } else if (GUIIndexInput[Update]->validate() !=
+                       GUI::Input::Success) {
+                callError("Index must be a number in range " +
+                          GUIIndexInput[Update]->getStringRange());
+            } else if (GUIValueInput[Update]->validate() !=
+                       GUI::Input::Success) {
+                callError("Value must be a number in range " +
+                          GUIValueInput[Update]->getStringRange());
+            } else {
+                callInfo("Update node at index " +
+                         std::to_string(
+                             GUIIndexInput[Update]->getValue()) +
+                         " to " +
+                         std::to_string(
+                             GUIValueInput[Update]->getValue()));
+                loadCode(StaticArrayCode::update);
             }
             break;
         }
