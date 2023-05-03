@@ -22,6 +22,8 @@ VisualStaticState::VisualStaticState(StateStack& stack,
 
     loadNewGUI();
     loadAddGUI();
+    loadDeleteGUI();
+    loadAccessGUI();
 
     loadCallback();
 
@@ -54,8 +56,19 @@ void VisualStaticState::initGUIButtons() {
         GUIValueInput[Add]->randomizeValue();
     });
 
-    addOption(Delete, "Delete",
-              [this]() { setCurrentOption(Delete); });
+    addOption(Delete, "Delete", [this]() {
+        setCurrentOption(Delete);
+        GUIIndexInput[Delete]->setRange(
+            0, std::max(0, (int)mArray.getUsingSize() - 1));
+        GUIIndexInput[Delete]->randomizeValue();
+    });
+
+    addOption(Access, "Access", [this]() {
+        setCurrentOption(Access);
+        GUIIndexInput[Access]->setRange(
+            0, std::max(0, (int)mArray.getUsingSize() - 1));
+        GUIIndexInput[Access]->randomizeValue();
+    });
 }
 
 void VisualStaticState::loadNewGUI() {
@@ -181,7 +194,257 @@ void VisualStaticState::loadAddGUI() {
     packOptionGUI(Add, GUIValueInput[Add]);
 }
 
-void VisualStaticState::loadAddAnimation() {}
+void VisualStaticState::loadAddAnimation() {
+    int index = GUIIndexInput[Add]->getValue();
+    int value = GUIValueInput[Add]->getValue();
+
+    if (index == mArray.getUsingSize()) {
+        // load insert back
+        addAnimation(
+            "Increase array's using size.", {0},
+            [=]() {
+                mArray.extend();
+                mArray.highlight(index);
+            },
+            [=]() {
+                mArray.unhighlight(index);
+                mArray.collapse();
+            });
+
+        addAnimation(
+            "Set value for the new element. The whole\n"
+            "process complexity is O(1).",
+            {1}, [=]() { mArray.setNode(index, value); },
+            [=]() { mArray.setNode(index, 0); });
+    } else {
+        addAnimation(
+            "Increase array's using size.", {0},
+            [=]() {
+                mArray.extend();
+                mArray.highlight(mArray.getUsingSize() - 1);
+            },
+            [=]() {
+                mArray.unhighlight(mArray.getUsingSize() - 1);
+                mArray.collapse();
+            });
+
+        for (int i = mArray.getUsingSize(); i > index; --i) {
+            addAnimation(
+                "i = " + std::to_string(i) +
+                    ", index specified has not\nbeen reached",
+                {1},
+                [=]() {
+                    if (i + 1 < mArray.getUsingSize())
+                        mArray.unhighlight(i + 1);
+                    mArray.highlight(i);
+                },
+                [=]() {
+                    if (i + 1 < mArray.getUsingSize())
+                        mArray.highlight(i + 1);
+                    mArray.unhighlight(i);
+                });
+
+            int oldValue = mArray.isInList(i) ? mArray.getNode(i) : 0;
+            addAnimation(
+                "Set a[" + std::to_string(i) +
+                    "] to the previous element a[" +
+                    std::to_string(i - 1) + "],\ndecrease i",
+                {2},
+                [=]() {
+                    mArray.subhighlight(i - 1);
+                    mArray.setNode(i, mArray.getNode(i - 1));
+                },
+                [=]() {
+                    mArray.unhighlight(i - 1);
+                    mArray.setNode(i, oldValue);
+                });
+        }
+
+        addAnimation(
+            "i = " + std::to_string(index) +
+                ", we have found the insertion point.\n"
+                "We continue the next insertion step.",
+            {1},
+            [=]() {
+                if (index + 1 < mArray.getUsingSize())
+                    mArray.unhighlight(index + 1);
+                mArray.highlight(index);
+            },
+            [=]() {
+                if (index + 1 < mArray.getUsingSize())
+                    mArray.highlight(index + 1);
+                mArray.unhighlight(index);
+            });
+
+        int oldValue = mArray.getNode(index);
+        addAnimation(
+            "Set value for the new element. The whole\n"
+            "process complexity is O(N).",
+            {3}, [=]() { mArray.setNode(index, value); },
+            [=]() { mArray.setNode(index, oldValue); });
+    }
+}
+
+void VisualStaticState::loadDeleteGUI() {
+    auto indexLabel = std::make_shared<GUI::Label>(
+        GUI::Label::Main, "Position", *getContext().fonts,
+        *getContext().colors);
+    indexLabel->setPosition(firstLabelPosition);
+    packOptionGUI(Delete, indexLabel);
+
+    GUIIndexInput[Delete] = std::make_shared<GUI::InputNumber>(
+        *getContext().fonts, *getContext().textures,
+        *getContext().colors);
+    GUIIndexInput[Delete]->setPosition(firstInputPosition);
+    packOptionGUI(Delete, GUIIndexInput[Delete]);
+
+    // front option
+    packOptionGUI(
+        Delete,
+        createNewGUIButton(
+            GUI::Button::Small,
+            sf::Vector2f(600.f,
+                         getContext().window->getSize().y - 230.f),
+            "Front",
+            [this]() { GUIIndexInput[Delete]->setValue(0); }));
+
+    // back option
+    packOptionGUI(
+        Delete,
+        createNewGUIButton(
+            GUI::Button::Small,
+            sf::Vector2f(700.f,
+                         getContext().window->getSize().y - 230.f),
+            "Back", [this]() {
+                GUIIndexInput[Delete]->setValue(
+                    mArray.getUsingSize() - 1);
+            }));
+}
+
+void VisualStaticState::loadDeleteAnimation() {
+    int index = GUIIndexInput[Delete]->getValue();
+    if (index + 1 == mArray.getUsingSize()) {
+        int oldValue = mArray.getNode(index);
+        addAnimation(
+            "Remove the last element of the array by\n"
+            "decreasing array's using size. The whole process\n"
+            "complexity is O(1).",
+            {0}, [=]() { mArray.collapse(); },
+            [=]() {
+                mArray.extend();
+                mArray.setNode(index, oldValue);
+            });
+    } else {
+        int n = mArray.getUsingSize();
+        for (int i = index; i + 1 < n; ++i) {
+            addAnimation(
+                "i = " + std::to_string(i) +
+                    ", index specified has not\nbeen reached",
+                {0},
+                [=]() {
+                    if (i - 1 >= index)
+                        mArray.unhighlight(i - 1);
+                    mArray.highlight(i);
+                },
+                [=]() {
+                    if (i - 1 >= index)
+                        mArray.highlight(i - 1);
+                    mArray.unhighlight(i);
+                });
+
+            int oldValue = mArray.getNode(i);
+            addAnimation(
+                "Set a[" + std::to_string(i) +
+                    "] to the next element a[" +
+                    std::to_string(i + 1) + "],\nincrease i",
+                {1},
+                [=]() {
+                    mArray.subhighlight(i + 1);
+                    mArray.setNode(i, mArray.getNode(i + 1));
+                },
+                [=]() {
+                    mArray.unhighlight(i + 1);
+                    mArray.setNode(i, oldValue);
+                });
+        }
+        addAnimation(
+            "i = " + std::to_string(n - 1) +
+                ", we have reach the the last\n"
+                "element. We continue the next step.",
+            {0},
+            [=]() {
+                if (n - 2 >= index)
+                    mArray.unhighlight(n - 2);
+                mArray.highlight(n - 1);
+            },
+            [=]() {
+                if (n - 2 >= index)
+                    mArray.highlight(n - 2);
+                mArray.unhighlight(n - 1);
+            });
+
+        int oldValue = mArray.getNode(n - 1);
+        addAnimation(
+            "Decrease array's using size. The whole\n"
+            "process complexity is O(N).",
+            {2},
+            [=]() {
+                mArray.collapse();
+                mArray.unhighlight(n - 2);
+            },
+            [=]() {
+                mArray.extend();
+                mArray.highlight(n - 2);
+                mArray.setNode(n - 1, oldValue);
+            });
+    }
+}
+
+void VisualStaticState::loadAccessGUI() {
+    auto indexLabel = std::make_shared<GUI::Label>(
+        GUI::Label::Main, "Position", *getContext().fonts,
+        *getContext().colors);
+    indexLabel->setPosition(firstLabelPosition);
+    packOptionGUI(Access, indexLabel);
+
+    GUIIndexInput[Access] = std::make_shared<GUI::InputNumber>(
+        *getContext().fonts, *getContext().textures,
+        *getContext().colors);
+    GUIIndexInput[Access]->setPosition(firstInputPosition);
+    packOptionGUI(Access, GUIIndexInput[Access]);
+
+    // front option
+    packOptionGUI(
+        Access,
+        createNewGUIButton(
+            GUI::Button::Small,
+            sf::Vector2f(600.f,
+                         getContext().window->getSize().y - 230.f),
+            "Front",
+            [this]() { GUIIndexInput[Access]->setValue(0); }));
+
+    // back option
+    packOptionGUI(
+        Access,
+        createNewGUIButton(
+            GUI::Button::Small,
+            sf::Vector2f(700.f,
+                         getContext().window->getSize().y - 230.f),
+            "Back", [this]() {
+                GUIIndexInput[Access]->setValue(
+                    mArray.getUsingSize() - 1);
+            }));
+}
+
+void VisualStaticState::loadAccessAnimation() {
+    int index = GUIIndexInput[Access]->getValue();
+    addAnimation(
+        "Node at index " + std::to_string(index) + " has value " +
+            std::to_string(mArray.getNode(index)) +
+            ". The whole\nprocess complexity is O(1).",
+        {0}, [=]() { mArray.highlight(index); },
+        [=]() { mArray.unhighlight(index); });
+}
 
 void VisualStaticState::loadCallback() {
     setLoadAnimationCallback(New, [this]() {
@@ -190,6 +453,10 @@ void VisualStaticState::loadCallback() {
     });
 
     setLoadAnimationCallback(Add, [this]() { loadAddAnimation(); });
+    setLoadAnimationCallback(Delete,
+                             [this]() { loadDeleteAnimation(); });
+    setLoadAnimationCallback(Access,
+                             [this]() { loadAccessAnimation(); });
 }
 
 void VisualStaticState::validateCommand() {
@@ -207,7 +474,8 @@ void VisualStaticState::validateCommand() {
                        GUIArrayInput->getArray().size() >
                            GUIIndexInput[New]->getValue()) {
                 callError(
-                    "Number of elements must be in range [1, " +
+                    "Number of elements must be in range "
+                    "[1, " +
                     std::to_string(GUIIndexInput[New]->getValue()) +
                     "]");
             } else {
@@ -232,27 +500,68 @@ void VisualStaticState::validateCommand() {
                     index = GUIIndexInput[Add]->getValue();
                 std::string info =
                     "Insert " + std::to_string(value) + " to ";
-                if (index == 0)
-                    info += "front";
-                else if (index == mArray.getUsingSize())
-                    info += "back";
-                else
-                    info += "index " + std::to_string(index);
-                callInfo(info);
 
-                if (index == 0)
-                    loadCode(StaticArrayCode::insertFront);
-                else if (index < mArray.getUsingSize())
-                    loadCode(StaticArrayCode::insertMiddle);
-                else
+                if (index == mArray.getUsingSize()) {
+                    info += "back";
                     loadCode(StaticArrayCode::insertBack);
+                } else if (index == 0) {
+                    info += "front";
+                    loadCode(StaticArrayCode::insertFront);
+                } else {
+                    info += "index " + std::to_string(index);
+                    loadCode(StaticArrayCode::insertMiddle);
+                }
+
+                callInfo(info);
             }
             break;
+        }
+
+        case Delete: {
+            if (mArray.getUsingSize() == 0) {
+                callError("There is nothing left to delete!");
+            } else if (GUIIndexInput[Delete]->validate() !=
+                       GUI::Input::Success) {
+                callError("Index must be a number in range " +
+                          GUIIndexInput[Delete]->getStringRange());
+            } else {
+                int index = GUIIndexInput[Delete]->getValue();
+                std::string info = "Delete node at ";
+
+                if (index + 1 == mArray.getUsingSize()) {
+                    info += "back";
+                    loadCode(StaticArrayCode::eraseBack);
+                } else if (index == 0) {
+                    info += "front";
+                    loadCode(StaticArrayCode::eraseFront);
+                } else {
+                    info += "index " + std::to_string(index);
+                    loadCode(StaticArrayCode::eraseMiddle);
+                }
+
+                callInfo(info);
+            }
+            break;
+        }
+
+        case Access: {
+            if (GUIIndexInput[Access]->validate() !=
+                GUI::Input::Success) {
+                callError("Index must be a number in range " +
+                          GUIIndexInput[Access]->getStringRange());
+            } else {
+                callInfo("Access node at index " +
+                         std::to_string(
+                             GUIIndexInput[Access]->getValue()));
+                loadCode(StaticArrayCode::access);
+            }
         }
     };
 }
 
-void VisualStaticState::resetDataStructure() {}
+void VisualStaticState::resetDataStructure() {
+    mArray.clearHighlight();
+}
 
 void VisualStaticState::draw() {
     VisualState::draw();

@@ -40,8 +40,11 @@ class VisualStaticState : public VisualState {
     void loadAddGUI();
     void loadAddAnimation();
 
-    // void loadDequeueGUI();
-    // void loadDequeueAnimation();
+    void loadDeleteGUI();
+    void loadDeleteAnimation();
+
+    void loadAccessGUI();
+    void loadAccessAnimation();
 
     // void loadClearGUI();
     // void loadClearAnimation();

@@ -27,7 +27,9 @@ class StaticArray : public SceneNode {
     void loadData(const std::vector<int>& data);
     void setNode(const int index, const int value);
     void highlight(const int index);
+    void subhighlight(const int index);
     void unhighlight(const int index);
+    void clearHighlight();
 
    private:
     const FontHolder& mFonts;

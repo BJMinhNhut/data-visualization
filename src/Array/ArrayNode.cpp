@@ -17,12 +17,12 @@ ArrayNode::ArrayNode(const FontHolder& fonts,
     : mData(new NodeData(fonts, colors)),
       mSprite(textures.get(Textures::ArrayNode)),
       isActive(false),
-      isHighlight(false) {
+      isHighlight(None) {
     std::unique_ptr<NodeData> dataPtr(mData);
     attachChild(std::move(dataPtr));
     centerOrigin(mSprite);
     setActive(false);
-    mData->setTargetScale(0.f, 0.f, None);
+    mData->setTargetScale(0.f, 0.f, SceneNode::None);
 }
 
 int ArrayNode::getValue() const {
@@ -37,10 +37,12 @@ void ArrayNode::setValue(int value) {
     mData->setValue(value);
 }
 
-void ArrayNode::setHighlight(bool highlight) {
+void ArrayNode::setHighlight(highlightState highlight) {
     assert(isActive == true);
-    if (highlight == true) {
-        mSprite.setColor(sf::Color(128, 222, 234));
+    if (highlight == Primary) {
+        mSprite.setColor(sf::Color(239, 154, 154));
+    } else if (highlight == Secondary) {
+        mSprite.setColor(sf::Color(255, 205, 210));
     } else {
         mSprite.setColor(sf::Color::White);
     }

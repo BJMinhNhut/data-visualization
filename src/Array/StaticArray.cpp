@@ -44,6 +44,7 @@ std::vector<int> StaticArray::getData() {
 void StaticArray::extend() {
     assert(getUsingSize() < getArraySize());
     nodes[mSize]->setActive(true);
+    nodes[mSize]->setValue(0);
     mSize++;
 }
 
@@ -89,11 +90,22 @@ void StaticArray::setNode(const int index, const int value) {
 }
 
 void StaticArray::highlight(const int index) {
-    assert(index < mSize);
-    nodes[index]->setHighlight(true);
+    assert(isInList(index));
+    nodes[index]->setHighlight(ArrayNode::Primary);
+}
+
+void StaticArray::subhighlight(const int index) {
+    assert(isInList(index));
+    nodes[index]->setHighlight(ArrayNode::Secondary);
 }
 
 void StaticArray::unhighlight(const int index) {
-    assert(index < mSize);
-    nodes[index]->setHighlight(false);
+    assert(isInList(index));
+    nodes[index]->setHighlight(ArrayNode::None);
+}
+
+void StaticArray::clearHighlight() {
+    for (int index = 0; index < mSize; ++index) {
+        nodes[index]->setHighlight(ArrayNode::None);
+    }
 }

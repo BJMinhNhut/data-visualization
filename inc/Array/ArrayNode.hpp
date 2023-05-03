@@ -9,6 +9,13 @@
 
 class ArrayNode : public SceneNode {
    public:
+    enum highlightState {
+        None,
+        Primary,
+        Secondary,
+    };
+
+   public:
     explicit ArrayNode(const FontHolder& fonts,
                        const TextureHolder& textures,
                        const ColorHolder& colors);
@@ -17,7 +24,7 @@ class ArrayNode : public SceneNode {
     virtual sf::Vector2f getRightBound() const;
 
     void setValue(int value);
-    void setHighlight(bool highlight);
+    void setHighlight(highlightState highlight);
     void setActive(bool active);
 
    private:

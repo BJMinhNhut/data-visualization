@@ -21,7 +21,7 @@ const std::string insertFront = {
     "a[0] = value"};
 
 const std::string eraseMiddle = {
-    "for(i = index; i+1 < n; --i)\n"
+    "for(i = index; i+1 < n; ++i)\n"
     "	a[i] = a[i+1]\n"
     "n--"};
 

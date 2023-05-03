@@ -701,7 +701,7 @@ void VisualSLLState::validateCommand() {
                 std::string info = "Delete node at ";
                 if (index == 0)
                     info += "front";
-                else if (index == mSLL.getSize())
+                else if (index == mSLL.getSize() - 1)
                     info += "back";
                 else
                     info += "index " + std::to_string(index);

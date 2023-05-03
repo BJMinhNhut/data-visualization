@@ -30,6 +30,7 @@ int NodeData::getValue() {
 }
 
 void NodeData::setValue(int value) {
+    setScale(0.f, 0.f);
     mValue = value;
     mText.setString(std::to_string(mValue));
     centerOrigin(mText);
