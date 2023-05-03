@@ -472,7 +472,7 @@ void VisualSLLState::loadSearchAnimation() {
 
         while (mSLL.getValue(index) != value) {
             addAnimation(
-                "Current node value (" +
+                "Current value (" +
                     std::to_string(mSLL.getValue(index)) +
                     ") != searching value (" + std::to_string(value) +
                     ")\n"

@@ -15,7 +15,7 @@ class StaticArray : public SceneNode {
 
     unsigned int getUsingSize() const;
     unsigned int getArraySize() const;
-    unsigned int getDrawLength() const;
+    float getDrawLength() const;
     unsigned int getNode(const int index) const;
     bool isInList(const int index) const;
     std::vector<int> getData();

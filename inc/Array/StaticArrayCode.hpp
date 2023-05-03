@@ -37,10 +37,12 @@ const std::string update = {"a[index] = value"};
 const std::string access = {"return a[index]"};
 
 const std::string search = {
-    "for(i = 0; i < n; ++i)\n"
-    "	if a[i] == value,\n"
-    "		return i\n"
-    "return NOT_FOUND"};
+    "if empty, return NOT_FOUND\n"
+    "index = 0\n"
+    "while (a[i] != value)\n"
+    "   index++\n"
+    "   if index == n, return NOT_FOUND\n"
+    "return index"};
 };  // namespace StaticArrayCode
 
 #endif  // STATICARRAYCODE_HPP

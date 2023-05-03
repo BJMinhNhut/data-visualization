@@ -25,6 +25,7 @@ VisualStaticState::VisualStaticState(StateStack& stack,
     loadDeleteGUI();
     loadUpdateGUI();
     loadAccessGUI();
+    loadSearchGUI();
 
     loadCallback();
 
@@ -39,7 +40,8 @@ void VisualStaticState::centerArray(
     const SceneNode::Transition& transition) {
     sf::Vector2u windowSize = getContext().window->getSize();
     mArray.setTargetPosition(
-        windowSize.x / 2.f - mArray.getDrawLength() / 2.f,
+        0.5f * (windowSize.x - mArray.getDrawLength()) +
+            0.5f * Constants::NODE_SIZE,
         windowSize.y / 4.f, transition);
 }
 
@@ -77,6 +79,16 @@ void VisualStaticState::initGUIButtons() {
         GUIIndexInput[Access]->setRange(
             0, std::max(0, (int)mArray.getUsingSize() - 1));
         GUIIndexInput[Access]->randomizeValue();
+    });
+
+    addOption(Search, "Search", [this]() {
+        setCurrentOption(Search);
+        if (mArray.getUsingSize() == 0)
+            GUIValueInput[Search]->randomizeValue();
+        else {
+            int index = Random::get(0, mArray.getUsingSize() - 1);
+            GUIValueInput[Search]->setValue(mArray.getNode(index));
+        }
     });
 }
 
@@ -524,6 +536,94 @@ void VisualStaticState::loadAccessAnimation() {
         [=]() { mArray.unhighlight(index); });
 }
 
+void VisualStaticState::loadSearchGUI() {
+    auto valueLabel = std::make_shared<GUI::Label>(
+        GUI::Label::Main, "By value", *getContext().fonts,
+        *getContext().colors);
+    valueLabel->setPosition(firstLabelPosition);
+
+    GUIValueInput[Search] = std::make_shared<GUI::InputNumber>(
+        *getContext().fonts, *getContext().textures,
+        *getContext().colors);
+    GUIValueInput[Search]->setPosition(firstInputPosition);
+    GUIValueInput[Search]->setRange(Constants::NODE_MINVALUE,
+                                    Constants::NODE_MAXVALUE);
+
+    packOptionGUI(Search, valueLabel);
+    packOptionGUI(Search, GUIValueInput[Search]);
+}
+
+void VisualStaticState::loadSearchAnimation() {
+    int value = GUIValueInput[Search]->getValue();
+
+    if (mArray.getUsingSize() == 0) {
+        addAnimation("Array is empty, so value " +
+                         std::to_string(value) +
+                         " is NOT_FOUND\nin the array.",
+                     {0});
+    } else {
+        addAnimation("Array is not empty, so continue searching.",
+                     {0});
+        int index = 0;
+        addAnimation(
+            "Init index = 0, start searching from\n"
+            "the beginning of the array.",
+            {1}, [=]() { mArray.highlight(0); },
+            [=]() { mArray.unhighlight(0); });
+
+        while (mArray.getNode(index) != value) {
+            addAnimation("Current value (" +
+                             std::to_string(mArray.getNode(index)) +
+                             ") != searching value (" +
+                             std::to_string(value) +
+                             ")\n"
+                             "Continue searching.",
+                         {2});
+
+            index++;
+            if (mArray.isInList(index))
+                addAnimation(
+                    "Proceed to next node, index not exceed n\n"
+                    "so continue searching.",
+                    {3, 4},
+                    [=]() {
+                        mArray.unhighlight(index - 1);
+                        mArray.highlight(index);
+                    },
+                    [=]() {
+                        mArray.unhighlight(index);
+                        mArray.highlight(index - 1);
+                    });
+            else {
+                addAnimation(
+                    "Proceed to next node...", {3},
+                    [=]() { mArray.clearHighlight(); },
+                    [=]() {
+                        mArray.highlight(mArray.getUsingSize() - 1);
+                    });
+
+                addAnimation(
+                    "index = " + std::to_string(mArray.getUsingSize()) + ", we have gone past the end of array\n"
+                    "after O(N) step(s). So the value " +
+                        std::to_string(value) +
+                        " is NOT_FOUND\nin the array.",
+                    {4});
+
+                return;
+            }
+        }
+
+        addAnimation(
+            "Found value " + std::to_string(value) +
+                " at this highlighted node so"
+                "\nwe return index " +
+                std::to_string(index) +
+                ". The whole operation is O(N).",
+            {5}, [=]() { mArray.highlight(index); },
+            [=]() { mArray.unhighlight(index); });
+    }
+}
+
 void VisualStaticState::loadCallback() {
     setLoadAnimationCallback(New, [this]() {
         mArray.create(GUIIndexInput[New]->getValue());
@@ -537,6 +637,8 @@ void VisualStaticState::loadCallback() {
                              [this]() { loadUpdateAnimation(); });
     setLoadAnimationCallback(Access,
                              [this]() { loadAccessAnimation(); });
+    setLoadAnimationCallback(Search,
+                             [this]() { loadSearchAnimation(); });
 }
 
 void VisualStaticState::validateCommand() {
@@ -658,6 +760,21 @@ void VisualStaticState::validateCommand() {
                              GUIIndexInput[Access]->getValue()));
                 loadCode(StaticArrayCode::access);
             }
+            break;
+        }
+
+        case Search: {
+            if (GUIValueInput[Search]->validate() !=
+                GUI::Input::Success) {
+                callError("Value must be in range " +
+                          GUIValueInput[Search]->getStringRange());
+            } else {
+                callInfo("Search for a node having value " +
+                         std::to_string(
+                             GUIValueInput[Search]->getValue()));
+                loadCode(StaticArrayCode::search);
+            }
+            break;
         }
     };
 }

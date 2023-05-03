@@ -49,8 +49,8 @@ class VisualStaticState : public VisualState {
     void loadAccessGUI();
     void loadAccessAnimation();
 
-    // void loadClearGUI();
-    // void loadClearAnimation();
+    void loadSearchGUI();
+    void loadSearchAnimation();
 
     void loadCallback();
 

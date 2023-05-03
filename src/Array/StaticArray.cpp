@@ -21,7 +21,7 @@ unsigned int StaticArray::getArraySize() const {
     return nodes.size();
 }
 
-unsigned int StaticArray::getDrawLength() const {
+float StaticArray::getDrawLength() const {
     return nodes.size() * Constants::NODE_SIZE;
 }
 
