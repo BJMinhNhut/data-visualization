@@ -1,4 +1,5 @@
 #include <Application.hpp>
+#include <Array/VisualDynamicState.hpp>
 #include <Array/VisualStaticState.hpp>
 #include <Constants.hpp>
 #include <Queue/VisualQueueState.hpp>
@@ -119,6 +120,8 @@ void Application::registerStates() {
     mStateStack.registerState<MenuDataState>(States::MenuData);
     mStateStack.registerState<VisualStaticState>(
         States::VisualStaticArray);
+    mStateStack.registerState<VisualDynamicState>(
+        States::VisualDynamicArray);
     mStateStack.registerState<VisualSLLState>(States::VisualSLL);
     mStateStack.registerState<VisualDLLState>(States::VisualDLL);
     mStateStack.registerState<VisualStackState>(States::VisualStack);

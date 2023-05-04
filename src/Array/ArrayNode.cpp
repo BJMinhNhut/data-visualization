@@ -29,8 +29,9 @@ int ArrayNode::getValue() const {
     return mData->getValue();
 }
 
-sf::Vector2f ArrayNode::getRightBound() const {
-    return sf::Vector2f(mSprite.getGlobalBounds().left, 0.f);
+sf::Vector2f ArrayNode::getLeftBound() const {
+    return sf::Vector2f(mSprite.getGlobalBounds().left, 0.f) +
+           getWorldPosition();
 }
 
 void ArrayNode::setValue(int value) {

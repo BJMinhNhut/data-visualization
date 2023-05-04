@@ -21,7 +21,7 @@ class ArrayNode : public SceneNode {
                        const ColorHolder& colors);
 
     int getValue() const;
-    virtual sf::Vector2f getRightBound() const;
+    virtual sf::Vector2f getLeftBound() const;
 
     void setValue(int value);
     void setHighlight(highlightState highlight);
