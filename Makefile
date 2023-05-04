@@ -1,7 +1,7 @@
 CXX = g++
 SOURCEDIR = src
-INCLUDEDIR = inc
-BINDIR = bin
+INCLUDEDIR = "./inc"
+LIBDIR =
 OBJSDIR = obj
 FLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -O2  
 REBUILDABLES = $(OBJSDIR) $(BINDIR)
@@ -10,6 +10,19 @@ TARGET = DataVisual
 SOURCES = $(wildcard $(SOURCEDIR)/*.cpp) $(wildcard $(SOURCEDIR)/**/*.cpp)
 OBJS = $(SOURCES:$(SOURCEDIR)/%.cpp=$(OBJSDIR)/%.o)
 DEPS = $(OBJS:(OBJSDIR)/%.o=(OBJSDIR)/%.d)
+MKDIR = mkdir
+
+ifeq ($(OS),Windows_NT) 
+	FLAGS += -lcomdlg32 -lole32 -lcomctl32 -loleaut32 -luuid -D WIN32
+	INCLUDEDIR += "C:/SFML/include"
+	LIBDIR += "C:/SFML/lib"
+else     
+	MKDIR += -p
+	UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Linux)
+        CCFLAGS += -D LINUX
+    endif
+endif
 
 # Hide or not the calls depending of VERBOSE
 VERBOSE = FALSE
@@ -22,39 +35,49 @@ endif
 all: dir build
 	$(HIDE)echo All done
 
-build: $(BINDIR)/$(TARGET)
+build: $(TARGET)
 
 # Run program
 run: build 
-	$(HIDE)./$(BINDIR)/$(TARGET)
+ifeq ($(OS),Windows_NT) 
+	.\$(TARGET).exe
+else
+	$(HIDE)./$(TARGET)
+endif
 
 dir:
-	$(HIDE)[ -d $(BINDIR) ] && echo $(BINDIR)/ found || echo Make directory $(BINDIR)/
-	$(HIDE)mkdir -p $(BINDIR)
-	$(HIDE)[ -d $(OBJSDIR) ] && echo $(OBJSDIR)/ found || echo Make directory $(OBJSDIR)/
-	$(HIDE)mkdir -p $(OBJSDIR)
-	$(HIDE)[ -d $(OBJSDIR)/GUI ] && echo $(OBJSDIR)/GUI/ found || echo Make directory $(OBJSDIR)/GUI/
-	$(HIDE)mkdir -p $(OBJSDIR)/GUI/
-	$(HIDE)[ -d $(OBJSDIR)/Graphics ] && echo $(OBJSDIR)/Graphics/ found || echo Make directory $(OBJSDIR)/Graphics/
-	$(HIDE)mkdir -p $(OBJSDIR)/Graphics/
-	$(HIDE)[ -d $(OBJSDIR)/States ] && echo $(OBJSDIR)/States/ found || echo Make directory $(OBJSDIR)/States/
-	$(HIDE)mkdir -p $(OBJSDIR)/States/
-	$(HIDE)[ -d $(OBJSDIR)/SLL ] && echo $(OBJSDIR)/SLL/ found || echo Make directory $(OBJSDIR)/SLL/
-	$(HIDE)mkdir -p $(OBJSDIR)/SLL/
-	$(HIDE)[ -d $(OBJSDIR)/Stack ] && echo $(OBJSDIR)/Stack/ found || echo Make directory $(OBJSDIR)/Stack/
-	$(HIDE)mkdir -p $(OBJSDIR)/Stack/
-	$(HIDE)[ -d $(OBJSDIR)/Queue ] && echo $(OBJSDIR)/Queue/ found || echo Make directory $(OBJSDIR)/Queue/
-	$(HIDE)mkdir -p $(OBJSDIR)/Queue/
-	$(HIDE)[ -d $(OBJSDIR)/Array ] && echo $(OBJSDIR)/Array/ found || echo Make directory $(OBJSDIR)/Array/
-	$(HIDE)mkdir -p $(OBJSDIR)/Array/
+ifeq ($(OS),Windows_NT) 
+	if not exist $(OBJSDIR) $(MKDIR) $(OBJSDIR)
+	if not exist $(OBJSDIR)\Array $(MKDIR) $(OBJSDIR)\Array
+	if not exist $(OBJSDIR)\Graphics $(MKDIR) $(OBJSDIR)\Graphics
+	if not exist $(OBJSDIR)\GUI $(MKDIR) $(OBJSDIR)\GUI
+	if not exist $(OBJSDIR)\Queue $(MKDIR) $(OBJSDIR)\Queue
+	if not exist $(OBJSDIR)\SLL  $(MKDIR) $(OBJSDIR)\SLL 
+	if not exist $(OBJSDIR)\Stack $(MKDIR) $(OBJSDIR)\Stack
+	if not exist $(OBJSDIR)\States $(MKDIR) $(OBJSDIR)\States
+else 
+	$(MKDIR) $(OBJSDIR)
+	$(MKDIR) $(OBJSDIR)/Array
+	$(MKDIR) $(OBJSDIR)/Graphics
+	$(MKDIR) $(OBJSDIR)/GUI
+	$(MKDIR) $(OBJSDIR)/Queue
+	$(MKDIR) $(OBJSDIR)/SLL 
+	$(MKDIR) $(OBJSDIR)/Stack
+	$(MKDIR) $(OBJSDIR)/States
+endif
 
-$(BINDIR)/$(TARGET): $(OBJS)
+$(TARGET): $(OBJS)
 	$(HIDE)echo Linking $@
-	$(HIDE)$(CXX) -o $@ $^ $(FLAGS)
+	$(HIDE)$(CXX) -o $@ $^ $(FLAGS) $(LIBDIR:%=-L%)
+
+$(OBJS): | $(OBJSDIR)
+
+$(OBJSDIR): 
+	$(MKDIR) $(OBJSDIR)
 
 $(OBJSDIR)/%.o: $(SOURCEDIR)/%.cpp
 	$(HIDE)echo Building $@ from $<
-	$(HIDE)$(CXX) -o $@ -MMD -c $< -I $(INCLUDEDIR)
+	$(HIDE)$(CXX) -o $@ -MMD -c $< $(INCLUDEDIR:%=-I%)
 
 -include $(DEPS)
 
