@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#define DEBUG_ANIMATION 0
+
 AnimationList::AnimationList()
     : currentAnimation(0),
       mIsPlaying(false),
@@ -38,7 +40,8 @@ void AnimationList::push(const Animation& animation) {
 }
 
 void AnimationList::play() {
-    std::cerr << "playing animation\n";
+    if (DEBUG_ANIMATION)
+        std::cerr << "playing animation\n";
     mIsPlaying = true;
 }
 
@@ -47,7 +50,8 @@ void AnimationList::pause() {
 }
 
 void AnimationList::clear() {
-    std::cerr << "clear call\n";
+    if (DEBUG_ANIMATION)
+        std::cerr << "clear call\n";
     std::vector<Animation>().swap(mList);
     currentAnimation = 0;
     mIsPlaying = false;
@@ -57,7 +61,6 @@ void AnimationList::clear() {
 void AnimationList::playNext() {
     if (currentAnimation == mList.size())
         return;
-    std::cerr << "step: " << currentAnimation << '\n';
     mList[currentAnimation].play();
     currentAnimation++;
     resetCooldown();

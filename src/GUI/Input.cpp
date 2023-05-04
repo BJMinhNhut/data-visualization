@@ -45,7 +45,8 @@ std::string Input::getText() const {
 }
 
 void Input::setText(const std::string& text) {
-    std::cerr << "Text set: " << text << '\n';
+    if (DEBUG_INPUT)
+        std::cerr << "Text set: " << text << '\n';
     mText.setString(text);
     wrapText();
     assert(validate() == Success);

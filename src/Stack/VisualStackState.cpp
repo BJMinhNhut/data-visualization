@@ -77,15 +77,18 @@ void VisualStackState::loadNewGUI() {
                  sf::Vector2f(
                      700.f, getContext().window->getSize().y - 230.f),
                  "Load file", [this]() {
-                     std::cerr << "Load file\n";
-                     auto selection =
-                         pfd::open_file("Select a text file to load",
-                                        "..", {"Text files", "*.txt"})
-                             .result();
-                     if (!selection.empty()) {
+                     auto dialog = pfd::open_file(
+                         "Select a text file to load", "..",
+                         {"Text files", "*.txt"});
+                     while (!dialog.ready()) {}
+                     if (!dialog.result().empty()) {
+                         std::cerr
+                             << "File chosen: " << dialog.result()[0]
+                             << '\n';
                          GUIArrayInput->loadArray(
-                             loadArrayFromFile(selection[0]));
-                     }
+                             loadArrayFromFile(dialog.result()[0]));
+                     } else
+                         std::cerr << "No file selected\n";
                  }));
 
     packOptionGUI(
