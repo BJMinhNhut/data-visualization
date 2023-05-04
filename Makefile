@@ -3,7 +3,7 @@ SOURCEDIR = src
 INCLUDEDIR = "./inc"
 LIBDIR =
 OBJSDIR = obj
-FLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -O2  
+FLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 REBUILDABLES = $(OBJSDIR) $(BINDIR)
 
 TARGET = DataVisual
@@ -12,6 +12,7 @@ OBJS = $(SOURCES:$(SOURCEDIR)/%.cpp=$(OBJSDIR)/%.o)
 DEPS = $(OBJS:(OBJSDIR)/%.o=(OBJSDIR)/%.d)
 MKDIR = mkdir
 
+RELEASE = FALSE
 ifeq ($(OS),Windows_NT) 
 	FLAGS += -lcomdlg32 -lole32 -lcomctl32 -loleaut32 -luuid -D WIN32
 	INCLUDEDIR += "C:/SFML/include"
@@ -24,6 +25,18 @@ else
     endif
 endif
 
+ifeq ($(BUILD),debug)   
+	# "Debug" build - no optimization, and debugging symbols
+	FLAGS += -Og -g
+else
+	# "Release" build - optimization, and no debug symbols
+	FLAGS += -static -static-libgcc -static-libstdc++ -Ofast -s -DNDEBUG
+	ifeq ($(OS),Windows_NT) 
+		FLAGS += -mwindows
+	endif
+endif
+
+
 # Hide or not the calls depending of VERBOSE
 VERBOSE = FALSE
 ifeq ($(VERBOSE),TRUE)
@@ -35,10 +48,13 @@ endif
 all: dir build
 	$(HIDE)echo All done
 
+debug: 
+	make "BUILD=debug"
+
 build: $(TARGET)
 
 # Run program
-run: build 
+run: 
 ifeq ($(OS),Windows_NT) 
 	.\$(TARGET).exe
 else
