@@ -3,7 +3,7 @@ SOURCEDIR = src
 INCLUDEDIR = "./inc"
 LIBDIR =
 OBJSDIR = obj
-FLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+FLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 REBUILDABLES = $(OBJSDIR) $(BINDIR)
 
 TARGET = DataVisual
@@ -14,14 +14,14 @@ MKDIR = mkdir
 
 RELEASE = FALSE
 ifeq ($(OS),Windows_NT) 
-	FLAGS += -lcomdlg32 -lole32 -lcomctl32 -loleaut32 -luuid -D WIN32
+	FLAGS += -lcomdlg32 -lole32 -lcomctl32 -loleaut32 -luuid -DWIN32
 	INCLUDEDIR += "C:/SFML/include"
 	LIBDIR += "C:/SFML/lib"
 else     
 	MKDIR += -p
 	UNAME_S := $(shell uname -s)
     ifeq ($(UNAME_S),Linux)
-        CCFLAGS += -D LINUX
+        CCFLAGS += -DLINUX
     endif
 endif
 
@@ -30,7 +30,7 @@ ifeq ($(BUILD),debug)
 	FLAGS += -Og -g
 else
 	# "Release" build - optimization, and no debug symbols
-	FLAGS += -static -static-libgcc -static-libstdc++ -Ofast -s -DNDEBUG
+	FLAGS += -static -static-libgcc -static-libstdc++ -Ofast -s
 	ifeq ($(OS),Windows_NT) 
 		FLAGS += -mwindows
 	endif
