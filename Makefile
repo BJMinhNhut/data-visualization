@@ -21,7 +21,7 @@ else
 	MKDIR += -p
 	UNAME_S := $(shell uname -s)
     ifeq ($(UNAME_S),Linux)
-        CCFLAGS += -DLINUX
+        FLAGS += -DLINUX
     endif
 endif
 
@@ -38,7 +38,7 @@ endif
 
 
 # Hide or not the calls depending of VERBOSE
-VERBOSE = FALSE
+VERBOSE = TRUE
 ifeq ($(VERBOSE),TRUE)
     HIDE =  
 else
