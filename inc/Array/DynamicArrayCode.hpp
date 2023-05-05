@@ -31,16 +31,27 @@ const std::string insertFront = {
     "arr = new_arr, n++\n"};
 
 const std::string eraseMiddle = {
-    "for(i = index; i+1 < n; ++i)\n"
-    "	arr[i] = arr[i+1]\n"
-    "n--"};
+    "new_arr = new int[n-1]\n"
+    "for(i = 0; i < index; ++i)\n"
+    "   new_arr[i] = arr[i]\n"
+    "for(i = index+1; i < n; ++i)\n"
+    "   new_arr[i-1] = arr[i]\n"
+    "delete arr\n"
+    "arr = new_arr, n--\n"};
 
-const std::string eraseBack = {"n--\n"};
+const std::string eraseBack = {
+    "new_arr = new int[n-1]\n"
+    "for(i = 0; i < n-1; ++i)\n"
+    "   new_arr[i] = arr[i]\n"
+    "delete arr\n"
+    "arr = new_arr, n--\n"};
 
 const std::string eraseFront = {
-    "for(i = 0; i+1 < n; ++i)\n"
-    "	arr[i] = arr[i+1]\n"
-    "n--"};
+    "new_arr = new int[n-1]\n"
+    "for(i = 1; i < n; ++i)\n"
+    "   new_arr[i-1] = arr[i]\n"
+    "delete arr\n"
+    "arr = new_arr, n--\n"};
 
 const std::string update = {"arr[index] = value"};
 

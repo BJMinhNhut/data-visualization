@@ -241,81 +241,43 @@ void VisualDynamicState::loadAddAnimation() {
             [=]() { mArray.highlight(index - 1); });
     }
 
-    if (index == 0) {
-        for (int i = index; i < n; ++i) {
-            addAnimation(
-                "i = " + std::to_string(i) +
-                    ", index specified has not\nbeen reached",
-                {1},
-                [=]() {
-                    if (i - 1 >= index)
-                        mArray.unhighlight(i - 1);
-                    mArray.highlight(i);
-                },
-                [=]() {
-                    if (i - 1 >= index)
-                        mArray.highlight(i - 1);
-                    mArray.unhighlight(i);
-                });
-
-            addAnimation(
-                "Set new_arr[" + std::to_string(i + 1) + "] = arr[" +
-                    std::to_string(i) + "], increase i",
-                {2},
-                [=]() {
-                    mArray.setTempNode(i + 1, mArray.getNode(i));
-                    mArray.highlightTemp(i + 1);
-                },
-                [=]() {
-                    mArray.setTempNode(i + 1, 0);
-                    mArray.unhighlightTemp(i + 1);
-                });
-        }
+    int loopline = index == 0 ? 1 : 3;
+    for (int i = index; i < n; ++i) {
+        addAnimation(
+            "i = " + std::to_string(i) +
+                ", index specified has not\nbeen reached",
+            {loopline},
+            [=]() {
+                if (i - 1 >= index)
+                    mArray.unhighlight(i - 1);
+                mArray.highlight(i);
+            },
+            [=]() {
+                if (i - 1 >= index)
+                    mArray.highlight(i - 1);
+                mArray.unhighlight(i);
+            });
 
         addAnimation(
-            "i = " + std::to_string(n) +
-                ", we have exceeded the array last element.\n"
-                "We continue the next insertion step.",
-            {1}, [=]() { mArray.unhighlight(n - 1); },
-            [=]() { mArray.highlight(n - 1); });
-    } else if (index < n) {
-        for (int i = index; i < n; ++i) {
-            addAnimation(
-                "i = " + std::to_string(i) +
-                    ", index specified has not\nbeen reached",
-                {3},
-                [=]() {
-                    if (i - 1 >= index)
-                        mArray.unhighlight(i - 1);
-                    mArray.highlight(i);
-                },
-                [=]() {
-                    if (i - 1 >= index)
-                        mArray.highlight(i - 1);
-                    mArray.unhighlight(i);
-                });
-
-            addAnimation(
-                "Set new_arr[" + std::to_string(i + 1) + "] = arr[" +
-                    std::to_string(i) + "], increase i",
-                {4},
-                [=]() {
-                    mArray.setTempNode(i + 1, mArray.getNode(i));
-                    mArray.highlightTemp(i + 1);
-                },
-                [=]() {
-                    mArray.setTempNode(i + 1, 0);
-                    mArray.unhighlightTemp(i + 1);
-                });
-        }
-
-        addAnimation(
-            "i = " + std::to_string(n) +
-                ", we have exceeded the array last element.\n"
-                "We continue the next insertion step.",
-            {3}, [=]() { mArray.unhighlight(n - 1); },
-            [=]() { mArray.highlight(n - 1); });
+            "Set new_arr[" + std::to_string(i + 1) + "] = arr[" +
+                std::to_string(i) + "], increase i",
+            {loopline + 1},
+            [=]() {
+                mArray.setTempNode(i + 1, mArray.getNode(i));
+                mArray.highlightTemp(i + 1);
+            },
+            [=]() {
+                mArray.setTempNode(i + 1, 0);
+                mArray.unhighlightTemp(i + 1);
+            });
     }
+
+    addAnimation(
+        "i = " + std::to_string(n) +
+            ", we have exceeded the array last element.\n"
+            "We continue the next insertion step.",
+        {loopline}, [=]() { mArray.unhighlight(n - 1); },
+        [=]() { mArray.highlight(n - 1); });
 
     int endline = (index < n && index > 0) ? 5 : 3;
 
@@ -403,10 +365,133 @@ void VisualDynamicState::loadDeleteGUI() {
 
 void VisualDynamicState::loadDeleteAnimation() {
     int index = GUIIndexInput[Delete]->getValue();
-    if (index + 1 == mArray.getSize()) {
+    int n = mArray.getSize();
+    std::vector<int> data = mArray.getData();
+    addAnimation(
+        "Allocate a new array with size decreased.", {0},
+        [=]() { mArray.createTemp(n - 1); },
+        [=]() { mArray.deleteTemp(); });
+    if (index > 0) {
+        // back && middle
+        for (int i = 0; i < index; ++i) {
+            addAnimation(
+                "i = " + std::to_string(i) +
+                    ", index specified has not\nbeen reached",
+                {1},
+                [=]() {
+                    if (i - 1 >= 0)
+                        mArray.unhighlight(i - 1);
+                    mArray.highlight(i);
+                },
+                [=]() {
+                    if (i - 1 >= 0)
+                        mArray.highlight(i - 1);
+                    mArray.unhighlight(i);
+                });
 
-    } else {
+            addAnimation(
+                "Set new_arr[" + std::to_string(i) + "] = arr[" +
+                    std::to_string(i) + "], increase i",
+                {2},
+                [=]() {
+                    mArray.setTempNode(i, mArray.getNode(i));
+                    mArray.highlightTemp(i);
+                },
+                [=]() {
+                    mArray.setTempNode(i, 0);
+                    mArray.unhighlightTemp(i);
+                });
+        }
+
+        addAnimation(
+            "i = " + std::to_string(index) +
+                ", we have reach the deletion point.\n"
+                "We continue the next deletion step.",
+            {1},
+            [=]() {
+                mArray.unhighlight(index - 1);
+                mArray.highlight(index);
+            },
+            [=]() {
+                mArray.highlight(index - 1);
+                mArray.unhighlight(index);
+            });
     }
+
+    if (index < n - 1) {
+        // front && middle
+        int loopline = index == 0 ? 1 : 3;
+        for (int i = index + 1; i < n; ++i) {
+            addAnimation(
+                "i = " + std::to_string(i) +
+                    ", index specified has not\nbeen reached",
+                {loopline},
+                [=]() {
+                    if (i - 1 >= index)
+                        mArray.unhighlight(i - 1);
+                    mArray.highlight(i);
+                },
+                [=]() {
+                    if (i - 1 > index)
+                        mArray.highlight(i - 1);
+                    mArray.unhighlight(i);
+                });
+
+            addAnimation(
+                "Set new_arr[" + std::to_string(i - 1) + "] = arr[" +
+                    std::to_string(i) + "], increase i",
+                {loopline + 1},
+                [=]() {
+                    mArray.setTempNode(i - 1, mArray.getNode(i));
+                    mArray.highlightTemp(i - 1);
+                },
+                [=]() {
+                    mArray.setTempNode(i - 1, 0);
+                    mArray.unhighlightTemp(i - 1);
+                });
+        }
+
+        addAnimation(
+            "i = " + std::to_string(n) +
+                ", we have exceeded the array last element.\n"
+                "We continue the next deletion step.",
+            {loopline}, [=]() { mArray.unhighlight(n - 1); },
+            [=]() { mArray.highlight(n - 1); });
+    }
+
+    int endline = (index < n - 1 && index > 0) ? 5 : 3;
+
+    addAnimation(
+        "Deallocate current array.", {endline},
+        [=]() {
+            mArray.create(0);
+            mArray.clearHighlight();
+        },
+        [=]() {
+            mArray.loadData(data);
+            for (int i = 0; i < n - 1; ++i)
+                mArray.highlightTemp(i);
+        });
+
+    addAnimation(
+        "Set array pointer to the newly allocated\n"
+        "one. Decrease n.",
+        {endline + 1}, [=]() { mArray.setHeadToTemp(); },
+        [=]() { mArray.setHeadToData(); });
+
+    addAnimation(
+        "Re-layout the Dynamic Array for visualization\n"
+        "(not in the actual Dynamic Array). The whole\n"
+        "process complexity is O(N).",
+        {},
+        [=]() {
+            mArray.loadTempToData();
+            mArray.deleteTemp();
+        },
+        [=]() {
+            mArray.createTemp(0);
+            mArray.loadDataToTemp();
+        });
 }
 
 void VisualDynamicState::loadUpdateGUI() {
