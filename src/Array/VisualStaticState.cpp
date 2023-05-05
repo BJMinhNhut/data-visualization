@@ -270,8 +270,8 @@ void VisualStaticState::loadAddAnimation() {
 
             int oldValue = mArray.isInList(i) ? mArray.getNode(i) : 0;
             addAnimation(
-                "Set a[" + std::to_string(i) +
-                    "] to the previous element a[" +
+                "Set arr[" + std::to_string(i) +
+                    "] to the previous element arr[" +
                     std::to_string(i - 1) + "],\ndecrease i",
                 {2},
                 [=]() {
@@ -378,8 +378,8 @@ void VisualStaticState::loadDeleteAnimation() {
 
             int oldValue = mArray.getNode(i);
             addAnimation(
-                "Set a[" + std::to_string(i) +
-                    "] to the next element a[" +
+                "Set arr[" + std::to_string(i) +
+                    "] to the next element arr[" +
                     std::to_string(i + 1) + "],\nincrease i",
                 {1},
                 [=]() {

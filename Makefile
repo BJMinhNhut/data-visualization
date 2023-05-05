@@ -56,7 +56,7 @@ build: $(TARGET)
 # Run program
 run: 
 ifeq ($(OS),Windows_NT) 
-	.\$(TARGET).exe
+	$(HIDE).\$(TARGET).exe
 else
 	$(HIDE)./$(TARGET)
 endif

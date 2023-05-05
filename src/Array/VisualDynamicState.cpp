@@ -195,12 +195,97 @@ void VisualDynamicState::loadAddGUI() {
 void VisualDynamicState::loadAddAnimation() {
     int index = GUIIndexInput[Add]->getValue();
     int value = GUIValueInput[Add]->getValue();
-
+    int n = mArray.getSize();
+    std::vector<int> data = mArray.getData();
+    addAnimation(
+        "Allocate a new array with size increased.", {0},
+        [=]() { mArray.createTemp(n + 1); },
+        [=]() { mArray.deleteTemp(); });
     if (index == mArray.getSize()) {
         // load insert back
+        for (int i = 0; i < n; ++i) {
+            addAnimation(
+                "i = " + std::to_string(i) +
+                    ", index specified has not\nbeen reached",
+                {1},
+                [=]() {
+                    if (i - 1 >= 0)
+                        mArray.unhighlight(i - 1);
+                    mArray.highlight(i);
+                },
+                [=]() {
+                    if (i - 1 >= 0)
+                        mArray.highlight(i - 1);
+                    mArray.unhighlight(i);
+                });
 
+            addAnimation(
+                "Set new_arr[" + std::to_string(i) + "] = arr[" +
+                    std::to_string(i) + "], increase i",
+                {2},
+                [=]() {
+                    mArray.setTempNode(i, mArray.getNode(i));
+                    mArray.highlightTemp(i);
+                },
+                [=]() {
+                    mArray.setTempNode(i, 0);
+                    mArray.unhighlightTemp(i);
+                });
+        }
+
+        addAnimation(
+            "i = " + std::to_string(index) +
+                ", we have reach the insertion point.\n"
+                "We continue the next insertion step.",
+            {1}, [=]() { mArray.unhighlight(n - 1); },
+            [=]() { mArray.highlight(n - 1); });
+
+        addAnimation(
+            "Set value for the new element.", {3},
+            [=]() {
+                mArray.setTempNode(index, value);
+                mArray.clearHighlight();
+                mArray.highlightTemp(n);
+            },
+            [=]() {
+                mArray.setTempNode(index, 0);
+                mArray.unhighlightTemp(n);
+                for (int i = 0; i < n; ++i)
+                    mArray.highlightTemp(i);
+            });
     } else {
     }
+
+    addAnimation(
+        "Deallocate current array.", {4},
+        [=]() {
+            mArray.create(0);
+            mArray.unhighlightTemp(n);
+        },
+        [=]() {
+            mArray.loadData(data);
+            mArray.highlightTemp(n);
+        });
+
+    addAnimation(
+        "Set array pointer to the newly allocated\n"
+        "one. Increase n.",
+        {5}, [=]() { mArray.setHeadToTemp(); },
+        [=]() { mArray.setHeadToData(); });
+
+    addAnimation(
+        "Re-layout the Dynamic Array for visualization\n"
+        "(not in the actual Dynamic Array). The whole\n"
+        "process complexity is O(N).",
+        {},
+        [=]() {
+            mArray.loadTempToData();
+            mArray.deleteTemp();
+        },
+        [=]() {
+            mArray.createTemp(0);
+            mArray.loadDataToTemp();
+        });
 }
 
 void VisualDynamicState::loadDeleteGUI() {
