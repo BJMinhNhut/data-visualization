@@ -30,9 +30,9 @@ ifeq ($(BUILD),debug)
 	FLAGS += -Og -g
 else
 	# "Release" build - optimization, and no debug symbols
-	FLAGS += -static -static-libgcc -static-libstdc++ -Ofast -s
+	FLAGS += -Ofast -s
 	ifeq ($(OS),Windows_NT) 
-		FLAGS += -mwindows
+		FLAGS += -static -static-libgcc -static-libstdc++ -mwindows
 	endif
 endif
 
