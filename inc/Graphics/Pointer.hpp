@@ -23,8 +23,9 @@ class Pointer : public SceneNode {
                      const ColorHolder& colors);
 
     void setLabel(const std::string label);
+    void setLabelOffset(const float pX, const float pY);
     void setTarget(SceneNode* node, TargetType type = Left);
-    void setNull();
+    void setNull(TargetType type = Left);
     void resetDestination();
     virtual void setTargetPosition(sf::Vector2f position,
                                    Transition transition);

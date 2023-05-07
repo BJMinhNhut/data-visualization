@@ -12,6 +12,7 @@ enum ID {
     Background,
 
     SinglyNode,
+    DoublyNode,
     ArrayNode,
 
     CheckBoxNormal,

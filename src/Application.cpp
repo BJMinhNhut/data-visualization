@@ -2,6 +2,7 @@
 #include <Array/VisualDynamicState.hpp>
 #include <Array/VisualStaticState.hpp>
 #include <Constants.hpp>
+#include <DLL/VisualDLLState.hpp>
 #include <Queue/VisualQueueState.hpp>
 #include <SLL/VisualSLLState.hpp>
 #include <Settings.hpp>
@@ -12,7 +13,6 @@
 #include <States/SettingsState.hpp>
 #include <States/State.hpp>
 #include <States/StateIdentifiers.hpp>
-#include <States/VisualDLLState.hpp>
 
 #include <iostream>
 #include <string>
@@ -142,6 +142,8 @@ void Application::loadLightTheme() {
 
     mTextures.load(Textures::SinglyNode,
                    "data/images/node-singly.png");
+    mTextures.load(Textures::DoublyNode,
+                   "data/images/node-doubly.png");
     mTextures.load(Textures::ArrayNode, "data/images/node-array.png");
 
     mTextures.load(Textures::CheckBoxNormal,
@@ -252,6 +254,8 @@ void Application::loadDarkTheme() {
 
     mTextures.load(Textures::SinglyNode,
                    "data/images/node-singly-dark.png");
+    mTextures.load(Textures::DoublyNode,
+                   "data/images/node-doubly-dark.png");
     mTextures.load(Textures::ArrayNode,
                    "data/images/node-array-dark.png");
 

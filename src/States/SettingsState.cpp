@@ -150,6 +150,8 @@ void SettingsState::loadLightTheme() {
 
     getContext().textures->load(Textures::SinglyNode,
                                 "data/images/node-singly.png");
+    getContext().textures->load(Textures::DoublyNode,
+                                "data/images/node-doubly.png");
     getContext().textures->load(Textures::ArrayNode,
                                 "data/images/node-array.png");
 
@@ -275,6 +277,8 @@ void SettingsState::loadDarkTheme() {
 
     getContext().textures->load(Textures::SinglyNode,
                                 "data/images/node-singly-dark.png");
+    getContext().textures->load(Textures::DoublyNode,
+                                "data/images/node-doubly-dark.png");
     getContext().textures->load(Textures::ArrayNode,
                                 "data/images/node-array-dark.png");
 

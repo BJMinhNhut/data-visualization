@@ -1,9 +1,11 @@
 #ifndef VISUALDLLSTATE_HPP
 #define VISUALDLLSTATE_HPP
 
+#include <DLL/DoublyLinkedList.hpp>
 #include <GUI/Button.hpp>
 #include <GUI/Container.hpp>
-#include <GUI/Input.hpp>
+#include <GUI/InputArray.hpp>
+#include <GUI/InputNumber.hpp>
 #include <States/VisualState.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
@@ -29,22 +31,33 @@ class VisualDLLState : public VisualState {
     virtual bool handleEvent(const sf::Event& event);
 
    private:
+    void centerDLL(const SceneNode::Transition& transition);
     void initGUIButtons();
 
     void loadNewGUI();
+
     void loadAddGUI();
+    void loadAddAnimation();
+
     void loadDeleteGUI();
+    void loadDeleteAnimation();
+
     void loadUpdateGUI();
+    void loadUpdateAnimation();
+
     void loadSearchGUI();
+    void loadSearchAnimation();
+
     void loadCallback();
 
     virtual void validateCommand();
     virtual void resetDataStructure();
 
    private:
-    std::vector<GUI::Input::Ptr> GUIValueInput;
-    std::vector<GUI::Input::Ptr> GUIIndexInput;
+    std::vector<GUI::InputNumber::Ptr> GUIValueInput;
+    std::vector<GUI::InputNumber::Ptr> GUIIndexInput;
+    GUI::InputArray::Ptr GUIArrayInput;
 
-    // Screen mScreen;
+    DoublyLinkedList mDLL;
 };
 #endif  // VISUALDLLSTATE_HPP

@@ -4,7 +4,7 @@ INCLUDEDIR = "./inc"
 LIBDIR =
 OBJSDIR = obj
 FLAGS = -lsfml-graphics -lsfml-window -lsfml-system
-REBUILDABLES = $(OBJSDIR) $(BINDIR)
+REBUILDABLES = $(OBJSDIR) 
 
 TARGET = DataVisual
 SOURCES = $(wildcard $(SOURCEDIR)/*.cpp) $(wildcard $(SOURCEDIR)/**/*.cpp)
@@ -17,8 +17,10 @@ ifeq ($(OS),Windows_NT)
 	FLAGS += -lcomdlg32 -lole32 -lcomctl32 -loleaut32 -luuid -DWIN32
 	INCLUDEDIR += "C:/SFML/include"
 	LIBDIR += "C:/SFML/lib"
+	RMDIR = rm -r
 else     
 	MKDIR += -p
+	RMDIR = rm -rf
 	UNAME_S := $(shell uname -s)
     ifeq ($(UNAME_S),Linux)
         FLAGS += -DLINUX
@@ -38,7 +40,7 @@ endif
 
 
 # Hide or not the calls depending of VERBOSE
-VERBOSE = TRUE
+VERBOSE = FALSE
 ifeq ($(VERBOSE),TRUE)
     HIDE =  
 else
@@ -69,6 +71,7 @@ ifeq ($(OS),Windows_NT)
 	if not exist $(OBJSDIR)\GUI $(MKDIR) $(OBJSDIR)\GUI
 	if not exist $(OBJSDIR)\Queue $(MKDIR) $(OBJSDIR)\Queue
 	if not exist $(OBJSDIR)\SLL  $(MKDIR) $(OBJSDIR)\SLL 
+	if not exist $(OBJSDIR)\DLL  $(MKDIR) $(OBJSDIR)\DLL 
 	if not exist $(OBJSDIR)\Stack $(MKDIR) $(OBJSDIR)\Stack
 	if not exist $(OBJSDIR)\States $(MKDIR) $(OBJSDIR)\States
 else 
@@ -78,6 +81,7 @@ else
 	$(MKDIR) $(OBJSDIR)/GUI
 	$(MKDIR) $(OBJSDIR)/Queue
 	$(MKDIR) $(OBJSDIR)/SLL 
+	$(MKDIR) $(OBJSDIR)/DLL
 	$(MKDIR) $(OBJSDIR)/Stack
 	$(MKDIR) $(OBJSDIR)/States
 endif
@@ -99,7 +103,7 @@ $(OBJSDIR)/%.o: $(SOURCEDIR)/%.cpp
 
 clean:
 	$(HIDE)echo Removing $(REBUILDABLES)
-	$(HIDE)rm -rf $(REBUILDABLES)
+	$(HIDE)$(RMDIR) $(REBUILDABLES)
 	$(HIDE)echo Clean done
 
 rebuild: clean all

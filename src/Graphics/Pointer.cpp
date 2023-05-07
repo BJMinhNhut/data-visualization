@@ -24,7 +24,6 @@ Pointer::Pointer(const FontHolder& fonts, const ColorHolder& colors)
     mLabel.setFillColor(colors.get(Colors::Text));
 
     centerOrigin(TextNULL);
-    TextNULL.setPosition(Constants::NODE_DISTANCE + 5.f, 0.f);
     TextNULL.setFillColor(colors.get(Colors::Text));
 
     centerOrigin(mCircle);
@@ -36,8 +35,24 @@ void Pointer::setLabel(const std::string label) {
     centerOrigin(mLabel);
 }
 
-void Pointer::setNull() {
+void Pointer::setLabelOffset(const float pX, const float pY) {
+    mLabel.setPosition(pX, pY);
+}
+
+void Pointer::setNull(TargetType type) {
     mTarget = nullptr;
+    mType = type;
+
+    switch (type) {
+        case Left:
+        case Bottom:
+            TextNULL.setPosition(Constants::NODE_DISTANCE + 5.f, 0.f);
+            break;
+        case Right:
+            TextNULL.setPosition(-Constants::NODE_DISTANCE - 5.f,
+                                 0.f);
+            break;
+    }
 }
 
 void Pointer::resetDestination() {
