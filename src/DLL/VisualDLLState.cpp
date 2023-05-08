@@ -402,104 +402,160 @@ void VisualDLLState::loadDeleteAnimation() {
     int index = GUIIndexInput[Delete]->getValue();
     int value = mDLL.getValue(index);
 
-    // if (index == 0) {
-    //     addAnimation(
-    //         "Set myNode = head.", {0},
-    //         [=]() {
-    //             mDLL.popUpNode(0);
-    //             mDLL.setHighlight("myNode", 0);
-    //         },
-    //         [=]() {
-    //             mDLL.clearHighlight();
-    //             mDLL.alignNodes();
-    //         });
+    if (index == 0) {
+        addAnimation(
+            "Set myNode = head.", {0},
+            [=]() {
+                mDLL.popUpNode(0);
+                mDLL.setHighlight("myNode", 0);
+                mDLL.setTailTarget(mDLL.getSize() - 1);
+            },
+            [=]() {
+                mDLL.clearHighlight();
+                mDLL.alignNodes();
+                mDLL.setTailTarget(mDLL.getSize() - 1);
+            });
 
-    //     addAnimation(
-    //         "Set head to its next node.", {1},
-    //         [=]() { mDLL.setHeadTarget(1); },
-    //         [=]() { mDLL.setHeadTarget(0); });
+        addAnimation(
+            "Set head to its next node.", {1},
+            [=]() { mDLL.setHeadTarget(1); },
+            [=]() { mDLL.setHeadTarget(0); });
 
-    //     addAnimation(
-    //         "Delete myNode (which is previous head).\nThe whole "
-    //         "process is "
-    //         "O(1).",
-    //         {2},
-    //         [=]() {
-    //             mDLL.clearHighlight();
-    //             mDLL.eraseNode(0);
-    //         },
-    //         [=]() {
-    //             mDLL.insertNode(0, value);
-    //             mDLL.popUpNode(0);
-    //             mDLL.setHighlight("myNode", 0);
-    //         });
+        if (mDLL.getSize() > 1)
+            addAnimation(
+                "New head is not null. Set its prev = null.", {2},
+                [=]() { mDLL.setPrev(1, -1); },
+                [=]() { mDLL.setPrev(1, 0); });
+        else
+            addAnimation("New head is null. Continue.", {2});
 
-    // } else {
-    //     addAnimation(
-    //         "Set cur = head.", {0},
-    //         [=]() { mDLL.setHighlight("cur", 0); },
-    //         [=]() { mDLL.clearHighlight(); });
+        addAnimation(
+            "Delete myNode (which is previous head).\n"
+            "The whole process is O(1).",
+            {3},
+            [=]() {
+                mDLL.clearHighlight();
+                mDLL.eraseNode(0);
+            },
+            [=]() {
+                mDLL.pureInsert(0, value);
+                mDLL.popUpNode(0);
+                mDLL.setHighlight("myNode", 0);
+                mDLL.setTailTarget(mDLL.getSize() - 1);
+            });
 
-    //     for (int i = 0; i + 1 < index; ++i) {
-    //         addAnimation(
-    //             "k = " + std::to_string(i) +
-    //                 ", index specified has not\nbeen reached.",
-    //             {1});
-    //         addAnimation("Set cur to the next node, increase k.", {2},
-    //                      [=]() { mDLL.setHighlight("cur", i + 1); });
-    //     }
+    } else if (index + 1 == mDLL.getSize()) {
+        addAnimation(
+            "Set myNode = tail.", {0},
+            [=]() {
+                mDLL.popUpNode(index);
+                mDLL.setTailTarget(index);
+                mDLL.setHighlight("myNode", index);
+            },
+            [=]() {
+                mDLL.clearHighlight();
+                mDLL.alignNodes();
+                mDLL.setTailTarget(index);
+            });
 
-    //     addAnimation(
-    //         "k = " + std::to_string(index - 1) +
-    //             ", cur now points to the node behind\nthe node "
-    //             "to-be-deleted. We "
-    //             "stop searching and\ncontinue with the removal.",
-    //         {1});
+        addAnimation(
+            "Set tail to its previous node.", {1},
+            [=]() { mDLL.setTailTarget(index - 1, Pointer::Bottom); },
+            [=]() { mDLL.setTailTarget(index, Pointer::Right); });
 
-    //     addAnimation(
-    //         "The node to-be-deleted (myNode) is cur.next", {3},
-    //         [=]() {
-    //             mDLL.popUpNode(index);
-    //             mDLL.setHighlight("myNode", index);
-    //         },
-    //         [=]() {
-    //             mDLL.setHighlight("myNode", -1);
-    //             mDLL.alignNodes();
-    //         });
+        addAnimation(
+            "Set tail.next = null.", {2},
+            [=]() { mDLL.setNext(index - 1, -1); },
+            [=]() { mDLL.setNext(index - 1, index); });
 
-    //     if (index + 1 == mDLL.getSize()) {
-    //         addAnimation(
-    //             "Connect the previous node of myNode\nto the next "
-    //             "node of "
-    //             "myNode (which is currently null).",
-    //             {4}, [=]() { mDLL.setPointer(index - 1, -1); },
-    //             [=]() { mDLL.setPointer(index - 1, index); });
-    //     } else
-    //         addAnimation(
-    //             "Connect the previous node of myNode\nto the next "
-    //             "node of "
-    //             "myNode.",
-    //             {4}, [=]() { mDLL.setPointer(index - 1, index + 1); },
-    //             [=]() { mDLL.setPointer(index - 1, index); });
+        addAnimation(
+            "Delete myNode (which is previous head).\n"
+            "The whole process is O(1).",
+            {3},
+            [=]() {
+                mDLL.clearHighlight();
+                mDLL.eraseNode(index);
+            },
+            [=]() {
+                mDLL.insertNode(index, value);
+                mDLL.popUpNode(index);
+                mDLL.setHighlight("myNode", index);
+                mDLL.setTailTarget(index - 1, Pointer::Bottom);
+            });
 
-    //     addAnimation(
-    //         "Delete myNode.", {5},
-    //         [=]() {
-    //             mDLL.setHighlight("myNode", -1);
-    //             mDLL.eraseNode(index);
-    //         },
-    //         [=]() {
-    //             mDLL.insertNode(index, value);
-    //             mDLL.popUpNode(index);
-    //             mDLL.setHighlight("myNode", index);
-    //         });
+    } else {
+        addAnimation(
+            "Set pre = head.", {0},
+            [=]() { mDLL.setHighlight("pre", 0); },
+            [=]() { mDLL.clearHighlight(); });
 
-    //     addAnimation(
-    //         "Re-layout the DLL for visualization (not in\nthe "
-    //         "actual DLL). The whole process complexity\nis O(N).",
-    //         {}, [=]() { mDLL.clearHighlight(); },
-    //         [=]() { mDLL.setHighlight("cur", index - 1); });
-    // }
+        for (int i = 0; i + 1 < index; ++i) {
+            addAnimation(
+                "k = " + std::to_string(i) +
+                    ", index specified has not\nbeen reached.",
+                {1});
+            addAnimation("Set cur to the next node, increase k.", {2},
+                         [=]() { mDLL.setHighlight("pre", i + 1); });
+        }
+
+        addAnimation(
+            "k = " + std::to_string(index - 1) +
+                ", cur now points to the node behind\nthe node "
+                "to-be-deleted. We "
+                "stop searching and\ncontinue with the removal.",
+            {1});
+
+        addAnimation(
+            "The node to-be-deleted (myNode) is pre.next\n"
+            "Set aft = myNode.next.",
+            {3},
+            [=]() {
+                mDLL.popUpNode(index);
+                mDLL.setHighlight("myNode", index);
+                mDLL.setHighlight("aft", index + 1);
+            },
+            [=]() {
+                mDLL.setHighlight("myNode", -1);
+                mDLL.setHighlight("aft", -1);
+                mDLL.alignNodes();
+            });
+
+        addAnimation(
+            "Connect the previous node of myNode\n"
+            "to the next node of myNode.",
+            {4},
+            [=]() {
+                mDLL.setNext(index - 1, index + 1);
+                mDLL.setPrev(index + 1, index - 1);
+            },
+            [=]() {
+                mDLL.setNext(index - 1, index);
+                mDLL.setPrev(index + 1, index);
+            });
+
+        addAnimation(
+            "Delete myNode.", {5},
+            [=]() {
+                mDLL.setHighlight("myNode", -1);
+                mDLL.eraseNode(index);
+                mDLL.setHighlight("aft", index);
+            },
+            [=]() {
+                mDLL.insertNode(index, value);
+                mDLL.popUpNode(index);
+                mDLL.setHighlight("myNode", index);
+                mDLL.setHighlight("aft", index + 1);
+            });
+
+        addAnimation(
+            "Re-layout the DLL for visualization (not in\nthe "
+            "actual DLL). The whole process complexity\nis O(N).",
+            {}, [=]() { mDLL.clearHighlight(); },
+            [=]() {
+                mDLL.setHighlight("pre", index - 1);
+                mDLL.setHighlight("aft", index);
+            });
+    }
 }
 
 void VisualDLLState::loadSearchGUI() {
@@ -531,7 +587,8 @@ void VisualDLLState::loadSearchAnimation() {
         addAnimation("List is not empty.", {0});
 
         addAnimation(
-            "Init cur = head to iterate the list and\nindex = 0 to "
+            "Init cur = head to iterate the list and\nindex = 0 "
+            "to "
             "maintain "
             "the position.",
             {1, 2}, [=]() { mDLL.setHighlight("cur", 0); },
@@ -559,7 +616,8 @@ void VisualDLLState::loadSearchAnimation() {
                              [=]() { mDLL.setHighlight("cur", -1); });
 
                 addAnimation(
-                    "cur is null (we have gone past the end of DLL\n"
+                    "cur is null (we have gone past the end of "
+                    "DLL\n"
                     "after O(N) step(s)). So the value " +
                         std::to_string(value) +
                         " is NOT_FOUND\nin the DLL.",
@@ -765,18 +823,17 @@ void VisualDLLState::validateCommand() {
             } else {
                 int index = GUIIndexInput[Delete]->getValue();
                 std::string info = "Delete node at ";
-                if (index == 0)
+                if (index == 0) {
                     info += "front";
-                else if (index == mDLL.getSize() - 1)
-                    info += "back";
-                else
-                    info += "index " + std::to_string(index);
-                callInfo(info);
-
-                if (index == 0)
                     loadCode(DLLCode::eraseFront);
-                else
+                } else if (index == mDLL.getSize() - 1) {
+                    info += "back";
+                    loadCode(DLLCode::eraseBack);
+                } else {
+                    info += "index " + std::to_string(index);
                     loadCode(DLLCode::eraseMiddle);
+                }
+                callInfo(info);
             }
             break;
         }

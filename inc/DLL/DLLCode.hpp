@@ -9,6 +9,7 @@ const std::string insertFront = {
     "if head != null,\n"
     "   myNode.next = head\n"
     "   head.prev = myNode\n"
+    "else tail = myNode\n"
     "head = myNode"};
 
 const std::string insertMiddle = {
@@ -29,14 +30,21 @@ const std::string insertBack = {
 const std::string eraseFront = {
     "Node myNode = head\n"
     "head = head.next\n"
+    "if head != null, head.prev = null\n"
     "delete myNode"};
 
 const std::string eraseMiddle = {
-    "Node cur = head\n"
+    "Node pre = head\n"
     "for(k = 0; k+1 < index; ++k)\n"
-    "	cur = cur.next\n"
-    "Node myNode = cur.next\n"
-    "cur.next = myNode.next\n"
+    "	pre = pre.next\n"
+    "Node myNode = pre.next, aft = myNode.next\n"
+    "pre.next = aft, aft.prev = pre\n"
+    "delete myNode"};
+
+const std::string eraseBack = {
+    "Node myNode = tail\n"
+    "tail = tail.prev\n"
+    "tail.next = null\n"
     "delete myNode"};
 
 const std::string update = {

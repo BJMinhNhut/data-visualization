@@ -13,8 +13,6 @@
 #include <memory>
 #include <string>
 
-#define DEBUG_DLL
-
 DoublyLinkedList::DoublyLinkedList(const FontHolder& fonts,
                                    const TextureHolder& textures,
                                    const ColorHolder& colors)
@@ -64,7 +62,7 @@ bool DoublyLinkedList::isInList(const int& index) const {
 int DoublyLinkedList::getDrawLength() const {
     if (nodes.size() == 0)
         return 0;
-    return mTail->getPosition().x;
+    return nodes.back()->getPosition().x + Constants::NODE_DISTANCE;
 }
 
 void DoublyLinkedList::loadData(const std::vector<int>& data) {
