@@ -204,19 +204,27 @@ void VisualDLLState::loadAddAnimation() {
         if (mDLL.getSize() > 0) {
             addAnimation("Head is not null.", {1});
             addAnimation(
-                "Set myNode.next = head.", {2},
+                "Set myNode.next = head.", {1, 2},
                 [=]() { mDLL.setNext(0, 1); },
                 [=]() { mDLL.setNext(0, -1); });
 
             addAnimation(
-                "Set head.prev = myNode.", {3},
+                "Set head.prev = myNode.", {1, 3},
                 [=]() { mDLL.setPrev(1, 0); },
                 [=]() { mDLL.setPrev(1, -1); });
-        } else
-            addAnimation("Head is null.", {1});
+        } else {
+            addAnimation(
+                "Head is null, so the DLL is currently\n"
+                "empty.",
+                {1});
+            addAnimation(
+                "Set tail to myNode.", {4},
+                [=]() { mDLL.setTailTarget(0); },
+                [=]() { mDLL.setTailTarget(-1); });
+        }
 
         addAnimation(
-            "Set head = myNode", {4},
+            "Set head = myNode", {5},
             [=]() { mDLL.setHeadTarget(0); },
             [=]() { mDLL.setHeadTarget(1); });
 
@@ -227,10 +235,14 @@ void VisualDLLState::loadAddAnimation() {
             [=]() {
                 mDLL.clearHighlight();
                 mDLL.alignNodes();
+                if (mDLL.getSize() == 1)
+                    mDLL.setTailTarget(0);
             },
             [=]() {
                 mDLL.popUpNode(0);
                 mDLL.setHighlight("myNode", 0);
+                if (mDLL.getSize() == 1)
+                    mDLL.setTailTarget(0);
             });
     } else if (index == mDLL.getSize()) {
         addAnimation(

@@ -17,7 +17,7 @@ ifeq ($(OS),Windows_NT)
 	FLAGS += -lcomdlg32 -lole32 -lcomctl32 -loleaut32 -luuid -DWIN32
 	INCLUDEDIR += "C:/SFML/include"
 	LIBDIR += "C:/SFML/lib"
-	RMDIR = rm -r
+	RMDIR = rd /s /q
 else     
 	MKDIR += -p
 	RMDIR = rm -rf
@@ -102,8 +102,11 @@ $(OBJSDIR)/%.o: $(SOURCEDIR)/%.cpp
 -include $(DEPS)
 
 clean:
-	$(HIDE)echo Removing $(REBUILDABLES)
-	$(HIDE)$(RMDIR) $(REBUILDABLES)
+ifeq ($(OS),Windows_NT) 
+	$(HIDE)if exist $(REBUILDABLES) $(RMDIR) $(REBUILDABLES) && echo Removing $(REBUILDABLES)
+else
+	$(HIDE)$(RMDIR) $(REBUILDABLES) && echo Removing $(REBUILDABLES)
+endif
 	$(HIDE)echo Clean done
 
 rebuild: clean all
