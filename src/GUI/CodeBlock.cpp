@@ -19,8 +19,11 @@ CodeBlock::CodeBlock(const FontHolder& fonts,
 }
 
 void CodeBlock::loadCode(const std::string& code) {
+    if (code == mText.getString())
+        return;
     mText.setString(code);
     mHighlight.clear();
+    std::vector<sf::Vector2f>().swap(mLinePositions);
     getLinePosition();
 }
 
