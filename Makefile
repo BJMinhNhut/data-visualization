@@ -34,7 +34,7 @@ else
 	# "Release" build - optimization, and no debug symbols
 	FLAGS += -Ofast -s
 	ifeq ($(OS),Windows_NT) 
-		FLAGS += -static -static-libgcc -static-libstdc++ -mwindows
+		FLAGS += -static -mwindows
 	endif
 endif
 
