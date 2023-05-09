@@ -1,6 +1,7 @@
 #include <Application.hpp>
 #include <Array/VisualDynamicState.hpp>
 #include <Array/VisualStaticState.hpp>
+#include <CLL/VisualCLLState.hpp>
 #include <Constants.hpp>
 #include <DLL/VisualDLLState.hpp>
 #include <Queue/VisualQueueState.hpp>
@@ -25,12 +26,14 @@ Application::Application()
       mTextures(),
       mFonts(),
       mColors(),
-      mStateStack(
-          State::Context(mWindow, mTextures, mFonts, mColors)),
+      mStateStack(State::Context(mWindow, mTextures, mFonts, mColors))
+#ifdef DEBUG
+      ,
       mStatisticsText(),
       mStatisticsUpdateTime(),
-      mStatisticsNumFrames(0) {
-
+      mStatisticsNumFrames(0)
+#endif
+{
     mFonts.load(Fonts::Medium, "data/fonts/Ubuntu-Medium.ttf");
     mFonts.load(Fonts::Bold, "data/fonts/Ubuntu-Bold.ttf");
     mFonts.load(Fonts::Main, "data/fonts/Ubuntu-Regular.ttf");
@@ -41,11 +44,13 @@ Application::Application()
     else
         loadDarkTheme();
 
+#ifdef DEBUG
     mStatisticsText.setFont(mFonts.get(Fonts::Main));
     mStatisticsText.setFillColor(sf::Color::Black);
 
     mStatisticsText.setPosition(5.f, 5.f);
     mStatisticsText.setCharacterSize(12u);
+#endif
 
     registerStates();
     mStateStack.pushState(States::Menu);
@@ -69,7 +74,9 @@ void Application::run() {
                 mWindow.close();
         }
 
+#ifdef DEBUG
         updateStatistics(dt);
+#endif
         render();
     }
 }
@@ -96,11 +103,14 @@ void Application::render() {
     mStateStack.draw();
 
     mWindow.setView(mWindow.getDefaultView());
+#ifdef DEBUG
     mWindow.draw(mStatisticsText);
+#endif
 
     mWindow.display();
 }
 
+#ifdef DEBUG
 void Application::updateStatistics(sf::Time dt) {
     mStatisticsUpdateTime += dt;
     mStatisticsNumFrames += 1;
@@ -112,6 +122,7 @@ void Application::updateStatistics(sf::Time dt) {
         mStatisticsNumFrames = 0;
     }
 }
+#endif
 
 void Application::registerStates() {
     mStateStack.registerState<MenuState>(States::Menu);
@@ -124,6 +135,7 @@ void Application::registerStates() {
         States::VisualDynamicArray);
     mStateStack.registerState<VisualSLLState>(States::VisualSLL);
     mStateStack.registerState<VisualDLLState>(States::VisualDLL);
+    mStateStack.registerState<VisualCLLState>(States::VisualCLL);
     mStateStack.registerState<VisualStackState>(States::VisualStack);
     mStateStack.registerState<VisualQueueState>(States::VisualQueue);
 }

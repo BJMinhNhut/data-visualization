@@ -20,7 +20,10 @@ class Application {
     void update(sf::Time dt);
     void render();
 
+#ifdef DEBUG
     void updateStatistics(sf::Time dt);
+#endif
+
     void registerStates();
 
     void loadLightTheme();
@@ -35,9 +38,10 @@ class Application {
     ColorHolder mColors;
 
     StateStack mStateStack;
-
+#ifdef DEBUG
     sf::Text mStatisticsText;
     sf::Time mStatisticsUpdateTime;
     std::size_t mStatisticsNumFrames;
+#endif
 };
 #endif  //APPLICATION_HPP

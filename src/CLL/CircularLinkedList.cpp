@@ -1,9 +1,9 @@
+#include <CLL/CircularLinkedList.hpp>
+#include <CLL/CircularNode.hpp>
 #include <Constants.hpp>
 #include <Graphics/ResourceHolder.hpp>
 #include <Graphics/SceneNode.hpp>
 #include <Random.hpp>
-#include <SLL/SinglyLinkedList.hpp>
-#include <SLL/SinglyNode.hpp>
 #include <Utility.hpp>
 
 #include <SFML/Graphics/RenderStates.hpp>
@@ -13,12 +13,10 @@
 #include <memory>
 #include <string>
 
-SinglyLinkedList::SinglyLinkedList(const FontHolder& fonts,
-                                   const TextureHolder& textures,
-                                   const ColorHolder& colors,
-                                   bool drawTail)
+CircularLinkedList::CircularLinkedList(const FontHolder& fonts,
+                                       const TextureHolder& textures,
+                                       const ColorHolder& colors)
     : mHead(new Pointer(fonts, colors)),
-      mTail(nullptr),
       mHighlight(),
       mFonts(fonts),
       mTextures(textures),
@@ -29,52 +27,51 @@ SinglyLinkedList::SinglyLinkedList(const FontHolder& fonts,
     std::unique_ptr<Pointer> headPtr(mHead);
     mHead->setLabel("head");
     attachChild(std::move(headPtr));
-
-    if (drawTail) {
-        mTail = new Pointer(fonts, colors);
-        mTail->setLabel("tail");
-        mTail->setTargetPosition(sf::Vector2f(0.f, 100.f), Smooth);
-        std::unique_ptr<Pointer> tailPtr(mTail);
-        attachChild(std::move(tailPtr));
-    }
-    randomGen();
 }
 
-int SinglyLinkedList::getSize() const {
+int CircularLinkedList::getSize() const {
     return nodes.size();
 }
 
-int SinglyLinkedList::getValue(const int& index) const {
+int CircularLinkedList::getValue(const int& index) const {
     assert(isInList(index));
     return nodes[index]->getValue();
 }
 
-int SinglyLinkedList::getRandomNodeValue() const {
+int CircularLinkedList::getRandomNodeValue() const {
     int index = Random::get(0, std::max(0, (int)nodes.size() - 1));
     return nodes[index]->getValue();
 }
 
-std::vector<int> SinglyLinkedList::getData() const {
+std::vector<int> CircularLinkedList::getData() const {
     std::vector<int> mData;
-    for (SinglyNode* node : nodes)
+    for (CircularNode* node : nodes)
         mData.push_back(node->getValue());
     return mData;
 }
 
-bool SinglyLinkedList::isInList(const int& index) const {
+bool CircularLinkedList::isInList(const int& index) const {
     return index >= 0 && index < nodes.size();
 }
 
-void SinglyLinkedList::loadData(const std::vector<int>& data) {
+int CircularLinkedList::getDrawLength() const {
+    if (nodes.empty())
+        return 0;
+
+    return nodes.back()->getRightBound().x - getWorldPosition().x;
+}
+
+void CircularLinkedList::loadData(const std::vector<int>& data) {
     resetNodes();
     for (int index = 0; index < data.size(); ++index) {
         insertNode(index, data[index]);
     }
 }
 
-void SinglyLinkedList::pureInsert(const int& index, int value) {
+void CircularLinkedList::pureInsert(const int& index, int value) {
     assert(isInList(index) || index == nodes.size());
-    SinglyNode* newNode = new SinglyNode(mFonts, mTextures, mColors);
+    CircularNode* newNode =
+        new CircularNode(mFonts, mTextures, mColors);
     if (value != -1)
         newNode->setValue(value);
 
@@ -82,22 +79,23 @@ void SinglyLinkedList::pureInsert(const int& index, int value) {
     alignNodes();
 }
 
-void SinglyLinkedList::pureInsert(const int& index,
-                                  SinglyNode* node) {
+void CircularLinkedList::pureInsert(const int& index,
+                                    CircularNode* node) {
     assert(isInList(index) ||
            index == nodes.size() &&
                nodes.size() < Constants::LIST_MAXSIZE);
 
     nodes.insert(nodes.begin() + index, node);
-    std::unique_ptr<SinglyNode> nodePtr(node);
+    std::unique_ptr<CircularNode> nodePtr(node);
     attachChild(std::move(nodePtr));
     node->setTargetPosition(getNodePosition(index), None);
     node->refreshPointerTarget();
 }
 
-void SinglyLinkedList::insertNode(const int& index, int value) {
+void CircularLinkedList::insertNode(const int& index, int value) {
     assert(isInList(index) || index == nodes.size());
-    SinglyNode* newNode = new SinglyNode(mFonts, mTextures, mColors);
+    CircularNode* newNode =
+        new CircularNode(mFonts, mTextures, mColors);
     if (value != -1)
         newNode->setValue(value);
     else
@@ -107,14 +105,19 @@ void SinglyLinkedList::insertNode(const int& index, int value) {
     insertNode(index, newNode);
 }
 
-void SinglyLinkedList::insertNode(const int& index,
-                                  SinglyNode* node) {
+void CircularLinkedList::insertNode(const int& index,
+                                    CircularNode* node) {
     pureInsert(index, node);
+
+    if (index + 1 == nodes.size()) {
+        nodes[index]->setLastNode(true);
+        if (index - 1 >= 0)
+            nodes[index - 1]->setLastNode(false);
+    }
 
     if (index > 0)
         setPointer(index - 1, index);
-    setPointer(index, index + 1);
-
+    setPointer(index, (index + 1) % nodes.size());
 #ifdef DEBUG_SLL
     std::cerr << "Insert " << node->getValue() << " at " << index
               << '\n';
@@ -123,10 +126,9 @@ void SinglyLinkedList::insertNode(const int& index,
     alignNodes();
 
     setHeadTarget(0);
-    setTailTarget((int)nodes.size() - 1);
 }
 
-void SinglyLinkedList::eraseNode(const int& index) {
+void CircularLinkedList::eraseNode(const int& index) {
     assert(isInList(index));
 
     if (index == 0)
@@ -134,10 +136,7 @@ void SinglyLinkedList::eraseNode(const int& index) {
     else
         setPointer(index - 1, index + 1);
 
-    if (index == (int)nodes.size() - 1)
-        setTailTarget(index - 1);
-
-    SinglyNode* erasedNode = nodes[index];
+    CircularNode* erasedNode = nodes[index];
 
     erasedNode->setTargetScale(0.f, 0.f, Smooth);
     erasedNode->setTargetPosition(
@@ -152,18 +151,17 @@ void SinglyLinkedList::eraseNode(const int& index) {
 #endif
 }
 
-void SinglyLinkedList::resetNodes() {
-    setTailTarget(-1);
+void CircularLinkedList::resetNodes() {
     setHeadTarget(-1);
     clearHighlight();
 
-    for (SinglyNode* nodePtr : nodes)
+    for (CircularNode* nodePtr : nodes)
         detachChild(nodePtr);
 
-    std::vector<SinglyNode*>().swap(nodes);
+    std::vector<CircularNode*>().swap(nodes);
 }
 
-sf::Vector2f SinglyLinkedList::getNodePosition(
+sf::Vector2f CircularLinkedList::getNodePosition(
     const int& index) const {
     if (index == 0)
         return sf::Vector2f(Constants::NODE_DISTANCE, 0.f);
@@ -175,36 +173,22 @@ sf::Vector2f SinglyLinkedList::getNodePosition(
             0.f);
 }
 
-void SinglyLinkedList::alignNodes() {
+void CircularLinkedList::alignNodes() {
     for (int index = 0; index < nodes.size(); ++index) {
         nodes[index]->setTargetPosition(getNodePosition(index),
                                         Smooth);
     }
 }
 
-void SinglyLinkedList::randomGen() {
-    resetNodes();
-
-    const int& mSize =
-        Random::get(1 + 3, Constants::LIST_MAXSIZE - 3);
-
-#ifdef DEBUG_SLL
-    std::cerr << "Random size: " << mSize << '\n';
-#endif
-
-    for (int index = 0; index < mSize; ++index)
-        insertNode(index);
-}
-
-void SinglyLinkedList::clearHighlight() {
+void CircularLinkedList::clearHighlight() {
     for (auto& [label, ptr] : mHighlight) {
         detachChild(ptr);
     }
     mHighlight.clear();
 }
 
-void SinglyLinkedList::setHighlight(const std::string& label,
-                                    int index) {
+void CircularLinkedList::setHighlight(const std::string& label,
+                                      int index) {
     assert(isInList(index) || index == -1);
 
     if (index == -1) {
@@ -230,16 +214,16 @@ void SinglyLinkedList::setHighlight(const std::string& label,
 
             mHighlight[label]->setTargetPosition(
                 nodes[index]->getTargetPosition() +
-                    sf::Vector2f(0.f, 50.f),
+                    sf::Vector2f(-50.f, 40.f),
                 None);
         } else {
             mHighlight[label]->setTargetPosition(
                 nodes[index]->getTargetPosition() +
-                    sf::Vector2f(0.f, 50.f),
+                    sf::Vector2f(-50.f, 40.f),
                 Smooth);
         }
 
-        mHighlight[label]->setTarget(nodes[index], Pointer::Bottom);
+        mHighlight[label]->setTarget(nodes[index], Pointer::Left);
 
 #ifdef DEBUG_SLL
         std::cerr << "Change highlight index " << index << '\n';
@@ -249,18 +233,15 @@ void SinglyLinkedList::setHighlight(const std::string& label,
     highlightIndex = index;
 }
 
-void SinglyLinkedList::updateCurrent(sf::Time dt) {
+void CircularLinkedList::updateCurrent(sf::Time dt) {
     if (tempNode != nullptr && tempNode->getScale().x == 0.f) {
         detachChild(tempNode);
         tempNode = nullptr;
     }
 }
 
-void SinglyLinkedList::refreshPointerTarget() {
+void CircularLinkedList::refreshPointerTarget() {
     mHead->resetDestination();
-
-    if (mTail)
-        mTail->resetDestination();
 
     for (auto& [label, ptr] : mHighlight) {
         ptr->resetDestination();
@@ -271,14 +252,14 @@ void SinglyLinkedList::refreshPointerTarget() {
     }
 }
 
-void SinglyLinkedList::popUpNode(const int& index) {
+void CircularLinkedList::popUpNode(const int& index) {
     assert(isInList(index));
     nodes[index]->setTargetPosition(
         nodes[index]->getTargetPosition() + sf::Vector2f(0.f, 35.f),
         Smooth);
 }
 
-void SinglyLinkedList::updateNode(const int& index, int newValue) {
+void CircularLinkedList::updateNode(const int& index, int newValue) {
     assert(isInList(index));
 #ifdef DEBUG_SLL
     std::cerr << "Update node " << index << " to " << newValue
@@ -287,30 +268,15 @@ void SinglyLinkedList::updateNode(const int& index, int newValue) {
     nodes[index]->setValue(newValue);
 }
 
-void SinglyLinkedList::setHeadTarget(const int& target) {
+void CircularLinkedList::setHeadTarget(const int& target) {
     if (isInList(target))
         mHead->setTarget(nodes[target]);
     else
         mHead->setNull();
 }
 
-void SinglyLinkedList::setTailTarget(const int& target) {
-    if (mTail == nullptr)
-        return;
-
-    if (isInList(target)) {
-        mTail->setTarget(nodes[target], Pointer::Bottom);
-        mTail->setTargetPosition(nodes[target]->getTargetPosition() +
-                                     sf::Vector2f(0.f, 60.f),
-                                 Smooth);
-    } else {
-        mTail->setNull();
-        mTail->setTargetPosition(sf::Vector2f(0.f, 25.f), Smooth);
-    }
-}
-
-void SinglyLinkedList::setPointer(const int& source,
-                                  const int& target) {
+void CircularLinkedList::setPointer(const int& source,
+                                    const int& target) {
     assert(isInList(source));
     if (isInList(target))
         nodes[source]->setNextNode(nodes[target]);

@@ -14,9 +14,9 @@ class Text;
 void centerOrigin(sf::Sprite& sprite);
 void centerOrigin(sf::Text& text);
 void centerOrigin(sf::Shape& rect);
-sf::RectangleShape getLineShape(sf::Vector2f line, float thickness);
-sf::ConvexShape getArrowTip(sf::Vector2f line, float thickness);
-sf::ConvexShape getArrow(sf::Vector2f line, float thickness);
+
+sf::RectangleShape getLineShape(sf::Vector2f line,
+                                float thickness = 1.f);
 
 std::vector<int> loadArrayFromString(std::string text);
 std::vector<int> loadArrayFromFile(const std::string& filename);

@@ -9,7 +9,6 @@
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/ConvexShape.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Text.hpp>
 
 #include <string>
@@ -17,6 +16,8 @@
 class Pointer : public SceneNode {
    public:
     enum TargetType { Left, Right, Bottom };
+    static constexpr float POINTER_THICKNESS = 2.f;
+    static constexpr float CIRCULAR_OFFSET = 70.f;
 
    public:
     explicit Pointer(const FontHolder& fonts,
@@ -29,11 +30,18 @@ class Pointer : public SceneNode {
     void resetDestination();
     virtual void setTargetPosition(sf::Vector2f position,
                                    Transition transition);
+    void setCircular(bool circular);
 
     sf::Vector2f getDestination() const;
     bool isNULL() const;
 
    private:
+    sf::ConvexShape getArrowTip(sf::Vector2f line,
+                                float thickness = POINTER_THICKNESS);
+    sf::ConvexShape getArrow(sf::Vector2f line,
+                             float thickness = POINTER_THICKNESS);
+    std::vector<sf::ConvexShape> getCircularArrow(
+        sf::Vector2f line, float thickness = POINTER_THICKNESS);
     virtual void updateCurrent(sf::Time dt);
     virtual void drawCurrent(sf::RenderTarget& target,
                              sf::RenderStates states) const;
@@ -46,6 +54,9 @@ class Pointer : public SceneNode {
     sf::CircleShape mCircle;
     sf::ConvexShape mArrow;
     sf::ConvexShape mArrowTip;
+
+    std::vector<sf::ConvexShape> mCircularArrow;
+    bool isCircular;
 
     sf::Text mLabel;
     sf::Text TextNULL;

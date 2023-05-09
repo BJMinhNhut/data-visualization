@@ -85,7 +85,7 @@ MenuDataState::MenuDataState(StateStack& stack, Context context)
                            580.f);
     CLLButton->setCallback([this]() {
         requestStackPop();
-        requestStackPush(States::VisualDLL);
+        requestStackPush(States::VisualCLL);
     });
     mGUIContainer.pack(CLLButton);
 

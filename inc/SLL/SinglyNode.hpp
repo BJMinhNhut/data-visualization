@@ -28,10 +28,12 @@ class SinglyNode : public SceneNode {
     virtual void drawCurrent(sf::RenderTarget& target,
                              sf::RenderStates states) const;
 
+   protected:
+    Pointer* mPointer;
+
    private:
     sf::Sprite mSprite;
     NodeData* mData;
-    Pointer* mPointer;
 };
 
 #endif  // SINGLYNODE_HPP

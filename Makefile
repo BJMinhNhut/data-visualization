@@ -29,7 +29,7 @@ endif
 
 ifeq ($(BUILD),debug)   
 	# "Debug" build - no optimization, and debugging symbols
-	FLAGS += -Og -g
+	FLAGS += -Og -g -DDEBUG
 else
 	# "Release" build - optimization, and no debug symbols
 	FLAGS += -Ofast -s
@@ -72,6 +72,7 @@ ifeq ($(OS),Windows_NT)
 	if not exist $(OBJSDIR)\Queue $(MKDIR) $(OBJSDIR)\Queue
 	if not exist $(OBJSDIR)\SLL  $(MKDIR) $(OBJSDIR)\SLL 
 	if not exist $(OBJSDIR)\DLL  $(MKDIR) $(OBJSDIR)\DLL 
+	if not exist $(OBJSDIR)\CLL  $(MKDIR) $(OBJSDIR)\CLL 
 	if not exist $(OBJSDIR)\Stack $(MKDIR) $(OBJSDIR)\Stack
 	if not exist $(OBJSDIR)\States $(MKDIR) $(OBJSDIR)\States
 else 
@@ -82,6 +83,7 @@ else
 	$(MKDIR) $(OBJSDIR)/Queue
 	$(MKDIR) $(OBJSDIR)/SLL 
 	$(MKDIR) $(OBJSDIR)/DLL
+	$(MKDIR) $(OBJSDIR)/CLL
 	$(MKDIR) $(OBJSDIR)/Stack
 	$(MKDIR) $(OBJSDIR)/States
 endif
