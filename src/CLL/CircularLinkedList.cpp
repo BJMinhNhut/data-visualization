@@ -17,16 +17,19 @@ CircularLinkedList::CircularLinkedList(const FontHolder& fonts,
                                        const TextureHolder& textures,
                                        const ColorHolder& colors)
     : mHead(new Pointer(fonts, colors)),
+      mTail(new Pointer(fonts, colors)),
       mHighlight(),
       mFonts(fonts),
       mTextures(textures),
       mColors(colors),
       tempNode(nullptr),
       highlightIndex(-1) {
-
-    std::unique_ptr<Pointer> headPtr(mHead);
     mHead->setLabel("head");
-    attachChild(std::move(headPtr));
+    attachChild(std::unique_ptr<Pointer>(mHead));
+
+    mTail->setLabel("tail");
+    mTail->setTargetPosition(sf::Vector2f(0.f, 20.f), None);
+    attachChild(std::unique_ptr<Pointer>(mTail));
 }
 
 int CircularLinkedList::getSize() const {
@@ -58,7 +61,9 @@ int CircularLinkedList::getDrawLength() const {
     if (nodes.empty())
         return 0;
 
-    return nodes.back()->getRightBound().x - getWorldPosition().x;
+    return std::max(
+        mTail->getPosition().x,
+        nodes.back()->getRightBound().x - getWorldPosition().x);
 }
 
 void CircularLinkedList::loadData(const std::vector<int>& data) {
@@ -118,14 +123,15 @@ void CircularLinkedList::insertNode(const int& index,
     if (index > 0)
         setPointer(index - 1, index);
     setPointer(index, (index + 1) % nodes.size());
+
 #ifdef DEBUG_SLL
     std::cerr << "Insert " << node->getValue() << " at " << index
               << '\n';
 #endif
 
     alignNodes();
-
     setHeadTarget(0);
+    setTailTarget((int)nodes.size() - 1);
 }
 
 void CircularLinkedList::eraseNode(const int& index) {
@@ -135,6 +141,9 @@ void CircularLinkedList::eraseNode(const int& index) {
         setHeadTarget(1);
     else
         setPointer(index - 1, index + 1);
+
+    if (index + 1 == nodes.size())
+        setTailTarget(index - 1);
 
     CircularNode* erasedNode = nodes[index];
 
@@ -153,6 +162,7 @@ void CircularLinkedList::eraseNode(const int& index) {
 
 void CircularLinkedList::resetNodes() {
     setHeadTarget(-1);
+    setTailTarget(-1);
     clearHighlight();
 
     for (CircularNode* nodePtr : nodes)
@@ -242,6 +252,7 @@ void CircularLinkedList::updateCurrent(sf::Time dt) {
 
 void CircularLinkedList::refreshPointerTarget() {
     mHead->resetDestination();
+    mTail->resetDestination();
 
     for (auto& [label, ptr] : mHighlight) {
         ptr->resetDestination();
@@ -273,6 +284,22 @@ void CircularLinkedList::setHeadTarget(const int& target) {
         mHead->setTarget(nodes[target]);
     else
         mHead->setNull();
+}
+
+void CircularLinkedList::setTailTarget(const int& target) {
+    if (mTail == nullptr)
+        return;
+
+    if (isInList(target)) {
+        mTail->setTarget(nodes[target], Pointer::Right);
+        mTail->setTargetPosition(
+            nodes[target]->getTargetPosition() +
+                sf::Vector2f(Constants::NODE_DISTANCE + 20.f, 0.f),
+            Smooth);
+    } else {
+        mTail->setNull(Pointer::Right);
+        mTail->setTargetPosition(sf::Vector2f(0.f, 25.f), Smooth);
+    }
 }
 
 void CircularLinkedList::setPointer(const int& source,

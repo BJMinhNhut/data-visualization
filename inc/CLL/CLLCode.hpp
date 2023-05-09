@@ -6,8 +6,11 @@
 namespace CLLCode {
 const std::string insertFront = {
     "Node myNode = new Node(value)\n"
-    "myNode.next = head\n"
-    "head = myNode"};
+    "if head == nullptr,\n"
+    "   tail = myNode\n"
+    "else myNode.next = head\n"
+    "head = myNode\n"
+    "tail.next = myNode\n"};
 
 const std::string insertMiddle = {
     "Node cur = head\n"

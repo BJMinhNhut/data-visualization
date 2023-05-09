@@ -35,6 +35,7 @@ class CircularLinkedList : public SceneNode {
     void alignNodes();
 
     void setHeadTarget(const int& target);
+    void setTailTarget(const int& target);
     void setPointer(const int& source, const int& target);
 
    private:
@@ -50,6 +51,7 @@ class CircularLinkedList : public SceneNode {
     const ColorHolder& mColors;
 
     Pointer* mHead;
+    Pointer* mTail;
     std::map<std::string, Pointer*> mHighlight;
     int highlightIndex;
 
