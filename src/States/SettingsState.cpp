@@ -147,6 +147,8 @@ void SettingsState::loadLightTheme() {
 
     getContext().textures->load(Textures::Background,
                                 "data/images/background.png");
+    getContext().textures->load(Textures::Title,
+                                "data/images/title.png");
 
     getContext().textures->load(Textures::SinglyNode,
                                 "data/images/node-singly.png");
@@ -274,6 +276,8 @@ void SettingsState::loadDarkTheme() {
 
     getContext().textures->load(Textures::Background,
                                 "data/images/background-dark.png");
+    getContext().textures->load(Textures::Title,
+                                "data/images/title-dark.png");
 
     getContext().textures->load(Textures::SinglyNode,
                                 "data/images/node-singly-dark.png");

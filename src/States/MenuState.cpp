@@ -7,12 +7,16 @@
 #include <SFML/Graphics/View.hpp>
 
 MenuState::MenuState(StateStack& stack, Context context)
-    : State(stack, context), mGUIContainer() {
-    sf::Texture& texture =
-        context.textures->get(Textures::Background);
-    sf::Font& font = context.fonts->get(Fonts::Main);
+    : State(stack, context),
+      mGUIContainer(),
+      mBackgroundSprite(context.textures->get(Textures::Background)),
+      mTitle(context.textures->get(Textures::Title)) {
 
-    mBackgroundSprite.setTexture(texture);
+    centerOrigin(mTitle);
+    mTitle.setPosition(context.window->getSize().x / 2.f,
+                       context.window->getSize().y / 4.f);
+
+    sf::Font& font = context.fonts->get(Fonts::Main);
     sf::Vector2u bounds = context.window->getSize();
 
     auto startButton = std::make_shared<GUI::Button>(
@@ -63,6 +67,7 @@ void MenuState::draw() {
     window.setView(window.getDefaultView());
 
     window.draw(mBackgroundSprite);
+    window.draw(mTitle);
     window.draw(mGUIContainer);
 }
 

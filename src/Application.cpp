@@ -151,6 +151,7 @@ void Application::loadLightTheme() {
 
     mTextures.load(Textures::Background,
                    "data/images/background.png");
+    mTextures.load(Textures::Title, "data/images/title.png");
 
     mTextures.load(Textures::SinglyNode,
                    "data/images/node-singly.png");
@@ -263,6 +264,7 @@ void Application::loadDarkTheme() {
 
     mTextures.load(Textures::Background,
                    "data/images/background-dark.png");
+    mTextures.load(Textures::Title, "data/images/title-dark.png");
 
     mTextures.load(Textures::SinglyNode,
                    "data/images/node-singly-dark.png");
