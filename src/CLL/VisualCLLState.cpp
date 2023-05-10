@@ -250,11 +250,14 @@ void VisualCLLState::loadAddAnimation() {
             [=]() {
                 mCLL.clearHighlight();
                 mCLL.alignNodes();
-                if (mCLL.getSize() == 1) mCLL.setTailTarget(0);
+                if (mCLL.getSize() == 1)
+                    mCLL.setTailTarget(0);
             },
             [=]() {
                 mCLL.popUpNode(0);
                 mCLL.setHighlight("myNode", 0);
+                if (mCLL.getSize() == 1)
+                    mCLL.setTailTarget(0);
             });
     } else if (index == mCLL.getSize()) {
         addAnimation(
@@ -277,9 +280,7 @@ void VisualCLLState::loadAddAnimation() {
                 mCLL.setTail(index - 1, false);
                 mCLL.setPointer(index - 1, index);
             },
-            [=]() {
-                mCLL.setTail(index - 1, true);
-            });
+            [=]() { mCLL.setTail(index - 1, true); });
 
         addAnimation(
             "Set myNode.next to head", {2},
@@ -433,23 +434,29 @@ void VisualCLLState::loadDeleteAnimation() {
             });
 
         addAnimation(
-            "Set head to its next node.", {1},
+            "Set tail.next to head.next.", {1},
+            [=]() { mCLL.setPointer((int)mCLL.getSize() - 1, 1); },
+            [=]() { mCLL.setPointer((int)mCLL.getSize() - 1, 0); });
+
+        addAnimation(
+            "Set head to its next node.", {2},
             [=]() { mCLL.setHeadTarget(1); },
             [=]() { mCLL.setHeadTarget(0); });
 
         addAnimation(
             "Delete myNode (which is previous head).\nThe whole "
-            "process is "
-            "O(1).",
-            {2},
+            "process is O(1).",
+            {3},
             [=]() {
                 mCLL.clearHighlight();
                 mCLL.eraseNode(0);
+                mCLL.setTailTarget((int)mCLL.getSize() - 1);
             },
             [=]() {
                 mCLL.insertNode(0, value);
                 mCLL.popUpNode(0);
                 mCLL.setHighlight("myNode", 0);
+                mCLL.setTailTarget((int)mCLL.getSize() - 1);
             });
 
     } else {
@@ -505,11 +512,13 @@ void VisualCLLState::loadDeleteAnimation() {
             [=]() {
                 mCLL.setHighlight("myNode", -1);
                 mCLL.eraseNode(index);
+                mCLL.setTailTarget((int)mCLL.getSize() - 1);
             },
             [=]() {
                 mCLL.insertNode(index, value);
                 mCLL.popUpNode(index);
                 mCLL.setHighlight("myNode", index);
+                mCLL.setTailTarget(mCLL.getSize() - 1);
             });
 
         addAnimation(
