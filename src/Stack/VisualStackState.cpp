@@ -13,12 +13,12 @@
 
 VisualStackState::VisualStackState(StateStack& stack, Context context)
     : VisualState(stack, context, "Stack"),
-      mSLL(*context.fonts, *context.textures, *context.colors),
+      mStack(*context.fonts, *context.textures, *context.colors),
       GUIValueInput(OptionCount),
       GUIIndexInput(OptionCount) {
 
     centerSLL(SceneNode::None);
-    mSLL.refreshPointerTarget();
+    mStack.refreshPointerTarget();
 
     initGUIButtons();
 
@@ -33,14 +33,14 @@ VisualStackState::VisualStackState(StateStack& stack, Context context)
 void VisualStackState::centerSLL(
     const SceneNode::Transition& transition) {
     sf::Vector2u windowSize = getContext().window->getSize();
-    if (mSLL.getSize() == 0)
-        mSLL.setTargetPosition(windowSize.x / 2.f, windowSize.y / 4.f,
+    if (mStack.getSize() == 0)
+        mStack.setTargetPosition(windowSize.x / 2.f, windowSize.y / 4.f,
                                transition);
     else
-        mSLL.setTargetPosition(
+        mStack.setTargetPosition(
             windowSize.x / 2.f -
                 ((Constants::NODE_DISTANCE + Constants::NODE_SIZE) *
-                     mSLL.getSize() -
+                     mStack.getSize() -
                  Constants::NODE_SIZE / 2.f) /
                     2.f,
             windowSize.y / 4.f, transition);
@@ -49,7 +49,7 @@ void VisualStackState::centerSLL(
 void VisualStackState::initGUIButtons() {
     addOption(New, "Create", [this]() {
         setCurrentOption(New);
-        GUIArrayInput->loadArray(mSLL.getData());
+        GUIArrayInput->loadArray(mStack.getData());
     });
 
     addOption(Push, "Push", [this]() {
@@ -99,7 +99,7 @@ void VisualStackState::loadNewGUI() {
                  "Apply", [this]() {
                      if (GUIArrayInput->validate() ==
                          GUI::Input::Success) {
-                         mSLL.loadData(GUIArrayInput->getArray());
+                         mStack.loadData(GUIArrayInput->getArray());
                          resetDataStructure();
                          resetOption();
                      }
@@ -142,65 +142,65 @@ void VisualStackState::loadPushAnimation() {
             ".",
         {0},
         [=]() {
-            mSLL.pureInsert(0, value);
-            mSLL.popUpNode(0);
-            mSLL.setHighlight("myNode", 0);
+            mStack.pureInsert(0, value);
+            mStack.popUpNode(0);
+            mStack.setHighlight("myNode", 0);
         },
         [=]() {
-            mSLL.clearHighlight();
-            mSLL.eraseNode(0);
+            mStack.clearHighlight();
+            mStack.eraseNode(0);
         });
 
-    if (mSLL.getSize() > 0)
+    if (mStack.getSize() > 0)
         addAnimation(
             "Set myNode.next = head.", {1},
-            [=]() { mSLL.setPointer(0, 1); },
-            [=]() { mSLL.setPointer(0, -1); });
+            [=]() { mStack.setPointer(0, 1); },
+            [=]() { mStack.setPointer(0, -1); });
     else
         addAnimation(
             "Set myNode.next = head. Head is currently null.", {1});
 
     addAnimation(
-        "Set head = myNode", {2}, [=]() { mSLL.setHeadTarget(0); },
-        [=]() { mSLL.setHeadTarget(1); });
+        "Set head = myNode", {2}, [=]() { mStack.setHeadTarget(0); },
+        [=]() { mStack.setHeadTarget(1); });
 
     addAnimation(
         "Re-layout the Stack for visualization (not in\nthe "
         "actual Stack). The whole process complexity\nis O(1).",
         {},
         [=]() {
-            mSLL.clearHighlight();
-            mSLL.alignNodes();
+            mStack.clearHighlight();
+            mStack.alignNodes();
         },
         [=]() {
-            mSLL.popUpNode(0);
-            mSLL.setHighlight("myNode", 0);
+            mStack.popUpNode(0);
+            mStack.setHighlight("myNode", 0);
         });
 }
 
 void VisualStackState::loadPopGUI() {}
 
 void VisualStackState::loadPopAnimation() {
-    if (mSLL.getSize() == 0) {
+    if (mStack.getSize() == 0) {
         addAnimation("Stack is empty. No action is performed.", {0});
     } else {
-        int value = mSLL.getValue(0);
+        int value = mStack.getValue(0);
         addAnimation("Stack is not empty.", {0});
         addAnimation(
             "Set myNode = head.", {1},
             [=]() {
-                mSLL.popUpNode(0);
-                mSLL.setHighlight("myNode", 0);
+                mStack.popUpNode(0);
+                mStack.setHighlight("myNode", 0);
             },
             [=]() {
-                mSLL.clearHighlight();
-                mSLL.alignNodes();
+                mStack.clearHighlight();
+                mStack.alignNodes();
             });
 
         addAnimation(
             "Set head to its next node.", {2},
-            [=]() { mSLL.setHeadTarget(1); },
-            [=]() { mSLL.setHeadTarget(0); });
+            [=]() { mStack.setHeadTarget(1); },
+            [=]() { mStack.setHeadTarget(0); });
 
         addAnimation(
             "Delete myNode (which is previous head).\nThe whole "
@@ -208,13 +208,13 @@ void VisualStackState::loadPopAnimation() {
             "O(1).",
             {3},
             [=]() {
-                mSLL.clearHighlight();
-                mSLL.eraseNode(0);
+                mStack.clearHighlight();
+                mStack.eraseNode(0);
             },
             [=]() {
-                mSLL.insertNode(0, value);
-                mSLL.popUpNode(0);
-                mSLL.setHighlight("myNode", 0);
+                mStack.insertNode(0, value);
+                mStack.popUpNode(0);
+                mStack.setHighlight("myNode", 0);
             });
     }
 }
@@ -222,21 +222,21 @@ void VisualStackState::loadPopAnimation() {
 void VisualStackState::loadClearGUI() {}
 
 void VisualStackState::loadClearAnimation() {
-    for (int i = 0; i < mSLL.getSize(); ++i) {
+    for (int i = 0; i < mStack.getSize(); ++i) {
         addAnimation("Stack is not empty, so continue.", {0});
 
-        int value = mSLL.getValue(i);
+        int value = mStack.getValue(i);
 
         addAnimation(
             "Pop node at the top of stack", {1},
-            [=]() { mSLL.eraseNode(0); },
-            [=]() { mSLL.insertNode(0, value); });
+            [=]() { mStack.eraseNode(0); },
+            [=]() { mStack.insertNode(0, value); });
     }
 }
 
 void VisualStackState::loadCallback() {
     setLoadAnimationCallback(
-        New, [this]() { mSLL.loadData(GUIArrayInput->getArray()); });
+        New, [this]() { mStack.loadData(GUIArrayInput->getArray()); });
 
     setLoadAnimationCallback(Push, [this]() { loadPushAnimation(); });
 
@@ -263,7 +263,7 @@ void VisualStackState::validateCommand() {
         }
 
         case Push: {
-            if (mSLL.getSize() == Constants::LIST_MAXSIZE) {
+            if (mStack.getSize() == Constants::LIST_MAXSIZE) {
                 callError("Stack size limit reached!");
             } else if (GUIValueInput[Push]->validate() !=
                        GUI::Input::Success) {
@@ -297,17 +297,17 @@ void VisualStackState::validateCommand() {
 }
 
 void VisualStackState::resetDataStructure() {
-    mSLL.clearHighlight();
-    mSLL.alignNodes();
+    mStack.clearHighlight();
+    mStack.alignNodes();
 }
 
 void VisualStackState::draw() {
     VisualState::draw();
-    getContext().window->draw(mSLL);
+    getContext().window->draw(mStack);
 }
 
 bool VisualStackState::update(sf::Time dt) {
-    mSLL.update(dt);
+    mStack.update(dt);
     centerSLL(SceneNode::Smooth);
     return VisualState::update(dt);
 }

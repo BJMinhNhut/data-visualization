@@ -5,7 +5,7 @@
 #include <GUI/Container.hpp>
 #include <GUI/InputArray.hpp>
 #include <GUI/InputNumber.hpp>
-#include <SLL/SinglyLinkedList.hpp>
+#include <Stack/Stack.hpp>
 #include <States/VisualState.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
@@ -54,7 +54,7 @@ class VisualStackState : public VisualState {
     std::vector<GUI::InputNumber::Ptr> GUIIndexInput;
     GUI::InputArray::Ptr GUIArrayInput;
 
-    SinglyLinkedList mSLL;
+    Stack mStack;
 };
 
 #endif  // VISUALSTACKSTATE_HPP
