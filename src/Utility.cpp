@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <fstream>
+#include <iostream>
 
 void centerOrigin(sf::Sprite& sprite) {
     sf::FloatRect bounds = sprite.getLocalBounds();
@@ -70,7 +71,8 @@ std::vector<int> loadArrayFromFile(const std::string& filename) {
         mArray.insert(mArray.end(), currentArray.begin(),
                       currentArray.end());
     }
-    mArray.resize(Constants::LIST_MAXSIZE);
+    mArray.resize(
+        std::min((int)mArray.size(), Constants::LIST_MAXSIZE));
     mFile.close();
     return mArray;
 }

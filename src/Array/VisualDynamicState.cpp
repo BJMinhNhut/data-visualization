@@ -724,7 +724,7 @@ void VisualDynamicState::validateCommand() {
                 callError(
                     "Number of elements must be in range [1, 10]");
             } else {
-                callInfo("Init a new Static Array.");
+                callInfo("Init a new Dynamic Array.");
             }
             break;
         }
