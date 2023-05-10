@@ -15,6 +15,7 @@ MKDIR = mkdir
 RELEASE = FALSE
 ifeq ($(OS),Windows_NT) 
 	FLAGS += -lcomdlg32 -lole32 -lcomctl32 -loleaut32 -luuid -DWIN32
+	OBJS += $(OBJSDIR)/icon.res
 	INCLUDEDIR += "C:/SFML/include"
 	LIBDIR += "C:/SFML/lib"
 	RMDIR = rd /s /q
@@ -92,14 +93,13 @@ $(TARGET): $(OBJS)
 	$(HIDE)echo Linking $@
 	$(HIDE)$(CXX) -o $@ $^ $(FLAGS) $(LIBDIR:%=-L%)
 
-$(OBJS): | $(OBJSDIR)
-
-$(OBJSDIR): 
-	$(MKDIR) $(OBJSDIR)
-
 $(OBJSDIR)/%.o: $(SOURCEDIR)/%.cpp
 	$(HIDE)echo Building $@ from $<
 	$(HIDE)$(CXX) -o $@ -MMD -c $< $(INCLUDEDIR:%=-I%)
+
+$(OBJSDIR)/icon.res: $(SOURCEDIR)/icon.rc
+	@echo Building $@ from $<
+	$(HIDE)windres $< -O coff -o $@
 
 -include $(DEPS)
 
