@@ -139,13 +139,13 @@ void CircularLinkedList::insertNode(const int& index,
 void CircularLinkedList::eraseNode(const int& index) {
     assert(isInList(index));
 
-    if (index == 0)
+    if (index == 0) {
         setHeadTarget(1);
-    else
-        setPointer(index - 1, (index + 1) % nodes.size());
-
-    if (index + 1 == nodes.size())
-        setTailTarget(index - 1);
+    } else if (index + 1 < nodes.size())
+        setPointer(index - 1, index + 1);
+    else {
+        nodes[index - 1]->setNextNode(nullptr);
+    }
 
     CircularNode* erasedNode = nodes[index];
 
@@ -288,18 +288,31 @@ void CircularLinkedList::setHeadTarget(const int& target) {
         mHead->setNull(Pointer::Right);
 }
 
-void CircularLinkedList::setTailTarget(const int& target) {
+void CircularLinkedList::setTailTarget(const int& target,
+                                       Pointer::TargetType type) {
     if (mTail == nullptr)
         return;
 
     if (isInList(target)) {
-        mTail->setTarget(nodes[target], Pointer::Right);
-        mTail->setTargetPosition(
-            nodes[target]->getTargetPosition() +
-                sf::Vector2f(Constants::NODE_DISTANCE + 20.f, 0.f),
-            Smooth);
+        mTail->setTarget(nodes[target], type);
+        switch (type) {
+            case Pointer::Bottom:
+                mTail->setTargetPosition(
+                    nodes[target]->getTargetPosition() +
+                        sf::Vector2f(0.f, 50.f),
+                    Smooth);
+                break;
+
+            default:
+                mTail->setTargetPosition(
+                    nodes[target]->getTargetPosition() +
+                        sf::Vector2f(Constants::NODE_DISTANCE + 20.f,
+                                     0.f),
+                    Smooth);
+                break;
+        }
     } else {
-        mTail->setNull(Pointer::Right);
+        mTail->setNull(type);
         mTail->setTargetPosition(sf::Vector2f(0.f, 30.f), Smooth);
     }
 }

@@ -185,7 +185,6 @@ void VisualCLLState::loadAddAnimation() {
     int value = GUIValueInput[Add]->getValue();
 
     if (index == 0) {
-
         addAnimation(
             "Create new node to store value " +
                 std::to_string(value) + ".",
@@ -272,15 +271,14 @@ void VisualCLLState::loadAddAnimation() {
             [=]() {
                 mCLL.clearHighlight();
                 mCLL.eraseNode(index);
+                mCLL.setTail(index - 1, true);
+                mCLL.setPointer(index - 1, 0);
             });
 
-        addAnimation(
-            "Set tail.next to myNode.", {1},
-            [=]() {
-                mCLL.setTail(index - 1, false);
-                mCLL.setPointer(index - 1, index);
-            },
-            [=]() { mCLL.setTail(index - 1, true); });
+        addAnimation("Set tail.next to myNode.", {1}, [=]() {
+            mCLL.setTail(index - 1, false);
+            mCLL.setPointer(index - 1, index);
+        });
 
         addAnimation(
             "Set myNode.next to head", {2},
@@ -427,26 +425,47 @@ void VisualCLLState::loadDeleteAnimation() {
             [=]() {
                 mCLL.popUpNode(0);
                 mCLL.setHighlight("myNode", 0);
+                if (mCLL.getSize() == 1)
+                    mCLL.setTailTarget(0);
             },
             [=]() {
                 mCLL.clearHighlight();
                 mCLL.alignNodes();
+                if (mCLL.getSize() == 1)
+                    mCLL.setTailTarget(0);
             });
 
-        addAnimation(
-            "Set tail.next to head.next.", {1},
-            [=]() { mCLL.setPointer((int)mCLL.getSize() - 1, 1); },
-            [=]() { mCLL.setPointer((int)mCLL.getSize() - 1, 0); });
-
-        addAnimation(
-            "Set head to its next node.", {2},
-            [=]() { mCLL.setHeadTarget(1); },
-            [=]() { mCLL.setHeadTarget(0); });
+        if (mCLL.getSize() == 1) {
+            addAnimation(
+                "Head.next is null, so set head and tail\nto null.",
+                {1, 2},
+                [=]() {
+                    mCLL.setHeadTarget(-1);
+                    mCLL.setTailTarget(-1);
+                },
+                [=]() {
+                    mCLL.setHeadTarget(0);
+                    mCLL.setTailTarget(0);
+                });
+        } else {
+            addAnimation(
+                "Head.next is not null, so move tail.next and "
+                "head\nto head.next.",
+                {3},
+                [=]() {
+                    mCLL.setPointer((int)mCLL.getSize() - 1, 1);
+                    mCLL.setHeadTarget(1);
+                },
+                [=]() {
+                    mCLL.setPointer((int)mCLL.getSize() - 1, 0);
+                    mCLL.setHeadTarget(0);
+                });
+        }
 
         addAnimation(
             "Delete myNode (which is previous head).\nThe whole "
             "process is O(1).",
-            {3},
+            {4},
             [=]() {
                 mCLL.clearHighlight();
                 mCLL.eraseNode(0);
@@ -459,6 +478,58 @@ void VisualCLLState::loadDeleteAnimation() {
                 mCLL.setTailTarget((int)mCLL.getSize() - 1);
             });
 
+    } else if (index + 1 == mCLL.getSize()) {
+        addAnimation(
+            "Set pre = head.", {0},
+            [=]() { mCLL.setHighlight("pre", 0); },
+            [=]() { mCLL.clearHighlight(); });
+
+        for (int i = 0; i + 1 < index; ++i) {
+            addAnimation("pre.next != tail, continue iterating.",
+                         {1});
+            addAnimation("Set pre to the next node.", {2},
+                         [=]() { mCLL.setHighlight("pre", i + 1); });
+        }
+
+        addAnimation(
+            "pre.next now points to the node\nto-be-deleted (tail).",
+            {1},
+            [=]() {
+                mCLL.popUpNode(index);
+                mCLL.setTailTarget(index);
+            },
+            [=]() {
+                mCLL.alignNodes();
+                mCLL.setTailTarget(index);
+            });
+
+        addAnimation(
+            "Delete tail and set it to the previous node.", {3},
+            [=]() {
+                mCLL.eraseNode(index);
+                mCLL.setHighlight("pre", -1);
+                mCLL.setTailTarget(index - 1, Pointer::Bottom);
+            },
+            [=]() {
+                mCLL.insertNode(index, value);
+                mCLL.popUpNode(index);
+                mCLL.setHighlight("pre", index - 1);
+                mCLL.setTailTarget(index, Pointer::Right);
+            });
+
+        addAnimation(
+            "Set new tail's next node to head.\n"
+            "The whole process complexity is O(N).",
+            {4},
+            [=]() {
+                mCLL.setTail(mCLL.getSize() - 1, true);
+                mCLL.setPointer(mCLL.getSize() - 1, 0);
+                mCLL.setTailTarget(mCLL.getSize() - 1);
+            },
+            [=]() {
+                mCLL.setTail(mCLL.getSize() - 1, false);
+                mCLL.setPointer(mCLL.getSize() - 1, -1);
+            });
     } else {
         addAnimation(
             "Set cur = head.", {0},
@@ -492,20 +563,12 @@ void VisualCLLState::loadDeleteAnimation() {
                 mCLL.alignNodes();
             });
 
-        if (index + 1 == mCLL.getSize()) {
-            addAnimation(
-                "Connect the previous node of myNode\nto the next "
-                "node of "
-                "myNode (which is currently null).",
-                {4}, [=]() { mCLL.setPointer(index - 1, -1); },
-                [=]() { mCLL.setPointer(index - 1, index); });
-        } else
-            addAnimation(
-                "Connect the previous node of myNode\nto the next "
-                "node of "
-                "myNode.",
-                {4}, [=]() { mCLL.setPointer(index - 1, index + 1); },
-                [=]() { mCLL.setPointer(index - 1, index); });
+        addAnimation(
+            "Connect the previous node of myNode\nto the next "
+            "node of "
+            "myNode.",
+            {4}, [=]() { mCLL.setPointer(index - 1, index + 1); },
+            [=]() { mCLL.setPointer(index - 1, index); });
 
         addAnimation(
             "Delete myNode.", {5},
@@ -791,18 +854,17 @@ void VisualCLLState::validateCommand() {
             } else {
                 int index = GUIIndexInput[Delete]->getValue();
                 std::string info = "Delete node at ";
-                if (index == 0)
+                if (index == 0) {
                     info += "front";
-                else if (index == mCLL.getSize() - 1)
-                    info += "back";
-                else
-                    info += "index " + std::to_string(index);
-                callInfo(info);
-
-                if (index == 0)
                     loadCode(CLLCode::eraseFront);
-                else
+                } else if (index == mCLL.getSize() - 1) {
+                    info += "back";
+                    loadCode(CLLCode::eraseBack);
+                } else {
+                    info += "index " + std::to_string(index);
                     loadCode(CLLCode::eraseMiddle);
+                }
+                callInfo(info);
             }
             break;
         }

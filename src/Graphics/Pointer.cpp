@@ -43,8 +43,7 @@ void Pointer::setLabelOffset(const float pX, const float pY) {
 
 void Pointer::setNull(TargetType type) {
     mTarget = nullptr;
-    if (!isCircular)
-        mType = type;
+    mType = type;
 
     switch (type) {
         case Left:
@@ -190,7 +189,7 @@ void Pointer::updateCurrent(sf::Time dt) {
     }
 
     sf::Vector2f Delta = mDestination - getWorldPosition();
-    if (isCircular) {
+    if (isCircular && mTarget != nullptr) {
         mArrowTip = getArrowTip(sf::Vector2f(0.f, 0.f));
         mArrowTip.setFillColor(mColor);
         mArrowTip.setRotation(90.f);
@@ -200,7 +199,7 @@ void Pointer::updateCurrent(sf::Time dt) {
         mArrowTip.setFillColor(mColor);
     }
 
-    if (isCircular) {
+    if (isCircular && mTarget != nullptr) {
         mCircularArrow = getCircularArrow(Delta);
         for (auto& arrowPart : mCircularArrow)
             arrowPart.setFillColor(mColor);
@@ -215,7 +214,7 @@ void Pointer::drawCurrent(sf::RenderTarget& target,
     target.draw(mCircle, states);
     target.draw(mArrowTip, states);
 
-    if (isCircular) {
+    if (isCircular && mTarget != nullptr) {
         for (auto& arrowPart : mCircularArrow)
             target.draw(arrowPart, states);
     } else

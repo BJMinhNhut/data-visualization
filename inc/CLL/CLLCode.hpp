@@ -30,9 +30,17 @@ const std::string insertMiddle = {
 
 const std::string eraseFront = {
     "Node myNode = head\n"
-    "tail.next = head.next\n"
-    "head = head.next\n"
+    "if head.next == null,\n"
+    "   head = tail = null\n"
+    "else tail.next = head = head.next\n"
     "delete myNode"};
+
+const std::string eraseBack = {
+    "Node pre = head\n"
+    "while (pre.next != tail)\n"
+    "	pre = pre.next\n"
+    "delete tail, tail = pre\n"
+    "tail.next = head"};
 
 const std::string eraseMiddle = {
     "Node cur = head\n"
