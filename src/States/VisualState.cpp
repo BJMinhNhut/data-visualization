@@ -8,6 +8,7 @@
 #include <Utility.hpp>
 
 #include <SFML/Graphics/RenderWindow.hpp>
+
 #include <iostream>
 
 VisualState::VisualState(StateStack& stack, Context context,

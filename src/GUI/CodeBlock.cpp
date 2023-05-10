@@ -30,7 +30,12 @@ void CodeBlock::loadCode(const std::string& code) {
 void CodeBlock::setHighlight(const std::vector<int>& lineID) {
     mHighlight.clear();
     for (int id : lineID) {
+#ifdef DEBUG
         assert(id >= 0 && id < mLinePositions.size());
+#else
+        if (id < 0 || id >= mLinePositions.size())
+            continue;
+#endif
         mHighlight[id] =
             sf::RectangleShape(sf::Vector2f(500.f, 25.f));
         mHighlight[id].setPosition(mLinePositions[id]);
