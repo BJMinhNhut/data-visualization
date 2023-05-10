@@ -100,6 +100,7 @@ void VisualDynamicState::loadNewGUI() {
                      if (GUIArrayInput->validate() ==
                          GUI::Input::Success) {
                          mArray.loadData(GUIArrayInput->getArray());
+                         resetDataStructure();
                          resetOption();
                      }
                  }));

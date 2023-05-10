@@ -112,7 +112,7 @@ void VisualDLLState::loadNewGUI() {
                      if (GUIArrayInput->validate() ==
                          GUI::Input::Success) {
                          mDLL.loadData(GUIArrayInput->getArray());
-                         mDLL.refreshPointerTarget();
+                         resetDataStructure();
                          resetOption();
                      }
                  }));
@@ -789,7 +789,7 @@ void VisualDLLState::validateCommand() {
                        GUI::Input::InvalidLength) {
                 callError("List size must be in range [1, 10]");
             } else {
-                callInfo("Init a new Singly Linked List");
+                callInfo("Init a new Doubly Linked List");
             }
             break;
         }

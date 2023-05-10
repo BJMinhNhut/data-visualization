@@ -108,6 +108,7 @@ void VisualStaticState::loadNewGUI() {
                         GUIIndexInput[New]->getValue()) {
                     mArray.create(GUIIndexInput[New]->getValue());
                     mArray.loadData(GUIArrayInput->getArray());
+                    resetDataStructure();
                     resetOption();
                 }
             }));

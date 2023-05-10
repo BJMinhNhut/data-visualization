@@ -115,7 +115,7 @@ void VisualCLLState::loadNewGUI() {
                      if (GUIArrayInput->validate() ==
                          GUI::Input::Success) {
                          mCLL.loadData(GUIArrayInput->getArray());
-                         mCLL.refreshPointerTarget();
+                         resetDataStructure();
                          resetOption();
                      }
                  }));

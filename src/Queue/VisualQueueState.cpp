@@ -101,7 +101,7 @@ void VisualQueueState::loadNewGUI() {
                      if (GUIArrayInput->validate() ==
                          GUI::Input::Success) {
                          mSLL.loadData(GUIArrayInput->getArray());
-                         mSLL.refreshPointerTarget();
+                         resetDataStructure();
                          resetOption();
                      }
                  }));
