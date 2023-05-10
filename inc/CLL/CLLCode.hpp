@@ -12,6 +12,12 @@ const std::string insertFront = {
     "head = myNode\n"
     "tail.next = myNode\n"};
 
+const std::string insertBack = {
+    "Node myNode = new Node(value)\n"
+    "tail.next = myNode\n"
+    "myNode.next = head\n"
+    "tail = myNode"};
+
 const std::string insertMiddle = {
     "Node cur = head\n"
     "for(k = 0; k+1 < index; ++k)\n"

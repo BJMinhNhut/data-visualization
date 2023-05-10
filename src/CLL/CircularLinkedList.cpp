@@ -266,7 +266,7 @@ void CircularLinkedList::refreshPointerTarget() {
 void CircularLinkedList::popUpNode(const int& index) {
     assert(isInList(index));
     nodes[index]->setTargetPosition(
-        nodes[index]->getTargetPosition() + sf::Vector2f(0.f, 35.f),
+        nodes[index]->getTargetPosition() + sf::Vector2f(0.f, 50.f),
         Smooth);
 }
 
@@ -300,6 +300,10 @@ void CircularLinkedList::setTailTarget(const int& target) {
         mTail->setNull(Pointer::Right);
         mTail->setTargetPosition(sf::Vector2f(0.f, 25.f), Smooth);
     }
+}
+
+void CircularLinkedList::setTail(const int& index, bool isTail) {
+    nodes[index]->setLastNode(isTail);
 }
 
 void CircularLinkedList::setPointer(const int& source,

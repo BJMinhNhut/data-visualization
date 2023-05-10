@@ -235,6 +235,64 @@ void VisualCLLState::loadAddAnimation() {
                 mCLL.popUpNode(0);
                 mCLL.setHighlight("myNode", 0);
             });
+    } else if (index == mCLL.getSize()) {
+        addAnimation(
+            "Create new node to store value " +
+                std::to_string(value) + ".",
+            {0},
+            [=]() {
+                mCLL.pureInsert(index, value);
+                mCLL.popUpNode(index);
+                mCLL.setHighlight("myNode", index);
+            },
+            [=]() {
+                mCLL.clearHighlight();
+                mCLL.eraseNode(index);
+            });
+
+        if (mCLL.getSize() > 0)
+            addAnimation(
+                "Set tail.next to myNode.", {1},
+                [=]() {
+                    mCLL.setTail(index - 1, false);
+                    mCLL.setPointer(index - 1, index);
+                },
+                [=]() {
+                    mCLL.setTail(index - 1, true);
+                    mCLL.setPointer(index - 1, 0);
+                });
+
+        addAnimation(
+            "Set myNode.next to head", {2},
+            [=]() {
+                mCLL.setTail(index, true);
+                mCLL.setPointer(index, 0);
+            },
+            [=]() {
+                mCLL.setTail(index, false);
+                mCLL.setPointer(index, -1);
+            });
+
+        addAnimation(
+            "Set tail to myNode", {3},
+            [=]() { mCLL.setTailTarget(index); },
+            [=]() { mCLL.setTailTarget(index - 1); });
+
+        addAnimation(
+            "Re-layout the CLL for visualization (not in\nthe "
+            "actual CLL). The whole process complexity\nis O(N).",
+            {},
+            [=]() {
+                mCLL.clearHighlight();
+                mCLL.alignNodes();
+                mCLL.setTailTarget(index);
+            },
+            [=]() {
+                mCLL.popUpNode(index);
+                mCLL.setHighlight("cur", index - 1);
+                mCLL.setHighlight("myNode", index);
+                mCLL.setTailTarget(index);
+            });
     } else {
         addAnimation(
             "Set cur = head.", {0},
@@ -679,18 +737,17 @@ void VisualCLLState::validateCommand() {
                     index = GUIIndexInput[Add]->getValue();
                 std::string info =
                     "Insert " + std::to_string(value) + " to ";
-                if (index == 0)
+                if (index == 0) {
                     info += "front";
-                else if (index == mCLL.getSize())
-                    info += "back";
-                else
-                    info += "index " + std::to_string(index);
-                callInfo(info);
-
-                if (index == 0)
                     loadCode(CLLCode::insertFront);
-                else
+                } else if (index == mCLL.getSize()) {
+                    info += "back";
+                    loadCode(CLLCode::insertBack);
+                } else {
+                    info += "index " + std::to_string(index);
                     loadCode(CLLCode::insertMiddle);
+                }
+                callInfo(info);
             }
             break;
         }

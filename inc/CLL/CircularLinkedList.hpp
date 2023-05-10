@@ -36,6 +36,7 @@ class CircularLinkedList : public SceneNode {
 
     void setHeadTarget(const int& target);
     void setTailTarget(const int& target);
+    void setTail(const int& index, bool isTail);
     void setPointer(const int& source, const int& target);
 
    private:

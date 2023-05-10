@@ -134,23 +134,29 @@ std::vector<sf::ConvexShape> Pointer::getCircularArrow(
     std::vector<sf::ConvexShape> arrow(3, sf::ConvexShape(4));
 
     arrow[0].setPoint(0, sf::Vector2f(-half, 0.f));
-    arrow[0].setPoint(1, sf::Vector2f(-half, CIRCULAR_OFFSET));
-    arrow[0].setPoint(2, sf::Vector2f(half, CIRCULAR_OFFSET));
+    arrow[0].setPoint(1,
+                      sf::Vector2f(-half, line.y + CIRCULAR_OFFSET));
+    arrow[0].setPoint(2,
+                      sf::Vector2f(half, line.y + CIRCULAR_OFFSET));
     arrow[0].setPoint(3, sf::Vector2f(half, 0.f));
 
-    arrow[1].setPoint(0, sf::Vector2f(half, CIRCULAR_OFFSET - half));
     arrow[1].setPoint(
-        1, sf::Vector2f(line.x - half, CIRCULAR_OFFSET - half));
+        0, sf::Vector2f(half, line.y + CIRCULAR_OFFSET - half));
     arrow[1].setPoint(
-        2, sf::Vector2f(line.x - half, CIRCULAR_OFFSET + half));
-    arrow[1].setPoint(3, sf::Vector2f(half, CIRCULAR_OFFSET + half));
+        1,
+        sf::Vector2f(line.x - half, line.y + CIRCULAR_OFFSET - half));
+    arrow[1].setPoint(
+        2,
+        sf::Vector2f(line.x - half, line.y + CIRCULAR_OFFSET + half));
+    arrow[1].setPoint(
+        3, sf::Vector2f(half, line.y + CIRCULAR_OFFSET + half));
 
     arrow[2].setPoint(0, sf::Vector2f(line.x + half, line.y));
     arrow[2].setPoint(1, sf::Vector2f(line.x - half, line.y));
-    arrow[2].setPoint(2,
-                      sf::Vector2f(line.x - half, CIRCULAR_OFFSET));
-    arrow[2].setPoint(3,
-                      sf::Vector2f(line.x + half, CIRCULAR_OFFSET));
+    arrow[2].setPoint(
+        2, sf::Vector2f(line.x - half, line.y + CIRCULAR_OFFSET));
+    arrow[2].setPoint(
+        3, sf::Vector2f(line.x + half, line.y + CIRCULAR_OFFSET));
     return arrow;
 }
 
