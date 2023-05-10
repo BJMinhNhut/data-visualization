@@ -17,8 +17,9 @@ void SceneNode::attachChild(Ptr child) {
 }
 
 SceneNode::Ptr SceneNode::detachChild(SceneNode* node) {
-    auto found = std::find_if(mChildren.begin(), mChildren.end(),
-                              [&](Ptr& p) { return p.get() == node; });
+    auto found =
+        std::find_if(mChildren.begin(), mChildren.end(),
+                     [&](Ptr& p) { return p.get() == node; });
     assert(found != mChildren.end());
 
     Ptr result = std::move(*found);
@@ -38,7 +39,8 @@ void SceneNode::detachAllChildren() {
 
 void SceneNode::update(sf::Time dt) {
     // std::cerr << std::setprecision(3) << std::fixed << '\n';
-    sf::Vector2f deltaPosition = (targetPosition - getPosition()) * 0.1f;
+    sf::Vector2f deltaPosition =
+        (targetPosition - getPosition()) * 0.1f;
     move(deltaPosition);
     // std::cerr << targetPosition.x << ' ' << getPosition().x << '\n';
 
@@ -62,7 +64,8 @@ void SceneNode::updateChildren(sf::Time dt) {
     }
 }
 
-void SceneNode::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+void SceneNode::draw(sf::RenderTarget& target,
+                     sf::RenderStates states) const {
     states.transform *= getTransform();
 
     drawCurrent(target, states);
@@ -86,17 +89,20 @@ void SceneNode::setTargetPosition(sf::Vector2f position,
         setPosition(targetPosition);
 }
 
-void SceneNode::setTargetPosition(float pX, float pY, Transition transition) {
+void SceneNode::setTargetPosition(float pX, float pY,
+                                  Transition transition) {
     setTargetPosition(sf::Vector2f(pX, pY), transition);
 }
 
-void SceneNode::setTargetScale(sf::Vector2f scale, Transition transition) {
+void SceneNode::setTargetScale(sf::Vector2f scale,
+                               Transition transition) {
     targetScale = scale;
     if (transition == None)
         setScale(targetScale);
 }
 
-void SceneNode::setTargetScale(float pX, float pY, Transition transition) {
+void SceneNode::setTargetScale(float pX, float pY,
+                               Transition transition) {
     targetScale = sf::Vector2f(pX, pY);
     if (transition == None)
         setScale(targetScale);
@@ -114,7 +120,8 @@ sf::Vector2f SceneNode::getWorldPosition() const {
 sf::Transform SceneNode::getWorldTransform() const {
     sf::Transform transform = sf::Transform::Identity;
 
-    for (const SceneNode* node = this; node != nullptr; node = node->mParent) {
+    for (const SceneNode* node = this; node != nullptr;
+         node = node->mParent) {
         transform = node->getTransform() * transform;
     }
 
@@ -134,5 +141,9 @@ sf::Vector2f SceneNode::getRightBound() const {
 }
 
 sf::Vector2f SceneNode::getBottomBound() const {
+    return getWorldPosition();
+}
+
+sf::Vector2f SceneNode::getTopBound() const {
     return getWorldPosition();
 }

@@ -31,9 +31,12 @@ class SceneNode : public sf::Transformable,
     void moveToWorldPosition(Transition transition);
     virtual void setTargetPosition(sf::Vector2f position,
                                    Transition transition);
-    virtual void setTargetPosition(float pX, float pY, Transition transition);
-    virtual void setTargetScale(sf::Vector2f scale, Transition transition);
-    virtual void setTargetScale(float pX, float pY, Transition transition);
+    virtual void setTargetPosition(float pX, float pY,
+                                   Transition transition);
+    virtual void setTargetScale(sf::Vector2f scale,
+                                Transition transition);
+    virtual void setTargetScale(float pX, float pY,
+                                Transition transition);
 
     sf::Vector2f getWorldPosition() const;
     sf::Transform getWorldTransform() const;
@@ -42,15 +45,18 @@ class SceneNode : public sf::Transformable,
     virtual sf::Vector2f getLeftBound() const;
     virtual sf::Vector2f getRightBound() const;
     virtual sf::Vector2f getBottomBound() const;
+    virtual sf::Vector2f getTopBound() const;
 
    private:
     virtual void updateCurrent(sf::Time dt);
     void updateChildren(sf::Time dt);
 
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+    virtual void draw(sf::RenderTarget& target,
+                      sf::RenderStates states) const;
     virtual void drawCurrent(sf::RenderTarget& target,
                              sf::RenderStates states) const;
-    void drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
+    void drawChildren(sf::RenderTarget& target,
+                      sf::RenderStates states) const;
 
    private:
     sf::Vector2f targetPosition;

@@ -58,6 +58,11 @@ sf::Vector2f SinglyNode::getRightBound() const {
            getWorldPosition();
 }
 
+sf::Vector2f SinglyNode::getTopBound() const {
+    return sf::Vector2f(0.f, mSprite.getGlobalBounds().top) +
+           getWorldPosition();
+}
+
 sf::Vector2f SinglyNode::getBottomBound() const {
     return sf::Vector2f(0.f, mSprite.getGlobalBounds().height / 2.f) +
            getWorldPosition();

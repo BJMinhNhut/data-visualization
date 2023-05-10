@@ -15,9 +15,9 @@
 
 class Pointer : public SceneNode {
    public:
-    enum TargetType { Left, Right, Bottom };
+    enum TargetType { Left, Right, Bottom, Top };
     static constexpr float POINTER_THICKNESS = 2.f;
-    static constexpr float CIRCULAR_OFFSET = 70.f;
+    static constexpr float CIRCULAR_OFFSET = -60.f;
 
    public:
     explicit Pointer(const FontHolder& fonts,

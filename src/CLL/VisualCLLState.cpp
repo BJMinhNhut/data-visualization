@@ -39,7 +39,8 @@ void VisualCLLState::centerCLL(
 
     mCLL.setTargetPosition(
         windowSize.x / 2.f - mCLL.getDrawLength() / 2.f,
-        windowSize.y / 4.f, transition);
+        windowSize.y / 4.f - Pointer::CIRCULAR_OFFSET / 2.f,
+        transition);
 }
 
 void VisualCLLState::initGUIButtons() {
@@ -193,26 +194,34 @@ void VisualCLLState::loadAddAnimation() {
                 mCLL.pureInsert(0, value);
                 mCLL.popUpNode(0);
                 mCLL.setHighlight("myNode", 0);
+                mCLL.setTailTarget(mCLL.getSize() - 1);
             },
             [=]() {
                 mCLL.clearHighlight();
                 mCLL.eraseNode(0);
+                mCLL.setTailTarget((int)mCLL.getSize() - 1);
             });
 
         if (mCLL.getSize() > 0)
             addAnimation(
-                "Set myNode.next = head.", {1},
+                "Head is not null. Set myNode.next = head.", {1, 3},
                 [=]() { mCLL.setPointer(0, 1); },
                 [=]() { mCLL.setPointer(0, -1); });
         else
             addAnimation(
-                "Set myNode.next = head. Head is currently null.",
-                {1});
+                "Head is null. Set tail = myNode.", {1, 2},
+                [=]() { mCLL.setTailTarget(0); },
+                [=] { mCLL.setTailTarget(-1); });
 
         addAnimation(
-            "Set head = myNode", {2},
+            "Set head = myNode", {4},
             [=]() { mCLL.setHeadTarget(0); },
             [=]() { mCLL.setHeadTarget(1); });
+
+        addAnimation(
+            "Set tail.next = myNode", {5},
+            [=]() { mCLL.setPointer(mCLL.getSize() - 1, 0); },
+            [=]() { mCLL.setPointer(mCLL.getSize() - 1, 1); });
 
         addAnimation(
             "Re-layout the CLL for visualization (not in\nthe "

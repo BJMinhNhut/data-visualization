@@ -51,6 +51,7 @@ void Pointer::setNull(TargetType type) {
         case Bottom:
             TextNULL.setPosition(Constants::NODE_DISTANCE + 5.f, 0.f);
             break;
+        case Top:
         case Right:
             TextNULL.setPosition(-Constants::NODE_DISTANCE - 5.f,
                                  0.f);
@@ -78,7 +79,7 @@ void Pointer::setTargetPosition(sf::Vector2f position,
 void Pointer::setCircular(bool circular) {
     isCircular = circular;
     if (circular)
-        mType = Bottom;
+        mType = Top;
 }
 
 sf::Vector2f Pointer::getDestination() const {
@@ -165,6 +166,9 @@ void Pointer::updateCurrent(sf::Time dt) {
             case Bottom:
                 mTargetDestination = mTarget->getBottomBound();
                 break;
+            case Top:
+                mTargetDestination = mTarget->getTopBound();
+                break;
         }
     } else {
         switch (mType) {
@@ -174,6 +178,7 @@ void Pointer::updateCurrent(sf::Time dt) {
                     getWorldPosition() + sf::Vector2f(65.f, 0.f);
                 break;
             case Right:
+            case Top:
                 mTargetDestination =
                     getWorldPosition() + sf::Vector2f(-65.f, 0.f);
                 break;
@@ -190,7 +195,7 @@ void Pointer::updateCurrent(sf::Time dt) {
     if (isCircular) {
         mArrowTip = getArrowTip(sf::Vector2f(0.f, 0.f));
         mArrowTip.setFillColor(mColor);
-        mArrowTip.setRotation(-90.f);
+        mArrowTip.setRotation(90.f);
         mArrowTip.setPosition(Delta);
     } else {
         mArrowTip = getArrowTip(Delta);
