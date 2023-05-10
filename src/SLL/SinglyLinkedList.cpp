@@ -304,7 +304,7 @@ void SinglyLinkedList::setTailTarget(const int& target) {
                                      sf::Vector2f(0.f, 60.f),
                                  Smooth);
     } else {
-        mTail->setNull();
+        mTail->setNull(Pointer::Right);
         mTail->setTargetPosition(sf::Vector2f(0.f, 25.f), Smooth);
     }
 }

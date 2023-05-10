@@ -166,8 +166,14 @@ void VisualQueueState::loadEnqueueAnimation() {
 
     addAnimation(
         "Set tail to myNode", {4},
-        [=]() { mSLL.setTailTarget(index); },
-        [=]() { mSLL.setTailTarget(index - 1); });
+        [=]() {
+            mSLL.setTailTarget(index);
+            mSLL.setHighlight("myNode", -1);
+        },
+        [=]() {
+            mSLL.setTailTarget(index - 1);
+            mSLL.setHighlight("myNode", index);
+        });
 
     addAnimation(
         "Re-layout the Queue for visualization (not in\nthe "
@@ -180,7 +186,6 @@ void VisualQueueState::loadEnqueueAnimation() {
         },
         [=]() {
             mSLL.popUpNode(index);
-            mSLL.setHighlight("myNode", index);
             mSLL.setTailTarget(index);
         });
 }
@@ -233,8 +238,9 @@ void VisualQueueState::loadDequeueAnimation() {
             "O(1).",
             {5},
             [=]() {
-                mSLL.setHighlight("myNode", -1);
                 mSLL.eraseNode(0);
+                mSLL.setHighlight("myNode", -1);
+                mSLL.setTailTarget((int)mSLL.getSize() - 1);
             },
             [=]() {
                 mSLL.insertNode(0, value);
@@ -242,6 +248,7 @@ void VisualQueueState::loadDequeueAnimation() {
                 if (mSLL.getSize() == 1)
                     mSLL.popUpNode(0);
                 mSLL.setHighlight("myNode", 0);
+                mSLL.setTailTarget((int)mSLL.getSize() - 1);
             });
     }
 }
@@ -256,8 +263,14 @@ void VisualQueueState::loadClearAnimation() {
 
         addAnimation(
             "Dequeue node at the front of queue.", {1},
-            [=]() { mSLL.eraseNode(0); },
-            [=]() { mSLL.insertNode(0, value); });
+            [=]() {
+                mSLL.eraseNode(0);
+                mSLL.setTailTarget((int)mSLL.getSize() - 1);
+            },
+            [=]() {
+                mSLL.insertNode(0, value);
+                mSLL.setTailTarget((int)mSLL.getSize() - 1);
+            });
     }
 }
 
