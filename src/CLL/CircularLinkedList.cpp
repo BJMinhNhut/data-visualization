@@ -82,6 +82,8 @@ void CircularLinkedList::pureInsert(const int& index, int value) {
 
     pureInsert(index, newNode);
     alignNodes();
+    if (index + 1 < nodes.size())
+        setTailTarget((int)nodes.size() - 1);
 }
 
 void CircularLinkedList::pureInsert(const int& index,
@@ -124,7 +126,7 @@ void CircularLinkedList::insertNode(const int& index,
         setPointer(index - 1, index);
     setPointer(index, (index + 1) % nodes.size());
 
-#ifdef DEBUG_SLL
+#ifdef DEBUG_CLL
     std::cerr << "Insert " << node->getValue() << " at " << index
               << '\n';
 #endif
@@ -140,7 +142,7 @@ void CircularLinkedList::eraseNode(const int& index) {
     if (index == 0)
         setHeadTarget(1);
     else
-        setPointer(index - 1, index + 1);
+        setPointer(index - 1, (index + 1) % nodes.size());
 
     if (index + 1 == nodes.size())
         setTailTarget(index - 1);
@@ -154,7 +156,7 @@ void CircularLinkedList::eraseNode(const int& index) {
     tempNode = erasedNode;
     alignNodes();
 
-#ifdef DEBUG_SLL
+#ifdef DEBUG_CLL
     std::cerr << "Delete " << erasedNode->getValue() << " at "
               << index << '\n';
 #endif
@@ -205,7 +207,7 @@ void CircularLinkedList::setHighlight(const std::string& label,
         // Remove highlight
         if (mHighlight.find(label) != mHighlight.end() &&
             !mHighlight[label]->isNULL()) {
-#ifdef DEBUG_SLL
+#ifdef DEBUG_CLL
             std::cerr << "Remove highlight index " << highlightIndex
                       << '\n';
 #endif
@@ -235,7 +237,7 @@ void CircularLinkedList::setHighlight(const std::string& label,
 
         mHighlight[label]->setTarget(nodes[index], Pointer::Bottom);
 
-#ifdef DEBUG_SLL
+#ifdef DEBUG_CLL
         std::cerr << "Change highlight index " << index << '\n';
 #endif
     }
@@ -272,7 +274,7 @@ void CircularLinkedList::popUpNode(const int& index) {
 
 void CircularLinkedList::updateNode(const int& index, int newValue) {
     assert(isInList(index));
-#ifdef DEBUG_SLL
+#ifdef DEBUG_CLL
     std::cerr << "Update node " << index << " to " << newValue
               << '\n';
 #endif
@@ -281,9 +283,9 @@ void CircularLinkedList::updateNode(const int& index, int newValue) {
 
 void CircularLinkedList::setHeadTarget(const int& target) {
     if (isInList(target))
-        mHead->setTarget(nodes[target]);
+        mHead->setTarget(nodes[target], Pointer::Left);
     else
-        mHead->setNull();
+        mHead->setNull(Pointer::Right);
 }
 
 void CircularLinkedList::setTailTarget(const int& target) {
@@ -298,7 +300,7 @@ void CircularLinkedList::setTailTarget(const int& target) {
             Smooth);
     } else {
         mTail->setNull(Pointer::Right);
-        mTail->setTargetPosition(sf::Vector2f(0.f, 25.f), Smooth);
+        mTail->setTargetPosition(sf::Vector2f(0.f, 30.f), Smooth);
     }
 }
 
@@ -309,6 +311,9 @@ void CircularLinkedList::setTail(const int& index, bool isTail) {
 void CircularLinkedList::setPointer(const int& source,
                                     const int& target) {
     assert(isInList(source));
+#ifdef DEBUG_CLL
+    std::cerr << "Set: " << source << ' ' << target << '\n';
+#endif
     if (isInList(target))
         nodes[source]->setNextNode(nodes[target]);
     else

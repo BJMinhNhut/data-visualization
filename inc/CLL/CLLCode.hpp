@@ -7,10 +7,12 @@ namespace CLLCode {
 const std::string insertFront = {
     "Node myNode = new Node(value)\n"
     "if head == nullptr,\n"
-    "   tail = myNode\n"
-    "else myNode.next = head\n"
-    "head = myNode\n"
-    "tail.next = myNode\n"};
+    "   myNode.next = myNode\n"
+    "   head = tail = myNode\n"
+    "else\n"
+    "   myNode.next = head\n"
+    "   head = myNode\n"
+    "   tail.next = myNode\n"};
 
 const std::string insertBack = {
     "Node myNode = new Node(value)\n"

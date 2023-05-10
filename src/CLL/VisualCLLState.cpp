@@ -194,34 +194,54 @@ void VisualCLLState::loadAddAnimation() {
                 mCLL.pureInsert(0, value);
                 mCLL.popUpNode(0);
                 mCLL.setHighlight("myNode", 0);
-                mCLL.setTailTarget(mCLL.getSize() - 1);
+                if (mCLL.getSize() > 1)
+                    mCLL.setTailTarget(mCLL.getSize() - 1);
             },
             [=]() {
                 mCLL.clearHighlight();
                 mCLL.eraseNode(0);
-                mCLL.setTailTarget((int)mCLL.getSize() - 1);
+                if (mCLL.getSize() > 0)
+                    mCLL.setTailTarget((int)mCLL.getSize() - 1);
             });
 
-        if (mCLL.getSize() > 0)
+        if (mCLL.getSize() > 0) {
+            addAnimation("Head is not null.", {1});
             addAnimation(
-                "Head is not null. Set myNode.next = head.", {1, 3},
+                "Set myNode.next = head.", {4, 5},
                 [=]() { mCLL.setPointer(0, 1); },
                 [=]() { mCLL.setPointer(0, -1); });
-        else
             addAnimation(
-                "Head is null. Set tail = myNode.", {1, 2},
-                [=]() { mCLL.setTailTarget(0); },
-                [=] { mCLL.setTailTarget(-1); });
+                "Set head = myNode.", {4, 6},
+                [=]() { mCLL.setHeadTarget(0); },
+                [=]() { mCLL.setHeadTarget(1); });
 
-        addAnimation(
-            "Set head = myNode", {4},
-            [=]() { mCLL.setHeadTarget(0); },
-            [=]() { mCLL.setHeadTarget(1); });
-
-        addAnimation(
-            "Set tail.next = myNode", {5},
-            [=]() { mCLL.setPointer(mCLL.getSize() - 1, 0); },
-            [=]() { mCLL.setPointer(mCLL.getSize() - 1, 1); });
+            addAnimation(
+                "Set tail.next = myNode.", {4, 7},
+                [=]() { mCLL.setPointer(mCLL.getSize() - 1, 0); },
+                [=]() { mCLL.setPointer(mCLL.getSize() - 1, 1); });
+        } else {
+            addAnimation("Head is null.", {1});
+            addAnimation(
+                "Set myNode.next to itself.", {1, 2},
+                [=]() {
+                    mCLL.setTail(0, true);
+                    mCLL.setPointer(0, 0);
+                },
+                [=]() {
+                    mCLL.setTail(0, false);
+                    mCLL.setPointer(0, -1);
+                });
+            addAnimation(
+                "Set head and tail to myNode.", {1, 3},
+                [=]() {
+                    mCLL.setHeadTarget(0);
+                    mCLL.setTailTarget(0);
+                },
+                [=]() {
+                    mCLL.setHeadTarget(-1);
+                    mCLL.setTailTarget(-1);
+                });
+        }
 
         addAnimation(
             "Re-layout the CLL for visualization (not in\nthe "
@@ -230,6 +250,7 @@ void VisualCLLState::loadAddAnimation() {
             [=]() {
                 mCLL.clearHighlight();
                 mCLL.alignNodes();
+                if (mCLL.getSize() == 1) mCLL.setTailTarget(0);
             },
             [=]() {
                 mCLL.popUpNode(0);
@@ -250,17 +271,15 @@ void VisualCLLState::loadAddAnimation() {
                 mCLL.eraseNode(index);
             });
 
-        if (mCLL.getSize() > 0)
-            addAnimation(
-                "Set tail.next to myNode.", {1},
-                [=]() {
-                    mCLL.setTail(index - 1, false);
-                    mCLL.setPointer(index - 1, index);
-                },
-                [=]() {
-                    mCLL.setTail(index - 1, true);
-                    mCLL.setPointer(index - 1, 0);
-                });
+        addAnimation(
+            "Set tail.next to myNode.", {1},
+            [=]() {
+                mCLL.setTail(index - 1, false);
+                mCLL.setPointer(index - 1, index);
+            },
+            [=]() {
+                mCLL.setTail(index - 1, true);
+            });
 
         addAnimation(
             "Set myNode.next to head", {2},
@@ -325,6 +344,7 @@ void VisualCLLState::loadAddAnimation() {
             [=]() {
                 mCLL.setHighlight("myNode", -1);
                 mCLL.eraseNode(index);
+                mCLL.setTailTarget(mCLL.getSize() - 1);
             });
 
         if (index + 1 <= mCLL.getSize())
