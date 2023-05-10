@@ -39,6 +39,8 @@ Application::Application()
     mFonts.load(Fonts::Main, "data/fonts/Ubuntu-Regular.ttf");
     mFonts.load(Fonts::Mono, "data/fonts/UbuntuMono-Regular.ttf");
 
+    loadIcon();
+
     if (getSettings().theme == Settings::Themes::Light)
         loadLightTheme();
     else
@@ -138,6 +140,15 @@ void Application::registerStates() {
     mStateStack.registerState<VisualCLLState>(States::VisualCLL);
     mStateStack.registerState<VisualStackState>(States::VisualStack);
     mStateStack.registerState<VisualQueueState>(States::VisualQueue);
+}
+
+void Application::loadIcon() {
+    sf::Image image;
+    if (!image.loadFromFile("data/images/icon.png")) {
+        throw std::runtime_error("Icon load unsucessfully!");
+    }
+    mWindow.setIcon(image.getSize().x, image.getSize().y,
+                    image.getPixelsPtr());
 }
 
 void Application::loadLightTheme() {

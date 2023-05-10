@@ -26,6 +26,7 @@ class Application {
 
     void registerStates();
 
+    void loadIcon();
     void loadLightTheme();
     void loadDarkTheme();
 
