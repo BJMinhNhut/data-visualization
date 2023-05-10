@@ -39,3 +39,6 @@
 # VSCode config
 /.vscode
 /.VSCodeCounter
+
+# settings file
+settings.bin
