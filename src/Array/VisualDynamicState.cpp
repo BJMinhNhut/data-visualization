@@ -99,9 +99,9 @@ void VisualDynamicState::loadNewGUI() {
                  "Apply", [this]() {
                      if (GUIArrayInput->validate() ==
                          GUI::Input::Success) {
-                         mArray.loadData(GUIArrayInput->getArray());
                          resetDataStructure();
                          resetOption();
+                         mArray.loadData(GUIArrayInput->getArray());
                      }
                  }));
 

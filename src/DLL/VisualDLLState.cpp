@@ -111,9 +111,9 @@ void VisualDLLState::loadNewGUI() {
                  "Apply", [this]() {
                      if (GUIArrayInput->validate() ==
                          GUI::Input::Success) {
-                         mDLL.loadData(GUIArrayInput->getArray());
                          resetDataStructure();
                          resetOption();
+                         mDLL.loadData(GUIArrayInput->getArray());
                      }
                  }));
 

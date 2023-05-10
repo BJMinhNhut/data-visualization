@@ -34,8 +34,8 @@ void VisualStackState::centerSLL(
     const SceneNode::Transition& transition) {
     sf::Vector2u windowSize = getContext().window->getSize();
     if (mStack.getSize() == 0)
-        mStack.setTargetPosition(windowSize.x / 2.f, windowSize.y / 4.f,
-                               transition);
+        mStack.setTargetPosition(windowSize.x / 2.f,
+                                 windowSize.y / 4.f, transition);
     else
         mStack.setTargetPosition(
             windowSize.x / 2.f -
@@ -99,9 +99,9 @@ void VisualStackState::loadNewGUI() {
                  "Apply", [this]() {
                      if (GUIArrayInput->validate() ==
                          GUI::Input::Success) {
-                         mStack.loadData(GUIArrayInput->getArray());
                          resetDataStructure();
                          resetOption();
+                         mStack.loadData(GUIArrayInput->getArray());
                      }
                  }));
 
@@ -235,8 +235,9 @@ void VisualStackState::loadClearAnimation() {
 }
 
 void VisualStackState::loadCallback() {
-    setLoadAnimationCallback(
-        New, [this]() { mStack.loadData(GUIArrayInput->getArray()); });
+    setLoadAnimationCallback(New, [this]() {
+        mStack.loadData(GUIArrayInput->getArray());
+    });
 
     setLoadAnimationCallback(Push, [this]() { loadPushAnimation(); });
 

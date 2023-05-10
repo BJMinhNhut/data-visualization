@@ -114,9 +114,9 @@ void VisualCLLState::loadNewGUI() {
                  "Apply", [this]() {
                      if (GUIArrayInput->validate() ==
                          GUI::Input::Success) {
-                         mCLL.loadData(GUIArrayInput->getArray());
                          resetDataStructure();
                          resetOption();
+                         mCLL.loadData(GUIArrayInput->getArray());
                      }
                  }));
 

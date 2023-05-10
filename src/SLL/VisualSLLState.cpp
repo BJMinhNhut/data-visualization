@@ -118,9 +118,9 @@ void VisualSLLState::loadNewGUI() {
                  "Apply", [this]() {
                      if (GUIArrayInput->validate() ==
                          GUI::Input::Success) {
-                         mSLL.loadData(GUIArrayInput->getArray());
                          resetDataStructure();
                          resetOption();
+                         mSLL.loadData(GUIArrayInput->getArray());
                      }
                  }));
 

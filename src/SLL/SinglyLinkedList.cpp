@@ -230,16 +230,16 @@ void SinglyLinkedList::setHighlight(const std::string& label,
 
             mHighlight[label]->setTargetPosition(
                 nodes[index]->getTargetPosition() +
-                    sf::Vector2f(0.f, 50.f),
+                    sf::Vector2f(-50.f, 40.f),
                 None);
         } else {
             mHighlight[label]->setTargetPosition(
                 nodes[index]->getTargetPosition() +
-                    sf::Vector2f(0.f, 50.f),
+                    sf::Vector2f(-50.f, 40.f),
                 Smooth);
         }
 
-        mHighlight[label]->setTarget(nodes[index], Pointer::Bottom);
+        mHighlight[label]->setTarget(nodes[index], Pointer::Left);
 
 #ifdef DEBUG_SLL
         std::cerr << "Change highlight index " << index << '\n';
