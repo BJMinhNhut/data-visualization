@@ -545,7 +545,7 @@ void VisualDynamicState::loadUpdateGUI() {
 
 void VisualDynamicState::loadUpdateAnimation() {
     int index = GUIIndexInput[Update]->getValue();
-    int value = GUIIndexInput[Update]->getValue();
+    int value = GUIValueInput[Update]->getValue();
     int oldValue = mArray.getNode(index);
     addAnimation(
         "Node at index " + std::to_string(index) +
