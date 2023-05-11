@@ -11,6 +11,7 @@ DynamicArray::DynamicArray(const FontHolder& fonts,
       mTextures(textures),
       mColors(colors),
       nodes(),
+      tempNodes(),
       mHead(new Pointer(fonts, colors)),
       mTemp(new Pointer(fonts, colors)) {
     mHead->setLabel("arr");

@@ -3,7 +3,6 @@
 #include <GUI/Label.hpp>
 #include <GUI/Panel.hpp>
 #include <GUI/Sprite.hpp>
-#include <Settings.hpp>
 #include <States/SettingsState.hpp>
 
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -13,13 +12,8 @@ SettingsState::SettingsState(StateStack& stack, Context context)
     : State(stack, context),
       mGUIContainer(),
       themeContainer(),
-      mSettings(getSettings()) {
-    sf::Texture& texture =
-        context.textures->get(Textures::Background);
-    sf::Font& font = context.fonts->get(Fonts::Main);
-
-    mBackgroundSprite.setTexture(texture);
-    sf::Vector2u bounds = context.window->getSize();
+      mSettings(getSettings()),
+      mBackgroundSprite(context.textures->get(Textures::Background)) {
 
     auto backButton = std::make_shared<GUI::Button>(
         GUI::Button::Back, *getContext().fonts,

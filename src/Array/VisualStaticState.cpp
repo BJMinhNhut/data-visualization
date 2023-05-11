@@ -17,7 +17,8 @@ VisualStaticState::VisualStaticState(StateStack& stack,
     : VisualState(stack, context, "Static Array"),
       mArray(*context.fonts, *context.textures, *context.colors),
       GUIValueInput(OptionCount),
-      GUIIndexInput(OptionCount) {
+      GUIIndexInput(OptionCount),
+      GUIArrayInput(nullptr) {
     initGUIButtons();
 
     loadNewGUI();

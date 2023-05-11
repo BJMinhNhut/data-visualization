@@ -8,13 +8,9 @@
 #include <SFML/Graphics/View.hpp>
 
 AboutState::AboutState(StateStack& stack, Context context)
-    : State(stack, context), mGUIContainer() {
-    sf::Texture& texture =
-        context.textures->get(Textures::Background);
-    sf::Font& font = context.fonts->get(Fonts::Main);
-
-    mBackgroundSprite.setTexture(texture);
-    sf::Vector2u bounds = context.window->getSize();
+    : State(stack, context),
+      mGUIContainer(),
+      mBackgroundSprite(context.textures->get(Textures::Background)) {
 
     auto backButton = std::make_shared<GUI::Button>(
         GUI::Button::Back, *context.fonts, *context.textures,

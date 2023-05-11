@@ -15,7 +15,8 @@ VisualStackState::VisualStackState(StateStack& stack, Context context)
     : VisualState(stack, context, "Stack"),
       mStack(*context.fonts, *context.textures, *context.colors),
       GUIValueInput(OptionCount),
-      GUIIndexInput(OptionCount) {
+      GUIIndexInput(OptionCount),
+      GUIArrayInput(nullptr) {
 
     centerSLL(SceneNode::None);
     mStack.refreshPointerTarget();

@@ -24,7 +24,8 @@ SinglyLinkedList::SinglyLinkedList(const FontHolder& fonts,
       mTextures(textures),
       mColors(colors),
       tempNode(nullptr),
-      highlightIndex(-1) {
+      highlightIndex(-1),
+      nodes() {
 
     std::unique_ptr<Pointer> headPtr(mHead);
     mHead->setLabel("head");

@@ -14,19 +14,25 @@
 VisualState::VisualState(StateStack& stack, Context context,
                          const std::string& title)
     : State(stack, context),
+      currentOption(0),
       mGUIContainer(),
       GUIOptionContainer(),
       GUICommandContainer(),
-      currentOption(0),
+      loadAnimationCallback(),
+      GUIPlay(),
+      GUIPause(),
+      GUIReplay(),
+      GUIConsole(),
+      GUIProgressBar(),
+      GUICodeBlock(),
+      GUISpeed(),
+      mBackgroundSprite(context.textures->get(Textures::Background)),
       mAnimationList(),
       mSpeedMap({{"x0.5", 0.5f},
                  {"x1.0", 1.f},
                  {"x2.0", 2.f},
                  {"x3.0", 3.f}}),
       mSpeedID(1) {
-
-    mBackgroundSprite.setTexture(
-        context.textures->get(Textures::Background));
 
     auto titleBar = std::make_shared<GUI::Sprite>(
         context.textures->get(Textures::TitleBar));

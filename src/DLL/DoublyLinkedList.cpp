@@ -23,7 +23,8 @@ DoublyLinkedList::DoublyLinkedList(const FontHolder& fonts,
       mTextures(textures),
       mColors(colors),
       tempNode(nullptr),
-      highlightIndex(-1) {
+      highlightIndex(-1),
+      nodes() {
     mHead->setLabel("head");
     mHead->setTargetPosition(sf::Vector2f(0.f, -7.f), None);
     mHead->setLabelOffset(0.f, -17.f);

@@ -18,12 +18,13 @@ CircularLinkedList::CircularLinkedList(const FontHolder& fonts,
                                        const ColorHolder& colors)
     : mHead(new Pointer(fonts, colors)),
       mTail(new Pointer(fonts, colors)),
-      mHighlight(),
       mFonts(fonts),
       mTextures(textures),
       mColors(colors),
       tempNode(nullptr),
-      highlightIndex(-1) {
+      mHighlight(),
+      highlightIndex(-1),
+      nodes() {
     mHead->setLabel("head");
     attachChild(std::unique_ptr<Pointer>(mHead));
 

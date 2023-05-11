@@ -16,7 +16,8 @@ SinglyNode::SinglyNode(const FontHolder& fonts,
                        const TextureHolder& textures,
                        const ColorHolder& colors)
     : mData(new NodeData(fonts, colors)),
-      mPointer(new Pointer(fonts, colors)) {
+      mPointer(new Pointer(fonts, colors)),
+      mSprite(textures.get(Textures::SinglyNode)) {
     std::unique_ptr<NodeData> dataPtr(mData);
     std::unique_ptr<Pointer> nextNodePtr(mPointer);
 
@@ -32,7 +33,6 @@ SinglyNode::SinglyNode(const FontHolder& fonts,
 
     mSprite.setOrigin(Constants::NODE_SIZE / 2.f,
                       Constants::NODE_SIZE / 2.f);
-    mSprite.setTexture(textures.get(Textures::SinglyNode), true);
 }
 
 void SinglyNode::updateCurrent(sf::Time dt) {}

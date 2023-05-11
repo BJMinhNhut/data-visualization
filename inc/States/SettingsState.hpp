@@ -2,7 +2,10 @@
 #define SETTINGSSTATE_HPP
 
 #include <GUI/Container.hpp>
+#include <Settings.hpp>
 #include <States/State.hpp>
+
+#include <SFML/Graphics/Sprite.hpp>
 
 class SettingsState : public State {
    public:

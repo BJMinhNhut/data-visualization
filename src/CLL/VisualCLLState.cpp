@@ -15,7 +15,8 @@ VisualCLLState::VisualCLLState(StateStack& stack, Context context)
     : VisualState(stack, context, "Circular Linked List"),
       mCLL(*context.fonts, *context.textures, *context.colors),
       GUIValueInput(OptionCount),
-      GUIIndexInput(OptionCount) {
+      GUIIndexInput(OptionCount),
+      GUIArrayInput(nullptr) {
 
     initGUIButtons();
 

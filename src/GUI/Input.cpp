@@ -22,14 +22,15 @@ Input::Input(const FontHolder& fonts, const TextureHolder& textures,
       mText("", fonts.get(Fonts::Mono), 18),
       cursorDrawable(true),
       mCursor(getLineShape(sf::Vector2f(0.f, 16.f), 2.f)),
-      cursorCountdown(Constants::INPUT_CURSOR_LIFE) {
+      cursorCountdown(Constants::INPUT_CURSOR_LIFE),
+      mSprite(mNormalTexture),
+      mAllowedCharacters() {
 
     allowChar('\n');
 
     mText.setFillColor(colors.get(Colors::Text));
     alignText();
 
-    mSprite.setTexture(mNormalTexture);
     centerOrigin(mSprite);
 
     mCursor.setFillColor(colors.get(Colors::Text));

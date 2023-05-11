@@ -17,12 +17,11 @@ Button::Button(Type type, const FontHolder& fonts,
       mIsToggle(false),
       mNormalTexture(textures.get(getNormalTextureID(type))),
       mSelectedTexture(textures.get(getSelectedTextureID(type))),
-      mPressedTexture(textures.get(getPressedTextureID(type))) {
+      mPressedTexture(textures.get(getPressedTextureID(type))),
+      mSprite(mNormalTexture),
+      mText() {
     setFont(type, fonts, colors);
-    mSprite.setTexture(mNormalTexture);
-
     centerOrigin(mSprite);
-    centerOrigin(mText);
 }
 
 Textures::ID Button::getNormalTextureID(Type type) const {

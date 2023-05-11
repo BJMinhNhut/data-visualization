@@ -17,7 +17,8 @@ VisualDynamicState::VisualDynamicState(StateStack& stack,
     : VisualState(stack, context, "Dynamic Array"),
       mArray(*context.fonts, *context.textures, *context.colors),
       GUIValueInput(OptionCount),
-      GUIIndexInput(OptionCount) {
+      GUIIndexInput(OptionCount),
+      GUIArrayInput(nullptr) {
     initGUIButtons();
 
     loadNewGUI();

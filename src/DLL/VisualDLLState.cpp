@@ -15,7 +15,8 @@ VisualDLLState::VisualDLLState(StateStack& stack, Context context)
     : VisualState(stack, context, "Doubly Linked List"),
       mDLL(*context.fonts, *context.textures, *context.colors),
       GUIValueInput(OptionCount),
-      GUIIndexInput(OptionCount) {
+      GUIIndexInput(OptionCount),
+      GUIArrayInput(nullptr) {
     initGUIButtons();
 
     loadNewGUI();

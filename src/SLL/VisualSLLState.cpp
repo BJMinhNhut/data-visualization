@@ -15,7 +15,8 @@ VisualSLLState::VisualSLLState(StateStack& stack, Context context)
     : VisualState(stack, context, "Singly Linked List"),
       mSLL(*context.fonts, *context.textures, *context.colors),
       GUIValueInput(OptionCount),
-      GUIIndexInput(OptionCount) {
+      GUIIndexInput(OptionCount),
+      GUIArrayInput(nullptr) {
 
     centerSLL(SceneNode::None);
     mSLL.refreshPointerTarget();

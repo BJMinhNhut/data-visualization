@@ -61,7 +61,6 @@ class Input : public Component {
    private:
     sf::RectangleShape mCursor;
     bool cursorDrawable;
-    sf::Time cursorLife;
     sf::Time cursorCountdown;
 
     const sf::Texture mNormalTexture;

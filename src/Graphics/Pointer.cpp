@@ -14,13 +14,18 @@
 #include <iostream>
 
 Pointer::Pointer(const FontHolder& fonts, const ColorHolder& colors)
-    : mColor(colors.get(Colors::Text)),
+    : mDestination(),
+      mTargetDestination(),
+      mColor(colors.get(Colors::Text)),
+      mCircle(4.f, 20),
+      mArrow(),
+      mArrowTip(),
+      mCircularArrow(),
+      isCircular(false),
       mLabel("", fonts.get(Fonts::Main), 16u),
       TextNULL("null", fonts.get(Fonts::Main), 16u),
       mTarget(nullptr),
-      isCircular(false),
-      mType(Left),
-      mCircle(4.f, 20) {
+      mType(Left) {
     centerOrigin(mLabel);
     mLabel.setPosition(0.f, mCircle.getRadius() + 8.f);
     mLabel.setFillColor(colors.get(Colors::Text));

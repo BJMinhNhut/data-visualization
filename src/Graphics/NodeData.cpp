@@ -9,11 +9,8 @@
 #include <string>
 
 NodeData::NodeData(const FontHolder& fonts, const ColorHolder& colors)
-    : mValue(0) {
-
-    mText.setFont(fonts.get(Fonts::Main));
-    mText.setString(std::to_string(mValue));
-    mText.setCharacterSize(20u);
+    : mValue(0),
+      mText(std::to_string(mValue), fonts.get(Fonts::Main), 20u) {
     mText.setFillColor(colors.get(Colors::Text));
     centerOrigin(mText);
 }

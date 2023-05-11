@@ -17,7 +17,8 @@ DoublyNode::DoublyNode(const FontHolder& fonts,
                        const ColorHolder& colors)
     : mData(new NodeData(fonts, colors)),
       mNext(new Pointer(fonts, colors)),
-      mPrev(new Pointer(fonts, colors)) {
+      mPrev(new Pointer(fonts, colors)),
+      mSprite(textures.get(Textures::DoublyNode)) {
 
     attachChild(std::unique_ptr<NodeData>(mData));
     attachChild(std::unique_ptr<Pointer>(mNext));
@@ -34,7 +35,6 @@ DoublyNode::DoublyNode(const FontHolder& fonts,
     mPrev->resetDestination();
     mPrev->setNull(Pointer::Right);
 
-    mSprite.setTexture(textures.get(Textures::DoublyNode), true);
     centerOrigin(mSprite);
 }
 

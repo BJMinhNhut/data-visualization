@@ -9,9 +9,9 @@
 #include <memory>
 
 MenuDataState::MenuDataState(StateStack& stack, Context context)
-    : State(stack, context), mGUIContainer() {
-    mBackgroundSprite.setTexture(
-        context.textures->get(Textures::Background));
+    : State(stack, context),
+      mGUIContainer(),
+      mBackgroundSprite(context.textures->get(Textures::Background)) {
 
     auto backButton = std::make_shared<GUI::Button>(
         GUI::Button::Back, *getContext().fonts,

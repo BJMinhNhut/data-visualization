@@ -15,7 +15,8 @@ VisualQueueState::VisualQueueState(StateStack& stack, Context context)
     : VisualState(stack, context, "Queue"),
       mQueue(*context.fonts, *context.textures, *context.colors),
       GUIValueInput(OptionCount),
-      GUIIndexInput(OptionCount) {
+      GUIIndexInput(OptionCount),
+      GUIArrayInput(nullptr) {
 
     centerSLL(SceneNode::None);
     mQueue.refreshPointerTarget();
