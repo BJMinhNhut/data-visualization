@@ -7,6 +7,8 @@ This is a CS162 Final Lab Project using C++. The application provides an intuiti
 
 ## Demo video
 
+[![Watch the video](https://img.youtube.com/vi/pFYUP4ysprA/default.jpg)](https://youtu.be/pFYUP4ysprA)
+
 ## Features
 - [x] Light/Dark mode
 - [x] Visualize 7 basic data structures:
@@ -28,5 +30,4 @@ This is a CS162 Final Lab Project using C++. The application provides an intuiti
 - Array/List maximum length is 10.
 
 ## Documentation
-
-
+- Link: [OneDrive](https://1drv.ms/w/s!As9-tr-JRd1Mia1JSyAvX7qJiZnnLg?e=FBTcWb)
